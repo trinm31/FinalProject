@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SchedulingGenerate.Services.BackgroundService;
 using SchedulingGenerate.Services.DbContext;
+using SchedulingGenerate.Services.DbInitializer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,5 +39,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+DbInitialize.Initialize(app);
 
 app.Run();

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SchedulingGenerate.Services.BackgroundService;
 using SchedulingGenerate.Services.DbContext;
 using SchedulingGenerate.Services.MatrixHelper;
@@ -16,8 +17,6 @@ namespace SchedulingGenerate.Services.Controllers
     [Route("api/SchedulingGenerate")]
     public class SchedulingGenerateController: ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        
         public static DateTime StartDate = DateTime.Today;
         public static DateTime EndDate = DateTime.Today.AddDays(31);
         public static int MaxScheduleDays = (int)(EndDate - StartDate).TotalDays;
@@ -32,13 +31,12 @@ namespace SchedulingGenerate.Services.Controllers
         public static Graph graph;
         public static HashSet<Node> AllNodesHashSet;
         private readonly BackgroundWorkerQueue _backgroundWorkerQueue;
-        public static string connectionString;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public SchedulingGenerateController(ApplicationDbContext db, BackgroundWorkerQueue backgroundWorkerQueue, IConfiguration configuration)
+        public SchedulingGenerateController( BackgroundWorkerQueue backgroundWorkerQueue, IServiceScopeFactory serviceScopeFactory)
         {
-            _db = db;
             _backgroundWorkerQueue = backgroundWorkerQueue;
-            connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         [HttpGet]
@@ -79,19 +77,19 @@ namespace SchedulingGenerate.Services.Controllers
         
         private void GetDataFromDb()
         {
-            using (var db = new ApplicationDbContext(connectionString))
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                
                 Students = db.Students.AsNoTracking().ToHashSet();
                 CoursesDb = db.Courses.AsNoTracking().ToHashSet();
                 StudentCourses = db.StudentCourses.AsNoTracking().ToHashSet();
-            }
-
-            using (var db = new ApplicationDbContext(connectionString))
-            {
+                
                 var result = db.Results.ToList();
                 db.RemoveRange(result);
                 db.SaveChanges();
             }
+
         }
 
         private void StoreScheduleResult()
@@ -122,8 +120,9 @@ namespace SchedulingGenerate.Services.Controllers
                 results.Add(result);
             }
 
-            using (var db = new ApplicationDbContext(connectionString))
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
                 db.Results.AddRange(results);
                 db.SaveChanges();
             }
