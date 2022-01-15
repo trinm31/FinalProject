@@ -3,6 +3,7 @@ using Identity.Services.Data;
 using Identity.Services.Models;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Services.Initializer;
 
@@ -19,17 +20,17 @@ namespace Identity.Services.Initializer;
                     serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
                 var _roleManager =
                     serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-                // try
-                // {
-                //     if (context.Database.GetPendingMigrations().Count() > 0)
-                //     {
-                //         context.Database.Migrate();
-                //     }
-                // }
-                // catch(Exception ex)
-                // {
-                //
-                // }
+                try
+                {
+                    if (context.Database.GetPendingMigrations().Count() > 0)
+                    {
+                        context.Database.Migrate();
+                    }
+                }
+                catch(Exception ex)
+                {
+                
+                }
                 
                 if (_roleManager.FindByNameAsync(SD.Admin).Result == null)
                 {
