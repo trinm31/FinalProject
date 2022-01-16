@@ -41,8 +41,8 @@ public static class SD
                 ClientId="esm",
                 ClientSecrets= { new Secret("secretlalalaAiMaBik".Sha256())},
                 AllowedGrantTypes = GrantTypes.Code,
-                RedirectUris={ "https://localhost:6001/signin-oidc" },
-                PostLogoutRedirectUris={"https://localhost:6001/signout-callback-oidc" },
+                RedirectUris={ "http://localhost:3000/signin-oidc" },
+                PostLogoutRedirectUris={"https://localhost:3000/signout-callback-oidc" },
                 AllowedScopes=new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,

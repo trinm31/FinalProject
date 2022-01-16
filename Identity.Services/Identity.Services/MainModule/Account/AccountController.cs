@@ -313,7 +313,8 @@ namespace IdentityServerHost.Quickstart.UI
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             List<string> roles = new List<string>();
             roles.Add("Admin");
-            roles.Add("Customer");
+            roles.Add("Student");
+            roles.Add("Staff");
             ViewBag.message = roles;
             if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {

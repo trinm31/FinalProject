@@ -46,6 +46,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddMvc();
 
+builder.Services.AddCors();
+
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
 var app = builder.Build();
@@ -65,6 +67,12 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseCors(config => config
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+);
 
 app.UseRouting();
 
