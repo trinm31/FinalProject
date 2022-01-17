@@ -1,12 +1,15 @@
-using Duende.IdentityServer.AspNetIdentity;
+
 using Duende.IdentityServer.Services;
 using Identity.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Identity.Services.Data;
+using Identity.Services.Configuration;
 using Identity.Services.Initializer;
+using Microsoft.Extensions.DependencyInjection;
+using Identity.Services.Configuration;
+using Identity.Services.Data;
 using Identity.Services.Models;
 using Identity.Services.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-builder.Services.AddIdentityServer(options =>
+var identityServerBuilder = builder.Services.AddIdentityServer(options =>
     {
         // set path where to store keys
         options.KeyManagement.KeyPath = "/Users/Shared/Key";
@@ -38,17 +41,30 @@ builder.Services.AddIdentityServer(options =>
     }).AddInMemoryIdentityResources(SD.IdentityResources)
     .AddInMemoryApiScopes(SD.ApiScopes)
     .AddInMemoryClients(SD.Clients)
+    .AddInMemoryApiResources(SD.GetApiResources)
     .AddAspNetIdentity<ApplicationUser>();
 
-//serverBuilder.AddDeveloperSigningCredential();
+// codes, tokens, consents
+identityServerBuilder.AddOperationalStore<AppPersistedGrantDbContext>(options =>
+    options.ConfigureDbContext = option =>
+        option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllersWithViews();
+// clients, resources
+identityServerBuilder.AddConfigurationStore<AppConfigurationDbContext>(options =>
+    options.ConfigureDbContext = option =>
+        option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddMvc();
 
-builder.Services.AddCors();
-
 builder.Services.AddScoped<IProfileService, ProfileService>();
+
+// add new 
+
+builder.Services.AddCorsConfiguration(builder.Environment);
+
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -64,15 +80,13 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseCookiePolicy();
+
+app.UseCors("cors_policy");
+
+app.UseHealthChecks("/health");
 
 app.UseStaticFiles();
-
-app.UseCors(config => config
-    .AllowAnyOrigin()
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-);
 
 app.UseRouting();
 
