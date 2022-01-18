@@ -15,21 +15,17 @@ public static class SD
         new List<IdentityResource>
         {
             new IdentityResources.OpenId(),
-            new IdentityResources.Email(),
             new IdentityResources.Profile(),
+            new IdentityResources.Email(),
             new IdentityResource
             {
-            Name = "role",
-            UserClaims = new List<string> {"role"}
+                Name = "role",
+                UserClaims = new List<string> {"role"}
             }
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
         new List<ApiScope> {
-            new ApiScope("esm", "Esm Server"),
-            new ApiScope(name: "read",   displayName: "Read your data."),
-            new ApiScope(name: "write",  displayName: "Write your data."),
-            new ApiScope(name: "delete", displayName: "Delete your data."),
             new ApiScope("api", new[] {
                 JwtClaimTypes.Name,
                 JwtClaimTypes.Role,
@@ -66,48 +62,29 @@ public static class SD
         {
             new Client
             {
-                ClientId="client",
-                ClientSecrets= { new Secret("secretlalalaAiMaBik".Sha256())},
-                AllowedGrantTypes = GrantTypes.ClientCredentials,
-                AllowedScopes={ "read", "write","profile"}
-            },
-            new Client
-            {
-                ClientId="esm",
-                ClientSecrets= { new Secret("secretlalalaAiMaBik".Sha256())},
-                AllowedGrantTypes = GrantTypes.Code,
-                RedirectUris={ "http://localhost:3000/signin-oidc" },
-                PostLogoutRedirectUris={"https://localhost:3000/signout-callback-oidc" },
-                AllowedScopes=new List<string>
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Email,
-                    "esm"
-                }
-            },
-            new Client
-            {
                 ClientId = "spa",
 
-                ClientSecrets = { new Secret("secretlalalaAiMaBik".Sha256()) },
+                ClientSecrets = { new Secret("secret".Sha256()) },
 
                 AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
 
-                RedirectUris = { "https://localhost:5015/signin-oidc" },
+                RedirectUris = { "https://localhost:5001/signin-oidc" },
 
-                BackChannelLogoutUri = "https://localhost:5015/bff/backchannel",
-
-                PostLogoutRedirectUris = { "https://localhost:5015/signout-callback-oidc" },
+                PostLogoutRedirectUris = { "https://localhost:5001/signout-callback-oidc" },
 
                 AllowedCorsOrigins = new List<string>
                 {
-                    "http://localhost:3000", "http://localhost:5001",
+                    "https://localhost:7148", "https://localhost:44491","https://localhost:5055","https://localhost:7153","https://localhost:5001"
                 },
 
                 AllowOfflineAccess = true,
 
-                AllowedScopes = { "openid", "profile", "api" }
+                AllowedScopes = {  
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email, 
+                    "api" 
+                }
             },
         };
 }

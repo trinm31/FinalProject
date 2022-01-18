@@ -88,9 +88,9 @@ app.UseHealthChecks("/health");
 
 app.UseStaticFiles();
 
-app.UseRouting();
-
-app.UseIdentityServer();
+app.UseRouting(); 
+        
+app.UseIdentityServer(); // Enable handling of OpenId Connect and OAuth.
 
 app.UseAuthentication();
 

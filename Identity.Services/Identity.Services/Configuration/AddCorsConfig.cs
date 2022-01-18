@@ -12,13 +12,18 @@ public static partial class ServiceExtension {
 
         if(Environment.IsDevelopment()){
             allowed_origins = new string[]{ 
-                "https://localhost:5001",
-                "https://localhost:5015",
-                "https://localhost:5021"
+                "https://localhost:7148",
+                "https://localhost:44491", 
+                "http://localhost:5055",
+                "https://localhost:7153",
+                "http://localhost:5114",
+                "https://localhost:5001"
             };
         }else{
             // Add your production origins hire
             allowed_origins = new string[]{ 
+                "https://localhost:7153",
+                "http://localhost:5114",
                 "https://localhost:5001"
             };
         }

@@ -15,7 +15,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Duende.BFF" Version="1.1.3" />
+        <PackageReference Include="Duende.BFF.EntityFramework" Version="1.1.3" />
+        <PackageReference Include="Duende.BFF.Yarp" Version="1.1.3" />
+        <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.1" />
+        <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.1" />
+        <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,6 +31,16 @@
         <Content Remove="$(SpaRoot)**" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="ClientApp\cypress.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\package-lock.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\package.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\persisted-output\persisted-queries.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\relay.config.json" />
+      <_ContentIncludedByDefault Remove="ClientApp\tsconfig.json" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
