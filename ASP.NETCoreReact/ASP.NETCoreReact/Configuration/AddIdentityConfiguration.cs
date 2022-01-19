@@ -1,4 +1,5 @@
 using Duende.Bff.Yarp;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ASP.NETCoreReact.Configuration;
 
@@ -25,7 +26,7 @@ public static partial class ServiceExtension {
                 options.Cookie.Name = "__SPA_FF";
             
                 // strict SameSite handling
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                options.Cookie.SameSite = SameSiteMode.Strict;
             })
             .AddOpenIdConnect("oidc", options =>
             {
@@ -33,7 +34,7 @@ public static partial class ServiceExtension {
             
                 // confidential client using code flow + PKCE
                 options.ClientId = "spa";
-                options.ClientSecret = "secretlalalaAiMaBik";
+                options.ClientSecret = "secret";
                 options.ResponseType = "code";
                 options.ResponseMode = "query";
 
@@ -47,7 +48,7 @@ public static partial class ServiceExtension {
                 options.Scope.Add("profile");
                 options.Scope.Add("api");
                 options.Scope.Add("offline_access");
-                
+
                 options.TokenValidationParameters = new()
                 {
                     NameClaimType = "name",

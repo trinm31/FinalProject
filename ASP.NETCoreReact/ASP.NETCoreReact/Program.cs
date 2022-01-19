@@ -1,6 +1,5 @@
 using ASP.NETCoreReact.Configuration;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +15,16 @@ builder.Services.AddSpaStaticFiles(configuration => {
 builder.Services.AddCorsConfiguration(builder.Environment, builder.Configuration);
 
 // Add BFF services to DI - also add server-side session management
-builder.Services.AddBff(options =>
-    {
-        options.AntiForgeryHeaderValue = "1";
-        options.AntiForgeryHeaderName = "X-CSRF";
-        options.ManagementBasePath = "/bff";
-    })
-    .AddServerSideSessions();
+// builder.Services.AddBff(options =>
+//     {
+//         // options.AntiForgeryHeaderValue = "1";
+//         // options.AntiForgeryHeaderName = "X-CSRF";
+//         options.ManagementBasePath = "/bff";
+//     })
+//     .AddServerSideSessions();
 
+builder.Services.AddBff()
+    .AddServerSideSessions();
 
 builder.Services.AddIdentityConfiguration();
 
@@ -46,32 +47,44 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHealthChecks("/health");
 
-app.UseCors("cors_policy");
-
-app.UseHttpsRedirection();
-
-app.UseDefaultFiles();
-
-app.UseStaticFiles();
-
-app.UseSpaStaticFiles();
-
-app.UseAuthentication();
-
-app.UseRouting();
-
-app.UseBff();
-
-app.UseAuthorization();
+// app.UseCors("cors_policy");
+//
+// app.UseHttpsRedirection();
+//
+// app.UseDefaultFiles();
+//
+// app.UseStaticFiles();
+//
+// app.UseSpaStaticFiles();
+//
+// app.UseAuthentication();
+//
+// app.UseRouting();
+//
+// app.UseBff();
+//
+// app.UseAuthorization();
 
 // app.MapControllerRoute(
 //     name: "default",
 //     pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapControllers().RequireAuthorization().AsBffApiEndpoint();
+// app.MapControllers().RequireAuthorization().AsBffApiEndpoint();
+//
+// app.MapBffManagementEndpoints();
 
+
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
+app.UseBff();
+app.UseAuthorization();
 app.MapBffManagementEndpoints();
 
- app.MapFallbackToFile("index.html");
+app.MapControllers()
+    .RequireAuthorization()
+    .AsBffApiEndpoint();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

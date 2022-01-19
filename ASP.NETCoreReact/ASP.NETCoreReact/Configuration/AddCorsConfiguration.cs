@@ -21,6 +21,7 @@ public static partial class ServiceExtension
                     "http://localhost:5055",
                     "https://localhost:7153",
                     "http://localhost:5114",
+                    "https://localhost:5001"
                 });
             }
 
