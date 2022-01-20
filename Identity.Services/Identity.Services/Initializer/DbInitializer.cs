@@ -12,6 +12,77 @@ namespace Identity.Services.Initializer;
     {
         public static void Initialize(IApplicationBuilder app)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var DB_PersistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<AppPersistedGrantDbContext>();
+                DB_PersistedGrantDbContext.Database.EnsureCreated();
+
+                try
+                {
+                    if (DB_PersistedGrantDbContext.Database.GetPendingMigrations().Count() > 0)
+                    {
+                        DB_PersistedGrantDbContext.Database.Migrate();
+                    }
+                }
+                catch(Exception ex)
+                {
+                
+                }
+
+                var DB_ConfigurationDbContext = serviceScope.ServiceProvider.GetRequiredService<AppConfigurationDbContext>();
+                DB_ConfigurationDbContext.Database.EnsureCreated();
+
+                try
+                {
+                    if (DB_ConfigurationDbContext.Database.GetPendingMigrations().Count() > 0)
+                    {
+                        DB_ConfigurationDbContext.Database.Migrate();
+                    }
+                }
+                catch(Exception ex)
+                {
+                
+                }
+                
+                var DB_AppDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                DB_AppDbContext.Database.EnsureCreated();
+
+                if (!DB_ConfigurationDbContext.Clients.Any())
+                {
+                    foreach (var client in Clients.Get())
+                    {
+                        DB_ConfigurationDbContext.Clients.Add(client.ToEntity());
+                    }
+                    DB_ConfigurationDbContext.SaveChanges();
+                }
+
+                if (!DB_ConfigurationDbContext.IdentityResources.Any())
+                {
+                    foreach (var resource in Resources.GetIdentityResources())
+                    {
+                        DB_ConfigurationDbContext.IdentityResources.Add(resource.ToEntity());
+                    }
+                    DB_ConfigurationDbContext.SaveChanges();
+                }
+
+                if (!DB_ConfigurationDbContext.ApiScopes.Any())
+                {
+                    foreach (var scope in Resources.GetApiScopes())
+                    {
+                        DB_ConfigurationDbContext.ApiScopes.Add(scope.ToEntity());
+                    }
+                    DB_ConfigurationDbContext.SaveChanges();
+                }
+
+                if (!DB_ConfigurationDbContext.ApiResources.Any())
+                {
+                    foreach (var resource in Resources.GetApiResources())
+                    {
+                        DB_ConfigurationDbContext.ApiResources.Add(resource.ToEntity());
+                    }
+                    DB_ConfigurationDbContext.SaveChanges();
+                }
+            }
             
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
@@ -119,72 +190,6 @@ namespace Identity.Services.Initializer;
                     new Claim(JwtClaimTypes.FamilyName, StudentUser.LastName),
                     new Claim(JwtClaimTypes.Role, SD.Student),
                 }).Result;
-            }
-            
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                var DB_PersistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<AppPersistedGrantDbContext>();
-                DB_PersistedGrantDbContext.Database.EnsureCreated();
-                // DB_PersistedGrantDbContext.Database.Migrate();
-
-                var DB_ConfigurationDbContext = serviceScope.ServiceProvider.GetRequiredService<AppConfigurationDbContext>();
-                DB_ConfigurationDbContext.Database.EnsureCreated();
-                // DB_ConfigurationDbContext.Database.Migrate();
-
-                var DB_AppDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                DB_AppDbContext.Database.EnsureCreated();
-                // DB_AppDbContext.Database.Migrate();
-
-                if (!DB_ConfigurationDbContext.Clients.Any())
-                {
-                    foreach (var client in Clients.Get())
-                    {
-                        DB_ConfigurationDbContext.Clients.Add(client.ToEntity());
-                    }
-                    DB_ConfigurationDbContext.SaveChanges();
-                }
-
-                if (!DB_ConfigurationDbContext.IdentityResources.Any())
-                {
-                    foreach (var resource in Resources.GetIdentityResources())
-                    {
-                        DB_ConfigurationDbContext.IdentityResources.Add(resource.ToEntity());
-                    }
-                    DB_ConfigurationDbContext.SaveChanges();
-                }
-
-                if (!DB_ConfigurationDbContext.ApiScopes.Any())
-                {
-                    foreach (var scope in Resources.GetApiScopes())
-                    {
-                        DB_ConfigurationDbContext.ApiScopes.Add(scope.ToEntity());
-                    }
-                    DB_ConfigurationDbContext.SaveChanges();
-                }
-
-                if (!DB_ConfigurationDbContext.ApiResources.Any())
-                {
-                    foreach (var resource in Resources.GetApiResources())
-                    {
-                        DB_ConfigurationDbContext.ApiResources.Add(resource.ToEntity());
-                    }
-                    DB_ConfigurationDbContext.SaveChanges();
-                }
-
-                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                if (!userManager.Users.Any())
-                {
-                    foreach (var testUser in Users.Get())
-                    {
-                        var identityUser = new ApplicationUser()
-                        {
-                            Id = testUser.SubjectId
-                        };
-
-                        userManager.CreateAsync(identityUser, "Admin123@").Wait();
-                        userManager.AddClaimsAsync(identityUser, testUser.Claims.ToList()).Wait();
-                    }
-                }
             }
         }
     }

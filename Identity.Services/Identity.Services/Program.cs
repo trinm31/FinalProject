@@ -38,10 +38,7 @@ var identityServerBuilder = builder.Services.AddIdentityServer(options =>
         options.Events.RaiseFailureEvents = true;
         options.Events.RaiseSuccessEvents = true;
         options.EmitStaticAudienceClaim = true;
-    }).AddInMemoryIdentityResources(SD.IdentityResources)
-    .AddInMemoryApiScopes(SD.ApiScopes)
-    .AddInMemoryClients(SD.Clients)
-    .AddInMemoryApiResources(SD.GetApiResources)
+    })
     .AddAspNetIdentity<ApplicationUser>();
 
 // codes, tokens, consents
