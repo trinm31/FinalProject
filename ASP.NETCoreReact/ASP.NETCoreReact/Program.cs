@@ -15,15 +15,12 @@ builder.Services.AddSpaStaticFiles(configuration => {
 builder.Services.AddCorsConfiguration(builder.Environment, builder.Configuration);
 
 // Add BFF services to DI - also add server-side session management
-// builder.Services.AddBff(options =>
-//     {
-//         // options.AntiForgeryHeaderValue = "1";
-//         // options.AntiForgeryHeaderName = "X-CSRF";
-//         options.ManagementBasePath = "/bff";
-//     })
-//     .AddServerSideSessions();
-
-builder.Services.AddBff()
+builder.Services.AddBff(options =>
+    {
+        options.AntiForgeryHeaderValue = "1";
+        options.AntiForgeryHeaderName = "X-CSRF";
+        options.ManagementBasePath = "/bff";
+    })
     .AddServerSideSessions();
 
 builder.Services.AddIdentityConfiguration();
@@ -47,38 +44,22 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHealthChecks("/health");
 
-// app.UseCors("cors_policy");
-//
-// app.UseHttpsRedirection();
-//
-// app.UseDefaultFiles();
-//
-// app.UseStaticFiles();
-//
-// app.UseSpaStaticFiles();
-//
-// app.UseAuthentication();
-//
-// app.UseRouting();
-//
-// app.UseBff();
-//
-// app.UseAuthorization();
+app.UseCors("cors_policy");
 
-// app.MapControllerRoute(
-//     name: "default",
-//     pattern: "{controller}/{action=Index}/{id?}");
+app.UseForwardedHeaders();
 
-// app.MapControllers().RequireAuthorization().AsBffApiEndpoint();
-//
-// app.MapBffManagementEndpoints();
-
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseAuthentication();
+
 app.UseBff();
+
 app.UseAuthorization();
+
 app.MapBffManagementEndpoints();
 
 app.MapControllers()
