@@ -16,6 +16,8 @@ using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Duende.IdentityServer.Test;
+using Identity.Services;
+using Identity.Services.Data;
 using Identity.Services.MainModule.Account;
 using Identity.Services.Models;
 using Microsoft.AspNetCore.Identity;
@@ -39,6 +41,7 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _db;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -48,7 +51,8 @@ namespace IdentityServerHost.Quickstart.UI
             IEventService events,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleInManager)
+            RoleManager<IdentityRole> roleInManager,
+            ApplicationDbContext db)
         {
             _interaction = interaction;
             _clientStore = clientStore;
@@ -58,6 +62,7 @@ namespace IdentityServerHost.Quickstart.UI
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleInManager;
+            _db = db;
         }
 
         /// <summary>
@@ -243,7 +248,8 @@ namespace IdentityServerHost.Quickstart.UI
                     Email = model.Email,
                     EmailConfirmed = true,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    Position = model.Position
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -316,7 +322,6 @@ namespace IdentityServerHost.Quickstart.UI
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             List<string> roles = new List<string>();
-            roles.Add("Admin");
             roles.Add("Student");
             roles.Add("Staff");
             ViewBag.message = roles;
@@ -513,6 +518,81 @@ namespace IdentityServerHost.Quickstart.UI
             }
 
             return vm;
+        } 
+        
+        [HttpGet]
+        [Authorize(Roles = SD.Admin)]
+         public async Task<IActionResult> Index()
+         {
+             var identity = (ClaimsIdentity)User.Identity;
+             IEnumerable<Claim> claims = identity.Claims;
+             var userList = _db.Users.Where(u=>u.Id != claims.First().Value);
+             foreach (var user in userList)
+             {
+                 var userTemp = await _userManager.FindByIdAsync(user.Id);
+                 var roleTemp = await _userManager.GetRolesAsync(userTemp);
+                 user.Role = roleTemp.FirstOrDefault();
+             }
+             ViewData["Message"] = TempData["Message"];
+             return View(userList);
+         }
+
+         [HttpGet]
+         [Authorize(Roles = SD.Admin)]
+         public async Task<IActionResult> ConfirmDelete(string id)
+         {
+             var applicationUser = _db.Users.Find(id);
+             return View(applicationUser);
+         }
+         
+         [HttpGet]
+         [Authorize(Roles = SD.Admin)]
+         public async Task<IActionResult> Delete(string id)
+         {
+             var applicationUser = _db.Users.Find(id);
+             if (applicationUser != null)
+             {
+                 await _userManager.DeleteAsync(applicationUser);
+                 TempData["Message"] = "Success: Delete successfully";
+             }
+
+             return RedirectToAction(nameof(Index));
+         }
+         
+         [HttpGet]
+         [Authorize(Roles = SD.Admin)]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var user = _db.Users.Find(id);
+            if (user == null)
+            {
+                ViewData["Message"] = "Error: User not found";
+                return NotFound();
+            }
+        
+            return View(user);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Admin)]
+        public async Task<IActionResult> Edit(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                ViewData["Message"] = "Error: Data null";
+                return RedirectToAction(nameof(Index), "Account");
+            }
+
+            var userDb = _db.Users.Find(user.Id);
+            userDb.FirstName = user.FirstName;
+            userDb.LastName = user.LastName;
+            userDb.Position = user.Position;
+            userDb.PhoneNumber = user.PhoneNumber;
+            
+            _db.Users.Update(userDb);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index), "Account");
         }
     }
 }

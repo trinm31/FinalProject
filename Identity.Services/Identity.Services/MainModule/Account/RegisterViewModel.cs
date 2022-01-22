@@ -14,7 +14,10 @@ public class RegisterViewModel
     public string LastName { get; set; }
     [Required]
     public string Password { get; set; }
-
+    [Required]
+    [Compare("Password")]
+    public string ConfirmPassword { get; set; }
+    public string Position { get; set; }
     public string ReturnUrl { get; set; }
     public string RoleName { get; set; }
 
