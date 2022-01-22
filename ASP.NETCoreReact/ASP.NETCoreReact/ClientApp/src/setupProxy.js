@@ -7,7 +7,7 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 const context = ["/weatherforecast", "/bff", "/signin-oidc", "/signout-callback-oidc"];
 
 module.exports = function(app) {
-  const appProxy = createProxyMiddleware(context, {
+  const appProxy = createProxyMiddleware(context, { 
     target: target,
     secure: false
   });
