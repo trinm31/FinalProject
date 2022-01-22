@@ -594,5 +594,82 @@ namespace IdentityServerHost.Quickstart.UI
             _db.SaveChanges();
             return RedirectToAction(nameof(Index), "Account");
         }
+        
+        [Authorize(Roles = SD.Admin)]
+        public async Task<IActionResult> ForgotPassword(string id)
+        {
+            var user =  _db.Users.Find(id);
+
+            if (user == null)
+            {
+                return View();
+            }
+
+            ForgotPasswordViewModel UserEmail = new ForgotPasswordViewModel()
+            {
+                Email = user.Email
+            };
+            return View(UserEmail);
+        }
+        [Authorize(Roles = SD.Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    return RedirectToAction("ResetPassword", "Account", new {email = model.Email, token = token});
+                }
+
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+        [Authorize(Roles = SD.Admin)]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError("","Invalid password reset token");
+            }
+
+            return View();
+        }
+        [Authorize(Roles = SD.Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("ResetPasswordConfirmation");
+                    }
+                    else
+                    {
+                        ViewData["Message"] = "Error: Your Password not permitted";
+                        return View(model);
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("",error.Description);
+                    }
+
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
     }
 }
