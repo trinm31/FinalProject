@@ -1,9 +1,15 @@
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using Email.Services.Messages;
 using Email.Services.Repository;
+using Email.Services.Utility;
+using MimeKit;
+using MimeKit.Utils;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using ContentType = MimeKit.ContentType;
 
 namespace Email.Services.Messaging;
 
@@ -15,9 +21,12 @@ public class RabbitMQPaymentConsumer: BackgroundService
     private const string PaymentEmailUpdateQueueName = "EmailQueueName";
     private readonly EmailRepository _emailRepo;
     string queueName = "";
-    public RabbitMQPaymentConsumer(EmailRepository emailRepo)
+    private readonly SendMailService _sendMailService;
+
+    public RabbitMQPaymentConsumer(EmailRepository emailRepo, SendMailService sendMailService)
     {
         _emailRepo = emailRepo;
+        _sendMailService = sendMailService;
         var factory = new ConnectionFactory
         {
             HostName = "localhost",
@@ -54,6 +63,20 @@ public class RabbitMQPaymentConsumer: BackgroundService
     {
         try
         {
+            MailContent content = new MailContent();
+                
+            content.BodyBuilder = new BodyBuilder();
+            content.To = emailMessage.Email;
+            content.Subject = "ESM Check-in QR Code";
+            
+            var contentType = new ContentType ("image", "jpeg");
+            var image = content.BodyBuilder.LinkedResources.Add(emailMessage.FileName,emailMessage.FileData,contentType);
+            image.ContentId = MimeUtils.GenerateMessageId ();
+                
+            content.BodyBuilder.HtmlBody = QREmailTemplate.Template(image.ContentId, emailMessage.Email);
+
+            await _sendMailService.SendMail(content);
+            
             await _emailRepo.SendAndLogEmail(emailMessage);
         }
         catch (Exception e)

@@ -1,6 +1,7 @@
 using Email.Services.DbContext;
 using Email.Services.Messaging;
 using Email.Services.Repository;
+using Email.Services.Utility;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,12 @@ builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
 var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddSingleton(new EmailRepository(optionBuilder.Options));
+
+builder.Services.AddOptions ();                                         
+var mailsettings = builder.Configuration.GetSection ("MailSettings");  
+builder.Services.Configure<MailSettings> (mailsettings);  
+            
+builder.Services.AddTransient<ISendMailService, SendMailService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
