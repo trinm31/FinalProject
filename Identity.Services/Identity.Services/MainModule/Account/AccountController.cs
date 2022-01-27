@@ -671,5 +671,37 @@ namespace IdentityServerHost.Quickstart.UI
             }
             return View(model);
         }
+
+        [Authorize(Roles = SD.Admin)]
+        [HttpGet]
+        public IActionResult LockUnlock(string id)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var claimUser = _db.Users.FirstOrDefault(u => u.Id == claims.First().Value);
+
+            var applicationUser = _db.Users.FirstOrDefault(u => u.Id == id);
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+            if (claimUser.Id == applicationUser.Id)
+            {
+                return NotFound();
+            }
+            if (applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now)
+            {
+                //user is currently locked, we will unlock them
+                applicationUser.LockoutEnd = DateTime.Now;
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }
