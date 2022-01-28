@@ -80,6 +80,9 @@ export class NavMenu extends Component {
                     <NavLink tag={Link} className="text-dark" to="/">
                       Home
                     </NavLink>
+                    <NavLink tag={Link} className="text-dark" to="/weatherforecast">
+                      fetchData
+                    </NavLink>
                   </NavItem>
                   {this.state.loggedIn && (
                       <NavItem>

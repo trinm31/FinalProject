@@ -1,4 +1,5 @@
 using ASP.NETCoreReact.Configuration;
+using Duende.Bff.Yarp;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,8 @@ builder.Services.AddBff(options =>
         options.AntiForgeryHeaderName = "X-CSRF";
         options.ManagementBasePath = "/bff";
     })
-    .AddServerSideSessions();
+    .AddServerSideSessions()
+    .AddRemoteApis();
 
 builder.Services.AddIdentityConfiguration();
 
@@ -31,6 +33,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
+
 
 
 var app = builder.Build();
@@ -46,7 +49,10 @@ app.UseHealthChecks("/health");
 
 app.UseCors("cors_policy");
 
-app.UseForwardedHeaders();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
+}); 
 
 app.UseHttpsRedirection();
 
@@ -65,6 +71,8 @@ app.MapBffManagementEndpoints();
 app.MapControllers()
     .RequireAuthorization()
     .AsBffApiEndpoint();
+
+app.MapRemoteBffApiEndpoint("/WeatherForecast", "https://localhost:7143/WeatherForecast",false).RequireAccessToken();
 
 app.MapFallbackToFile("index.html");
 

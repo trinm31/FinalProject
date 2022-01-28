@@ -16,10 +16,15 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ESM.Services.Management", Version = "v1" });
+});
+
 builder.Services.AddAuthentication("token")
     .AddJwtBearer("token", options =>
     {
-        options.Authority = "https://localhost:5001";
+        options.Authority = "https://localhost:7153";
         options.MapInboundClaims = false;
 
         options.TokenValidationParameters = new TokenValidationParameters()
@@ -77,17 +82,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    
-    app.UseSwagger();
-    
+
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ESM.Services.Management v1"));
 }
 

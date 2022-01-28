@@ -1,3 +1,6 @@
+using Abp.AspNetCore.Mvc.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Management.Services.Controllers;
@@ -19,8 +22,12 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
+    [Authorize(Roles = "Admin")]
     public IEnumerable<WeatherForecast> Get()
     {
+        
+        var access_token = HttpContext.GetTokenAsync("access_token");
+        Console.WriteLine(access_token);
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
