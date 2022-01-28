@@ -107,9 +107,12 @@ namespace Identity.Services.Initializer;
                 
                 if (_roleManager.FindByNameAsync(SD.Admin).Result == null)
                 {
-                    _roleManager.CreateAsync(new IdentityRole(SD.Admin)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Staff)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Student)).GetAwaiter().GetResult();
+                    var adminRole = new IdentityRole(SD.Admin);
+                    _roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
+                    var staffRole = new IdentityRole(SD.Staff);
+                    _roleManager.CreateAsync(staffRole).GetAwaiter().GetResult();
+                    var studentRole = new IdentityRole(SD.Student);
+                    _roleManager.CreateAsync(studentRole).GetAwaiter().GetResult();
                 }
                 else
                 {
@@ -138,6 +141,8 @@ namespace Identity.Services.Initializer;
                     new Claim(JwtClaimTypes.Name, adminUser.FirstName + " " + adminUser.LastName),
                     new Claim(JwtClaimTypes.GivenName, adminUser.FirstName),
                     new Claim(JwtClaimTypes.FamilyName, adminUser.LastName),
+                    new Claim(JwtClaimTypes.Email, adminUser.Email),
+                    new Claim(JwtClaimTypes.ClientId, adminUser.Id),
                     new Claim(JwtClaimTypes.Role, SD.Admin),
                 }).Result;
                 // Staff user
@@ -162,6 +167,8 @@ namespace Identity.Services.Initializer;
                     new Claim(JwtClaimTypes.Name, StaffUser.FirstName + " " + StaffUser.LastName),
                     new Claim(JwtClaimTypes.GivenName, StaffUser.FirstName),
                     new Claim(JwtClaimTypes.FamilyName, StaffUser.LastName),
+                    new Claim(JwtClaimTypes.Email, StaffUser.Email),
+                    new Claim(JwtClaimTypes.ClientId, StaffUser.Id),
                     new Claim(JwtClaimTypes.Role, SD.Staff),
                 }).Result;
                 
@@ -188,6 +195,8 @@ namespace Identity.Services.Initializer;
                     new Claim(JwtClaimTypes.Name, StudentUser.FirstName + " " + StudentUser.LastName),
                     new Claim(JwtClaimTypes.GivenName, StudentUser.FirstName),
                     new Claim(JwtClaimTypes.FamilyName, StudentUser.LastName),
+                    new Claim(JwtClaimTypes.Email, StudentUser.Email),
+                    new Claim(JwtClaimTypes.ClientId, StudentUser.Id),
                     new Claim(JwtClaimTypes.Role, SD.Student),
                 }).Result;
             }

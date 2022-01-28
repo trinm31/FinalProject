@@ -1,4 +1,5 @@
 using Duende.Bff.Yarp;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ASP.NETCoreReact.Configuration;
@@ -48,6 +49,8 @@ public static partial class ServiceExtension {
                 options.Scope.Add("profile");
                 options.Scope.Add("api");
                 options.Scope.Add("offline_access");
+
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
 
                 options.TokenValidationParameters = new()
                 {

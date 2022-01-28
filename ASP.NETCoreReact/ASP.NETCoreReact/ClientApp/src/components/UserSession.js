@@ -13,12 +13,14 @@ export class UserSession extends Component {
     }
 
     static renderUserSessionTable(userSession) {
+        console.log(userSession)
         return (
             <table className="table table-striped" aria-labelledby="tabelLabel">
                 <thead>
                 <tr>
                     <th>Claim Type</th>
                     <th>Claim Value</th>
+                    <th>Claim role</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,6 +28,7 @@ export class UserSession extends Component {
                     <tr key={claim.type}>
                         <td>{claim.type}</td>
                         <td>{claim.value}</td>
+                        <td>{claim.role}</td>
                     </tr>
                 ))}
                 </tbody>
@@ -58,6 +61,7 @@ export class UserSession extends Component {
             },
         });
         const data = await response.json();
+        console.log(data);
         this.setState({ userSessionInfo: data, loading: false });
     }
 }
