@@ -1,6 +1,8 @@
 using AutoMapper;
 using Management.Services;
 using Management.Services.DbContext;
+using Management.Services.Services.IRepository;
+using Management.Services.Services.Repository;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -77,6 +79,8 @@ builder.Services.AddSwaggerGen(c =>
 
     });
 });
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers();
 
