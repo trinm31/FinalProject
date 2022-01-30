@@ -1,4 +1,6 @@
 using AutoMapper;
+using Management.Services.Dtos;
+using Management.Services.Models;
 
 namespace Management.Services;
 
@@ -8,8 +10,7 @@ public class MappingConfig
     {
         var mappingConfig = new MapperConfiguration(config =>
         {
-            // config.CreateMap<ProductDto, Product>();
-            // config.CreateMap<Product, ProductDto>();
+             config.CreateMap<Student, CheckQrDto>();
         });
 
         return mappingConfig;
