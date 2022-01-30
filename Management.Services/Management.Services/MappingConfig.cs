@@ -11,6 +11,8 @@ public class MappingConfig
         var mappingConfig = new MapperConfiguration(config =>
         {
              config.CreateMap<Student, CheckQrDto>();
+             config.CreateMap<DownloadDto, Download>();
+             config.CreateMap<Download, DownloadDto>();
         });
 
         return mappingConfig;
