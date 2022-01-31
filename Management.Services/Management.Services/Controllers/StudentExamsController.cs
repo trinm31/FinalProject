@@ -25,8 +25,8 @@ public class StudentExamsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost("[action]")]
-    public async Task<IActionResult> CheckIn([FromBody]string studentId, [FromBody]int eventId)
+    [HttpGet("[action]/{studentId}/{eventId:int}")]
+    public async Task<IActionResult> CheckIn(string studentId,int eventId)
     {
         var checkStdValid = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == studentId);
 
