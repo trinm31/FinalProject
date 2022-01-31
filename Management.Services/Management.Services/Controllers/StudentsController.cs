@@ -1,7 +1,9 @@
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
+using AutoMapper;
 using ExcelDataReader;
+using Management.Services.Dtos;
 using Management.Services.Models;
 using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
@@ -22,16 +24,19 @@ public class StudentsController : ControllerBase
     private readonly ILogger _logger;
 
     private static string _fileName;
+    private readonly IMapper _mapper;
 
     public StudentsController(
          IWebHostEnvironment webHostEnvironment,
          IUnitOfWork unitOfWork, 
-         ILogger<StudentsController> logger
+         ILogger<StudentsController> logger,
+         IMapper mapper
      )
     {
          _webHostEnvironment = webHostEnvironment;
          _unitOfWork = unitOfWork;
          _logger = logger;
+         _mapper = mapper;
     }
 
     [HttpPost]
@@ -56,7 +61,7 @@ public class StudentsController : ControllerBase
              }
 
              var students = GetStudentList(file.FileName);
-             return Ok(students.Result);
+             return Ok(_mapper.Map<StudentDto>(students.Result));
          }
          catch (Exception exception)
          {
@@ -73,25 +78,26 @@ public class StudentsController : ControllerBase
          {
              return BadRequest();
          }
-         return Ok(student); 
+         return Ok(_mapper.Map<StudentDto>(student)); 
     }
 
     [HttpPost] 
-    public async Task<IActionResult> Edit([FromBody]Student student)
+    public async Task<IActionResult> Edit([FromBody] StudentDto studentDto)
     {
         var files = HttpContext.Request.Form.Files;
 
-         var studentInDb = await _unitOfWork.Student.GetAsync(student.Id);
+         var studentInDb = await _unitOfWork.Student.GetAsync(studentDto.Id);
 
-         var doesStudentExists = await _unitOfWork.Student.GetAllAsync(e => e.StudentId == student.StudentId);
+         var doesStudentExists = await _unitOfWork.Student.GetAllAsync(e => e.StudentId == studentDto.StudentId);
 
-         if (doesStudentExists.Any() && studentInDb.StudentId != student.StudentId)
+         if (doesStudentExists.Any() && studentInDb.StudentId != studentDto.StudentId)
          {
-             return Ok(student);
+             ModelState.AddModelError("",$"Something went wrong went update the recored {studentDto.Name}");
+             return BadRequest(ModelState);
          }
 
-         studentInDb.StudentId = student.StudentId;
-         studentInDb.Name = student.Name;
+         studentInDb.StudentId = studentDto.StudentId;
+         studentInDb.Name = studentDto.Name;
 
          if (files.Count > 0)
          {
@@ -117,11 +123,11 @@ public class StudentsController : ControllerBase
                  return Ok();
              }
          }
-         return Ok("Invalid");
+         return BadRequest(ModelState);
     }
 
-     private async Task<List<Student>> GetStudentList(string fName)
-     {
+    private async Task<List<Student>> GetStudentList(string fName)
+    {
          var errorCount = 0;
          var studentCount = 0;
          var students = new List<Student>();
@@ -175,17 +181,18 @@ public class StudentsController : ControllerBase
          _unitOfWork.Save();
        
          return students;
-     }
+    }
      
-     [HttpGet("[action]")]
-     public IActionResult ListAllStudent()
-     {
-         return Ok(_unitOfWork.Student.GetAllAsync().Result);
-     }
+    [HttpGet("[action]")]
+    public IActionResult ListAllStudent()
+    {
+        var students = _unitOfWork.Student.GetAllAsync().Result;
+         return Ok(_mapper.Map<StudentDto>(students));
+    }
      
-     [HttpPost]
-     public async Task<IActionResult> CreateQrCode()
-     {
+    [HttpPost]
+    public async Task<IActionResult> CreateQrCode()
+    {
          var listStudent = await _unitOfWork.Student.GetStudentsWithNullQr();
          using (QRCodeGenerator qrCodeGenerator = new QRCodeGenerator())
          {
@@ -219,11 +226,11 @@ public class StudentsController : ControllerBase
          _unitOfWork.Save();
          
          return NoContent();
-     }
+    }
 
-     [NonAction]
-     private async Task BitmapToBytesCode(Bitmap image, Student student, int num)
-     {
+    [NonAction]
+    private async Task BitmapToBytesCode(Bitmap image, Student student, int num)
+    {
          var webRootPath = _webHostEnvironment.WebRootPath;
          
          await using var stream = new MemoryStream();
@@ -246,11 +253,11 @@ public class StudentsController : ControllerBase
          stream.ToArray();
          
          stream.Close();
-     }
+    }
      
-     [NonAction]
-     private static string Encrypt(string clearText)
-     {
+    [NonAction]
+    private static string Encrypt(string clearText)
+    {
          var EncryptionKey = Key.PrivateKey;
          var clearBytes = Encoding.Unicode.GetBytes(clearText);
          using (Aes encryptor = Aes.Create())
@@ -269,11 +276,11 @@ public class StudentsController : ControllerBase
              }
          }
          return clearText;
-     }
+    }
 
-     [HttpGet("[action]/{id:int}")]
-     public async Task<IActionResult> Details(int id)
-     {
+    [HttpGet("[action]/{id:int}")]
+    public async Task<IActionResult> Details(int id)
+    {
          try
          {
              var student = await _unitOfWork.Student.GetAsync(id);
@@ -283,7 +290,7 @@ public class StudentsController : ControllerBase
                  return NotFound();
              }
 
-             return Ok(student);
+             return Ok(_mapper.Map<StudentDto>(student));
          }
          catch (Exception exception)
          {
@@ -291,11 +298,11 @@ public class StudentsController : ControllerBase
              
              return StatusCode(500, $"Internal server error: {exception.Message}");
          }
-     }
+    }
 
-     [HttpDelete("{id:int}")]
-     public async Task<IActionResult> Delete(int id)
-     {
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
          var student = await _unitOfWork.Student.GetAsync(id);
 
          if (student == null)
@@ -308,5 +315,5 @@ public class StudentsController : ControllerBase
          _unitOfWork.Save();
          
          return Ok();
-     }
+    }
 }

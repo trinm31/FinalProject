@@ -13,6 +13,8 @@ public class MappingConfig
              config.CreateMap<Student, CheckQrDto>();
              config.CreateMap<DownloadDto, Download>();
              config.CreateMap<Download, DownloadDto>();
+             config.CreateMap<StudentDto, Student>();
+             config.CreateMap<Student, StudentDto>();
         });
 
         return mappingConfig;
