@@ -100,7 +100,7 @@ public class DownloadsController : ControllerBase
     }
     
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete([FromBody] int id)
+    public async Task<IActionResult> Delete(int id)
     {
         await _unitOfWork.Download.RemoveAsync(id);
         _unitOfWork.Save();

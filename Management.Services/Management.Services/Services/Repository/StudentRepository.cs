@@ -29,11 +29,10 @@ public class StudentRepository : RepositoryAsync<Student>, IStudentRepository
         return await _db.Students.AnyAsync(e => e.Name.Contains(studentId));
     }
     
-    public async Task<List<Student>> GetStudentsWithNullQr(int numberOfStudent)
+    public async Task<List<Student>> GetStudentsWithNullQr()
     {
         var students = await _db.Students.
             Where(s => s.Qr == null).
-            Take(numberOfStudent).
             ToListAsync();
         return students;
     }
