@@ -39,7 +39,7 @@ public class StudentsController : ControllerBase
          _mapper = mapper;
     }
 
-    [HttpPost]
+    [HttpPost("[action]")]
     public async Task<IActionResult> Upload()
      {
          try
@@ -81,7 +81,7 @@ public class StudentsController : ControllerBase
          return Ok(_mapper.Map<StudentDto>(student)); 
     }
 
-    [HttpPost] 
+    [HttpPost("[action]")]
     public async Task<IActionResult> Edit([FromBody] StudentDto studentDto)
     {
         var files = HttpContext.Request.Form.Files;
