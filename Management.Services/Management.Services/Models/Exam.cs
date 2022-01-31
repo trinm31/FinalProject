@@ -7,6 +7,8 @@ public class Exam
     [Key]
     public int Id { get; set; }
     [Required]
+    public string ExamId { get; set; }
+    [Required]
     public string Name { get; set; }
 
     public string Description { get; set; }

@@ -15,6 +15,8 @@ public class MappingConfig
              config.CreateMap<Download, DownloadDto>();
              config.CreateMap<StudentDto, Student>();
              config.CreateMap<Student, StudentDto>();
+             config.CreateMap<Exam, ExamDto>();
+             config.CreateMap<ExamDto, Exam>();
         });
 
         return mappingConfig;

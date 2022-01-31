@@ -61,7 +61,7 @@ public class StudentsController : ControllerBase
              }
 
              var students = GetStudentList(file.FileName);
-             return Ok(_mapper.Map<StudentDto>(students.Result));
+             return Ok(_mapper.Map<List<StudentDto>>(students.Result));
          }
          catch (Exception exception)
          {
@@ -70,17 +70,6 @@ public class StudentsController : ControllerBase
          }
      }
     
-    [HttpGet("[action]/{id:int}")]
-    public async Task<IActionResult> Edit(int id)
-    {
-         var student = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.Id == id);
-         if (student == null)
-         {
-             return BadRequest();
-         }
-         return Ok(_mapper.Map<StudentDto>(student)); 
-    }
-
     [HttpPost("[action]")]
     public async Task<IActionResult> Edit([FromBody] StudentDto studentDto)
     {
@@ -187,7 +176,7 @@ public class StudentsController : ControllerBase
     public IActionResult ListAllStudent()
     {
         var students = _unitOfWork.Student.GetAllAsync().Result;
-         return Ok(_mapper.Map<StudentDto>(students));
+         return Ok(_mapper.Map<List<StudentDto>>(students));
     }
      
     [HttpPost]
@@ -279,7 +268,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet("[action]/{id:int}")]
-    public async Task<IActionResult> Details(int id)
+    public async Task<IActionResult> GetStudentById(int id)
     {
          try
          {

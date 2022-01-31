@@ -27,7 +27,7 @@ public class DownloadsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var downloads = await _unitOfWork.Download.GetAllAsync();
-        return Ok(_mapper.Map<DownloadDto>(downloads));
+        return Ok(_mapper.Map<List<DownloadDto>>(downloads));
     }
 
     [HttpGet("[action]/{id:int}")]
