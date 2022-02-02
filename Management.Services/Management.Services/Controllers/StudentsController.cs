@@ -305,4 +305,28 @@ public class StudentsController : ControllerBase
          
          return Ok();
     }
+    
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Create(StudentCreateDto studentCreateDto)
+    {
+        var doesStudentExist = await _unitOfWork.Student.GetAllAsync(
+            s => s.StudentId == studentCreateDto.StudentId
+        );
+
+        if (doesStudentExist.Any())
+        {
+            return BadRequest("User Already Esist");
+        }
+
+        await _unitOfWork.Student.AddAsync(new Student()
+        {
+            Name = studentCreateDto.Name,
+            Email = studentCreateDto.Email,
+            StudentId = studentCreateDto.StudentId
+        });
+        
+        _unitOfWork.Save();
+         
+        return Ok();
+    }
 }
