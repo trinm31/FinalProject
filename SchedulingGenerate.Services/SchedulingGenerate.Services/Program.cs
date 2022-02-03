@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using SchedulingGenerate.Services.BackgroundService;
 using SchedulingGenerate.Services.DbContext;
 using SchedulingGenerate.Services.DbInitializer;
+using SchedulingGenerate.Services.Messaging;
+using SchedulingGenerate.Services.RabbitMQSender;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +26,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<LongRunningService>();
 builder.Services.AddSingleton<BackgroundWorkerQueue>();
-
+builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedulingSVMessageSender>();
+builder.Services.AddHostedService<RabbitMQSchedulingConsumer>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
