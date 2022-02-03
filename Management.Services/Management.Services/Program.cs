@@ -1,6 +1,7 @@
 using AutoMapper;
 using Management.Services;
 using Management.Services.DbContext;
+using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
 using Management.Services.Services.Repository;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -85,6 +86,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSingleton<IRabbitMQManagementMessageSender, RabbitMQManagementMessageSender>();
 
 var app = builder.Build();
 
