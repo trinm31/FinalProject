@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-    BrowserRouter,
-    Routes,
+    Switch,
     Route, Redirect
 } from "react-router-dom";
 
@@ -11,29 +10,21 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { currentUser } from "./functions/auth";
 
+import Header from './components/nav/Header';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { UserSession } from './components/UserSession';
-import { FetchData } from  './components/FetchData'
+import { FetchData } from  './components/FetchData';
 
-import './Index.css'
+import './Index.css';
 
 const App = () => {
 
     const dispatch = useDispatch();
-    
-    const [ok, setOk] = useState(false);
-    
-    useEffect(()=>{console.log(ok)},[ok])
 
     useEffect(()=>{
         currentUser().then(
             (res) => {
-                console.log(res.data)
-                if(res.data){
-                    setOk(true)
-                }
-                setOk(true)
                 dispatch({
                     type: "LOGGED_IN_USER",
                     payload: {
@@ -46,18 +37,20 @@ const App = () => {
             }
         ).catch(err =>{
             window.location.assign("/bff/login")
-            setOk(false)
         });
     },[dispatch]);
     
-
-    
     return (
-        <Layout>
-            <Route exact path="/" component={Home} />
-            <Route path="/user-session" component={UserSession} />
-            <Route path="/weatherforecast" component={FetchData} />
-        </Layout>
+        <>
+            <Header/>
+            <ToastContainer />
+            <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/user-session" component={UserSession} />
+                <Route path="/weatherforecast" component={FetchData} />
+            </Switch>
+       </>
+        
     );
 }
 

@@ -19,7 +19,8 @@ module.exports = {
         background: '#dcdcdc',
         white: '#ffffff',
         grey: '#616161',
-        orange: '#eb4034'
+        orange: '#eb4034',
+        purple:'#190e34'
       }
     },
   },
