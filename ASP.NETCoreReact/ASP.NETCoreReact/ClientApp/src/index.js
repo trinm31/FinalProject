@@ -6,13 +6,23 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import rootReducer from "./reducers";
+
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
+//store
+const store = createStore(rootReducer, composeWithDevTools());
+
 ReactDOM.render(
-  <BrowserRouter basename={baseUrl}>
-    <App />
-  </BrowserRouter>,
+    <Provider store={store} >
+      <BrowserRouter basename={baseUrl}>
+        <App />
+      </BrowserRouter>
+    </Provider>,
   rootElement);
 
 // If you want your app to work offline and load faster, you can change

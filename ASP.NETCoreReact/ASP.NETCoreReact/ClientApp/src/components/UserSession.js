@@ -20,7 +20,6 @@ export class UserSession extends Component {
                 <tr>
                     <th>Claim Type</th>
                     <th>Claim Value</th>
-                    <th>Claim role</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -28,7 +27,6 @@ export class UserSession extends Component {
                     <tr key={claim.type}>
                         <td>{claim.type}</td>
                         <td>{claim.value}</td>
-                        <td>{claim.role}</td>
                     </tr>
                 ))}
                 </tbody>
