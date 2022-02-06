@@ -72,6 +72,8 @@ app.MapControllers()
 
 app.MapRemoteBffApiEndpoint("/WeatherForecast", "https://localhost:7143/WeatherForecast",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Exams/GetAllExam", "https://localhost:7143/api/Exams/GetAllExam",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

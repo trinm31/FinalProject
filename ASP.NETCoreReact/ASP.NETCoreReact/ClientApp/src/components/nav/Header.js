@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import { AiFillSchedule } from "react-icons/ai";
+import { AiFillSchedule,AiOutlineBars } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,8 @@ import { useHistory } from "react-router-dom";
 
 
 const Header = () => {
+
+    const [isActive, setActive] = useState(false);
     
     let dispatch = useDispatch();
     let { user } = useSelector((state) => ({ ...state }));
@@ -23,6 +25,10 @@ const Header = () => {
 
         window.location.assign("/bff/login")
     };
+
+    const toggleClass = () => {
+        setActive(!isActive);
+    };
     
     return(
         <nav className="flex items-center bg-grey p-3 flex-wrap">
@@ -32,11 +38,12 @@ const Header = () => {
             <button
                 className="text-white inline-flex p-3 hover:bg-gray-900 rounded lg:hidden ml-auto hover:text-white outline-none nav-toggler"
                 data-target="#navigation"
+                onClick={toggleClass}
             >
-                <i className="material-icons">menu</i>
+                <AiOutlineBars className="text-white text-xl"/>
             </button>
             <div
-                className="hidden top-navbar w-full lg:inline-flex lg:flex-grow lg:w-auto"
+                className={isActive ? "top-navbar w-full lg:inline-flex lg:flex-grow lg:w-auto": "hidden top-navbar w-full lg:inline-flex lg:flex-grow lg:w-auto"}
                 id="navigation"
             >
                 <div
@@ -60,14 +67,13 @@ const Header = () => {
                     <div
                         className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
                     >
-                        <Link to="#" className="hover:text-white">Cho</Link>
+                        <Link to="/admin/courses" className="hover:text-white">All Courses</Link>
                     </div>
-                    <a
-                        href="#"
+                    <div
                         className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
                     >
-                        <span>Products</span>
-                    </a>
+                        <Link to="#" className="hover:text-white">Cho</Link>
+                    </div>
                     {user&&(
                         <div
                             className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"

@@ -9,7 +9,7 @@ const StaffRoute = ({ children, ...rest }) => {
 
     useEffect(() => {
         if (user && user._id) {
-            if (user.role === "Staff"){
+            if (user.role.value === "Staff"){
                 console.log("CURRENT Staff RES");
                 setOk(true);
             }else {
