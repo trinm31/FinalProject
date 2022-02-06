@@ -8,3 +8,10 @@ export const getAllExams = async () => {
             }
         });
 };
+
+export const removeCourse = async (id) =>
+    await axios.delete(`api/Exams/${id}`, {
+        headers: {
+            'X-CSRF': '1'
+        }
+    });

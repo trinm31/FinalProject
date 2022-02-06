@@ -1,7 +1,7 @@
 import React    from "react";
 import { Link } from "react-router-dom";
 
-const ListAllCourseTable = ( {courseLists}) => {
+const ListAllCourseTable = ( {courseLists,handleRemove}) => {
    
     return (
         <div className="p-5 h-screen bg-gray-100">
@@ -38,7 +38,12 @@ const ListAllCourseTable = ( {courseLists}) => {
                                     }
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">jkhjkhkj</td>
+                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                    <button
+                                        className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     }
@@ -69,7 +74,10 @@ const ListAllCourseTable = ( {courseLists}) => {
                                 {course.description && course.description.substring(0, 40)}
                             </div>
                             <div className="text-sm font-medium text-black">
-                                jkhjkhkj
+                                <button
+                                    className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     ))

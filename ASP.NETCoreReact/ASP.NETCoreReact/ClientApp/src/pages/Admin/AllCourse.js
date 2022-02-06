@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector }                from "react-redux";
 import { toast }                      from "react-toastify";
-import {getAllExams}                  from "../../functions/exam";
+import { getAllExams , removeCourse } from "../../functions/exam";
 import ListAllCourseTable             from "../../components/tables/ListAllCourseTable";
 
 const AllCourse = () => {
@@ -26,9 +26,23 @@ const AllCourse = () => {
             console.log(err);
         });
     }
+
+    const handleRemove = (id) => {
+        if (window.confirm("Do You Want To Delete This Item?")) {
+            removeCourse(id)
+                .then((res) => {
+                    loadAllCourses();
+                    toast.error(`Item is deleted`);
+                })
+                .catch((err) => {
+                    if (err.response.status === 400) toast.error(err.response.data);
+                    console.log(err);
+                });
+        }
+    };
     
     return (
-        <ListAllCourseTable courseLists={courses}/>
+        <ListAllCourseTable courseLists={courses} handleRemove={handleRemove}/>
     );
 }
 
