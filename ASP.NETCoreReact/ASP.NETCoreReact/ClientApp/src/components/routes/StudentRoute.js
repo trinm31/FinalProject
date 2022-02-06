@@ -8,7 +8,7 @@ const StudentRoute = ({ children, ...rest }) => {
     const [ok, setOk] = useState(false);
 
     useEffect(() => {
-        if (user && user.sid) {
+        if (user && user._id) {
             if (user.role === "Student"){
                 console.log("CURRENT Student RES");
                 setOk(true);
