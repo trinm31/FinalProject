@@ -42,7 +42,14 @@ const AllCourse = () => {
     };
     
     return (
-        <ListAllCourseTable courseLists={courses} handleRemove={handleRemove}/>
+        <>
+            {loading ? (
+                <h4 className="text-danger">Loading...</h4>
+            ) : (
+                <ListAllCourseTable courseLists={courses} handleRemove={handleRemove}/>
+            )
+            }
+        </>
     );
 }
 

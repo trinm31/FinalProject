@@ -11,14 +11,16 @@ import { useDispatch } from "react-redux";
 import { currentUser } from "./functions/auth";
 import AdminRoute from "./components/routes/AdminRoute"
 
-import AllCourse from "./pages/Admin/AllCourse";
-import Header    from './components/nav/Header';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+import CreateCourse    from "./pages/Admin/CreateCourse";
+import EditCourse      from "./pages/Admin/EditCourse";
+import AllCourse       from "./pages/Admin/AllCourse";
+import Header          from './components/nav/Header';
+import { Home }        from './components/Home';
 import { UserSession } from './components/UserSession';
-import { FetchData } from  './components/FetchData';
+import { FetchData }   from  './components/FetchData';
 
 import './Index.css';
+
 
 const App = () => {
 
@@ -50,7 +52,9 @@ const App = () => {
                 <Route exact path="/" component={Home} />
                 <Route path="/user-session" component={UserSession} />
                 <Route path="/weatherforecast" component={FetchData} />
-                <AdminRoute  path="/admin/courses" component={AllCourse}/>
+                <AdminRoute exact path="/admin/courses" component={AllCourse}/>
+                <AdminRoute exact path="/admin/course" component={CreateCourse}/>
+                <AdminRoute exact path="/admin/course/:id" component={EditCourse}/>
             </Switch>
        </>
         

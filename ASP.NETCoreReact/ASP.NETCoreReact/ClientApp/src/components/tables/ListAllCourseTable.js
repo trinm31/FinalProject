@@ -5,8 +5,18 @@ const ListAllCourseTable = ( {courseLists,handleRemove}) => {
    
     return (
         <div className="p-5 h-screen bg-gray-100">
-            <h1 className="text-xl mb-2">All Courses</h1>
-
+            <div className="grid grid-cols-2">
+                <div className="flex justify-start my-3 items-center">
+                    <h1 className="text-xl mb-2">All Courses</h1>
+                </div>
+               <div className="flex justify-end my-3 items-center">
+                   <Link
+                       className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" to="/admin/course">
+                       Create New Course 
+                   </Link>
+               </div>
+            </div>
+            
             <div className="overflow-auto rounded-lg shadow hidden md:block">
                 <table className="w-full">
                     <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -38,9 +48,13 @@ const ListAllCourseTable = ( {courseLists,handleRemove}) => {
                                     }
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                                    <Link
+                                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
+                                        Edit
+                                    </Link>
                                     <button
-                                        className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
                                         Delete
                                     </button>
                                 </td>

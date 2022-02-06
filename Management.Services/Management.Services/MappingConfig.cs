@@ -17,6 +17,8 @@ public class MappingConfig
              config.CreateMap<Student, StudentDto>();
              config.CreateMap<Exam, ExamDto>();
              config.CreateMap<ExamDto, Exam>();
+             config.CreateMap<ExamCreateDto, Exam>();
+             config.CreateMap<Exam, ExamCreateDto>();
              config.CreateMap<StudentExamDto, StudentExam>();
              config.CreateMap<StudentExam, StudentExamDto>();
         });

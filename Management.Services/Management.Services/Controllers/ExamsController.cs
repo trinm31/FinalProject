@@ -133,12 +133,12 @@ public class ExamsController : ControllerBase
 
     //Post :: Create
     [HttpPost("[action]")]
-    public async Task<IActionResult> Create([FromBody] ExamDto examDto)
+    public async Task<IActionResult> Create([FromBody] ExamCreateDto examDto)
     {
         var exam = _mapper.Map<Exam>(examDto);
         if (ModelState.IsValid)
         {
-            if (await _unitOfWork.Exam.CheckExistExam(exam.Name))
+            if (await _unitOfWork.Exam.CheckExistExam(exam))
             {
                 return BadRequest(ModelState);
             }
@@ -149,13 +149,12 @@ public class ExamsController : ControllerBase
         return BadRequest(ModelState);
     }
     
-    [HttpGet("[action]")]
+    [HttpGet("[action]/{id:int}")]
     public async Task<IActionResult> GetExamById(int id)
     {
         var exam = await _unitOfWork.Exam.GetAsync(id);
         if (exam == null)
         {
-           
             return NotFound();
         }
         return Ok(_mapper.Map<ExamDto>(exam));
@@ -168,7 +167,7 @@ public class ExamsController : ControllerBase
         var exam = _mapper.Map<Exam>(examDto);
         if (ModelState.IsValid)
         {
-            if (await _unitOfWork.Exam.CheckExistExam(exam.Name))
+            if (await _unitOfWork.Exam.CheckExistExam(exam))
             {
                 return BadRequest(ModelState);
             }

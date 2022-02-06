@@ -15,3 +15,24 @@ export const removeCourse = async (id) =>
             'X-CSRF': '1'
         }
     });
+
+export const createCourse = async (values) =>
+    await axios.post(`api/Exams/Create`, values,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
+export const editCourse = async (values) =>
+    await axios.post(`api/Exams/Edit`, values,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
+export const getCourse = async (id) =>
+    await axios.get(`api/Exams/GetExamById/${id}`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
