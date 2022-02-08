@@ -11,16 +11,16 @@ import { useDispatch } from "react-redux";
 import { currentUser } from "./functions/auth";
 import AdminRoute from "./components/routes/AdminRoute"
 
-import CreateCourse    from "./pages/Admin/CreateCourse";
-import EditCourse      from "./pages/Admin/EditCourse";
-import AllCourse       from "./pages/Admin/AllCourse";
-import Header          from './components/nav/Header';
+import CreateCourse    from "./pages/Admin/Courses/CreateCourse";
+import EditCourse      from "./pages/Admin/Courses/EditCourse";
+import AllCourse  from "./pages/Admin/Courses/AllCourse";
+import UploadFile from "./pages/Admin/Courses/UploadFile";
+import Header     from './components/nav/Header';
 import { Home }        from './components/Home';
 import { UserSession } from './components/UserSession';
 import { FetchData }   from  './components/FetchData';
 
 import './Index.css';
-
 
 const App = () => {
 
@@ -55,6 +55,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/courses" component={AllCourse}/>
                 <AdminRoute exact path="/admin/course" component={CreateCourse}/>
                 <AdminRoute exact path="/admin/course/:id" component={EditCourse}/>
+                <AdminRoute exact path="/admin/courseUpload" component={UploadFile}/>
             </Switch>
        </>
         

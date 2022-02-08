@@ -82,6 +82,8 @@ app.MapRemoteBffApiEndpoint("/api/Exams/Edit", "https://localhost:7143/api/Exams
 
 app.MapRemoteBffApiEndpoint("/api/Exams/GetExamById", "https://localhost:7143/api/Exams/GetExamById",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Exams/Upload", "https://localhost:7143/api/Exams/Upload",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

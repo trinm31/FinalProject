@@ -36,3 +36,11 @@ export const getCourse = async (id) =>
             'X-CSRF': '1'
         }
     });
+
+export const uploadCourse = async (file) =>
+    await axios.post(`api/Exams/Upload`, file,{
+        headers: {
+            'content-type': 'multipart/form-data',
+            'X-CSRF': '1'
+        }
+    });

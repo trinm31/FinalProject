@@ -11,8 +11,12 @@ const ListAllCourseTable = ( {courseLists,handleRemove}) => {
                 </div>
                <div className="flex justify-end my-3 items-center">
                    <Link
-                       className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" to="/admin/course">
+                       className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-2 rounded" to="/admin/course">
                        Create New Course 
+                   </Link>
+                   <Link
+                       className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" to="/admin/courseUpload">
+                       Upload Courses
                    </Link>
                </div>
             </div>
