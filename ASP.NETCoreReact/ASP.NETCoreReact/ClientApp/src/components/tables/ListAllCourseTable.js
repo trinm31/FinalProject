@@ -92,6 +92,10 @@ const ListAllCourseTable = ( {courseLists,handleRemove}) => {
                                 {course.description && course.description.substring(0, 40)}
                             </div>
                             <div className="text-sm font-medium text-black">
+                                <Link
+                                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
+                                    Edit
+                                </Link>
                                 <button
                                     className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
                                     Delete

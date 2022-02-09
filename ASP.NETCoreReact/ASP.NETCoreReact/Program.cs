@@ -84,6 +84,14 @@ app.MapRemoteBffApiEndpoint("/api/Exams/GetExamById", "https://localhost:7143/ap
 
 app.MapRemoteBffApiEndpoint("/api/Exams/Upload", "https://localhost:7143/api/Exams/Upload",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Students/ListAllStudent", "https://localhost:7143/api/Students/ListAllStudent",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Students", "https://localhost:7143/api/Students",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Students/Create", "https://localhost:7143/api/Students/Create",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Students/CreateQrCode", "https://localhost:7143/api/Students/CreateQrCode",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

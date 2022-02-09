@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
@@ -9,7 +10,7 @@ using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QRCoder;
+using Net.Codecrete.QrCodeGenerator;
 using Key = Management.Services.Utiliy.Key;
 
 namespace Management.Services.Controllers;
@@ -61,6 +62,7 @@ public class StudentsController : ControllerBase
              }
 
              var students = GetStudentList(file.FileName);
+
              return Ok(_mapper.Map<List<StudentDto>>(students.Result));
          }
          catch (Exception exception)
@@ -88,31 +90,12 @@ public class StudentsController : ControllerBase
          studentInDb.StudentId = studentDto.StudentId;
          studentInDb.Name = studentDto.Name;
 
-         if (files.Count > 0)
-         {
-             if (ModelState.IsValid)
-             {
-                 using (var memoryStream = new MemoryStream())
-                 {
-                     await files[0].CopyToAsync(memoryStream);
-
-                     // Upload the file if less than 6 MB
-                     if (memoryStream.Length < 6291456)
-                     {
-                         studentInDb.Avatar = memoryStream.ToArray();
-                     }
-                     else
-                     {
-                         ModelState.AddModelError("File", "The file is too large.");
-                     }
-                 }
-
-                 _unitOfWork.Save();
+         studentInDb.Avatar = studentDto.Avatar;
+        
+         _unitOfWork.Save();
                  
-                 return Ok();
-             }
-         }
-         return BadRequest(ModelState);
+         return Ok();
+        
     }
 
     private async Task<List<Student>> GetStudentList(string fName)
@@ -179,37 +162,20 @@ public class StudentsController : ControllerBase
          return Ok(_mapper.Map<List<StudentDto>>(students));
     }
      
-    [HttpPost]
+    [HttpGet("[action]")]
     public async Task<IActionResult> CreateQrCode()
     {
          var listStudent = await _unitOfWork.Student.GetStudentsWithNullQr();
-         using (QRCodeGenerator qrCodeGenerator = new QRCodeGenerator())
+        
+         foreach (var student in listStudent)
          {
-             if (!listStudent.Any())
-             {
-                 return StatusCode(404, ModelState);
-             }
-             else
-             {
-                 await _unitOfWork.Download.AddNewDownload(_fileName);
-             }
-
-             var num = await _unitOfWork.Student.CountStudentHasQr();
-             
-             foreach (var student in listStudent)
-             {
-                 var studentId = Encrypt(student.StudentId);
-                 using QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(studentId, QRCodeGenerator.ECCLevel.Q);
-                 Bitmap qrCodeImage;
-                 using (QRCode qrCode = new QRCode(qrCodeData))
-                 {
-                     qrCodeImage = qrCode.GetGraphic(20);
-                 }
-                 await BitmapToBytesCode(qrCodeImage, student, num);
-                 num++;
-             }
+             var studentId = Encrypt(student.StudentId);
+             var borderWidth = Math.Clamp(3, 0, 999999);
+             var qrCode = QrCode.EncodeText(studentId, QrCode.Ecc.Medium);
+             byte[] qrcode = qrCode.ToPng(20, (int)borderWidth);
+             student.Qr = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(qrcode));
          }
-         
+
          _unitOfWork.Student.UpdateListStudent(listStudent);
          
          _unitOfWork.Save();
@@ -217,33 +183,6 @@ public class StudentsController : ControllerBase
          return NoContent();
     }
 
-    [NonAction]
-    private async Task BitmapToBytesCode(Bitmap image, Student student, int num)
-    {
-         var webRootPath = _webHostEnvironment.WebRootPath;
-         
-         await using var stream = new MemoryStream();
-         
-         image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-         
-         var img = Image.FromStream(stream);
-         
-         var qrPath = "/qr/" + $"{StudentsController._fileName}-at-{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year}/";
-         
-         var zipPath = webRootPath + qrPath;
-         
-         if (!Directory.Exists(zipPath))
-             Directory.CreateDirectory(zipPath);
-         
-         student.Qr = stream.ToArray();
-         
-         img.Save(zipPath + num.ToString() + "." + student.Name + ".png", System.Drawing.Imaging.ImageFormat.Png);
-         
-         stream.ToArray();
-         
-         stream.Close();
-    }
-     
     [NonAction]
     private static string Encrypt(string clearText)
     {
@@ -307,7 +246,7 @@ public class StudentsController : ControllerBase
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> Create(StudentCreateDto studentCreateDto)
+    public async Task<IActionResult> Create([FromBody] StudentCreateDto studentCreateDto)
     {
         var doesStudentExist = await _unitOfWork.Student.GetAllAsync(
             s => s.StudentId == studentCreateDto.StudentId
@@ -315,18 +254,19 @@ public class StudentsController : ControllerBase
 
         if (doesStudentExist.Any())
         {
-            return BadRequest("User Already Esist");
+            return BadRequest("User Already Exist");
         }
 
         await _unitOfWork.Student.AddAsync(new Student()
         {
             Name = studentCreateDto.Name,
             Email = studentCreateDto.Email,
-            StudentId = studentCreateDto.StudentId
+            StudentId = studentCreateDto.StudentId,
+            Avatar = studentCreateDto.Avatar 
         });
-        
+
         _unitOfWork.Save();
-         
+
         return Ok();
     }
 }
