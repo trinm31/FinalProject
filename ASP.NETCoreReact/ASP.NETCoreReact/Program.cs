@@ -96,6 +96,8 @@ app.MapRemoteBffApiEndpoint("/api/Students/Edit", "https://localhost:7143/api/St
 
 app.MapRemoteBffApiEndpoint("/api/Students/GetStudentById", "https://localhost:7143/api/Students/GetStudentById",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Students/Upload", "https://localhost:7143/api/Students/Upload",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

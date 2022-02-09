@@ -41,11 +41,10 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Upload()
+    public async Task<IActionResult> Upload([FromForm] FileModel file)
      {
          try
          {
-             var file = Request.Form.Files[0];
              if (file == null)
              {
                  return BadRequest();
@@ -57,11 +56,18 @@ public class StudentsController : ControllerBase
 
              await using (FileStream fileStream = System.IO.File.Create(fileName))
              {
-                 await file.CopyToAsync(fileStream);
+                 await file.FormFile[0].CopyToAsync(fileStream);
                  fileStream.Flush();
              }
 
              var students = GetStudentList(file.FileName);
+             
+             FileInfo fileNeedToDeleted = new FileInfo(fileName);
+            
+             if (fileNeedToDeleted.Exists)
+             {  
+                 fileNeedToDeleted.Delete();
+             }  
 
              return Ok(_mapper.Map<List<StudentDto>>(students.Result));
          }

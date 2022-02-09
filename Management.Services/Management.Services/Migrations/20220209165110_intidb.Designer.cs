@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Management.Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220208165843_init")]
-    partial class init
+    [Migration("20220209165110_intidb")]
+    partial class intidb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,7 +88,6 @@ namespace Management.Services.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")

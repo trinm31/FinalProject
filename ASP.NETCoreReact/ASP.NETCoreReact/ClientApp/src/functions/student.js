@@ -43,3 +43,11 @@ export const getStudent = async (id) =>
             'X-CSRF': '1'
         }
     });
+
+export const uploadStudent = async (file) =>
+    await axios.post(`api/Students/Upload`, file,{
+        headers: {
+            'content-type': 'multipart/form-data',
+            'X-CSRF': '1'
+        }
+    });

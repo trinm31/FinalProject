@@ -20,7 +20,8 @@ const context = [
     "/api/Students/Create",
     "/api/Students/CreateQrCode",
     "/api/Students/Edit",
-    "/api/Students/GetStudentById"
+    "/api/Students/GetStudentById",
+    "/api/Students/Upload"
 ];
 
 module.exports = function(app) {
