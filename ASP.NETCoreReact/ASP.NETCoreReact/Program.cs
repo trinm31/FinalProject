@@ -92,6 +92,10 @@ app.MapRemoteBffApiEndpoint("/api/Students/Create", "https://localhost:7143/api/
 
 app.MapRemoteBffApiEndpoint("/api/Students/CreateQrCode", "https://localhost:7143/api/Students/CreateQrCode",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Students/Edit", "https://localhost:7143/api/Students/Edit",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Students/GetStudentById", "https://localhost:7143/api/Students/GetStudentById",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

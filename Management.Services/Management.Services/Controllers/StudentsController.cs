@@ -75,8 +75,6 @@ public class StudentsController : ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> Edit([FromBody] StudentDto studentDto)
     {
-        var files = HttpContext.Request.Form.Files;
-
          var studentInDb = await _unitOfWork.Student.GetAsync(studentDto.Id);
 
          var doesStudentExists = await _unitOfWork.Student.GetAllAsync(e => e.StudentId == studentDto.StudentId);

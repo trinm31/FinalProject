@@ -24,7 +24,21 @@ export const createStudent = async (values) =>
     });
 
 export const createStudentQr = async () =>
-    await axios.get(`/api/Students/CreateQrCode`,{
+    await axios.get(`api/Students/CreateQrCode`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
+export const editStudent = async (values) =>
+    await axios.post(`api/Students/Edit`, values,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
+export const getStudent = async (id) =>
+    await axios.get(`api/Students/GetStudentById/${id}`,{
         headers: {
             'X-CSRF': '1'
         }

@@ -18,7 +18,8 @@ import UploadFile from "./pages/Admin/Courses/UploadFile";
 import Header     from './components/nav/Header';
 import AllStudents from "./pages/Admin/Students/AllStudents";
 import CreateStudent from "./pages/Admin/Students/CreateStudent";
-import { Home }        from './components/Home';
+import EditStudent   from "./pages/Admin/Students/EditStudent";
+import { Home }      from './components/Home';
 import { UserSession } from './components/UserSession';
 import { FetchData }   from  './components/FetchData';
 
@@ -60,6 +61,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/courseUpload" component={UploadFile}/>
                 <AdminRoute exact path="/admin/students" component={AllStudents}/>
                 <AdminRoute exact path="/admin/student" component={CreateStudent}/>
+                <AdminRoute exact path="/admin/student/:id" component={EditStudent}/>
             </Switch>
        </>
         
