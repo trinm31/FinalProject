@@ -4,6 +4,7 @@ import {createStudent}                from "../../../functions/student";
 import UpSertStudentForm              from "../../../components/Form/UpSertStudentForm";
 
 const initialState = {
+    id: "",
     name: "",
     studentId:"",
     email: "",

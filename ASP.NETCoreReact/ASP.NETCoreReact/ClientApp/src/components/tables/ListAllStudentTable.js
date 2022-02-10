@@ -1,6 +1,7 @@
 import React              from "react";
 import { Link }           from "react-router-dom";
 import { Button }         from "reactstrap";
+import avatar             from "../../images/images.jpeg";
 
 const ListAllCourseTable = ( {studentLists,handleRemove, createQrCode}) => {
     
@@ -55,7 +56,7 @@ const ListAllCourseTable = ( {studentLists,handleRemove, createQrCode}) => {
                                     <img src={student.qr} height="300" width="300" alt=""/>
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    <img src={student.avatar} height="300" width="300" alt=""/>
+                                    <img src={student.avatar? student.avatar: avatar} height="300" width="300" alt=""/>
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
                                     <Link

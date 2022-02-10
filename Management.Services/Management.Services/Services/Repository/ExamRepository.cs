@@ -21,8 +21,10 @@ public class ExamRepository: RepositoryAsync<Exam>,IExamRepository
         {
             if (!await CheckExistExam(exam))
             {
+                objInDb.ExamId = exam.ExamId;
                 objInDb.Name = exam.Name;
                 objInDb.Description = exam.Description;
+                objInDb.Status = exam.Status;
             }
 
             _db.Exams.Update(objInDb);

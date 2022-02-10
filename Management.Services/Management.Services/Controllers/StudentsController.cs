@@ -83,7 +83,7 @@ public class StudentsController : ControllerBase
     {
          var studentInDb = await _unitOfWork.Student.GetAsync(studentDto.Id);
 
-         var doesStudentExists = await _unitOfWork.Student.GetAllAsync(e => e.StudentId == studentDto.StudentId);
+         var doesStudentExists = await _unitOfWork.Student.GetAllAsync(e => e.StudentId == studentDto.StudentId && e.Email == studentDto.Email);
 
          if (doesStudentExists.Any() && studentInDb.StudentId != studentDto.StudentId)
          {
@@ -93,7 +93,7 @@ public class StudentsController : ControllerBase
 
          studentInDb.StudentId = studentDto.StudentId;
          studentInDb.Name = studentDto.Name;
-
+         studentInDb.Email = studentDto.Email;
          studentInDb.Avatar = studentDto.Avatar;
         
          _unitOfWork.Save();

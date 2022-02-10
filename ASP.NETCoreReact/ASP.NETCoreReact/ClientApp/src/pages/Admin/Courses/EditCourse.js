@@ -4,6 +4,7 @@ import UpSertCourseForm               from "../../../components/Form/UpSertCours
 import {editCourse, getCourse}        from "../../../functions/exam";
 
 const initialState = {
+    id: "",
     name: "",
     examId:"",
     description: "",
