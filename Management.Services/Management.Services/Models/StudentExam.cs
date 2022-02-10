@@ -8,12 +8,7 @@ public class StudentExam
     [Key]
     public int Id { get; set; }
     [Required]
-    public int StudentId { get; set; }
-    [ForeignKey("StudentId")]
-    public virtual Student Student { get; set; }
+    public string StudentId { get; set; }
     [Required]
-    public int ExamId { get; set; }
-    [ForeignKey("ExamId")]
-    public virtual Exam Exam { get; set; }
-    public DateTime TimeStamp { get; set; }
+    public string ExamId { get; set; }
 }

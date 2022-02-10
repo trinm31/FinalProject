@@ -21,7 +21,14 @@ const context = [
     "/api/Students/CreateQrCode",
     "/api/Students/Edit",
     "/api/Students/GetStudentById",
-    "/api/Students/Upload"
+    "/api/Students/Upload",
+    "/api/StudentExams/GetAllStudentExam",
+    "/api/StudentExams",
+    "/api/StudentExams/Create",
+    "/api/StudentExams/Edit",
+    "/api/StudentExams/GetStudentExamById",
+    "/api/StudentExams/Upload"
+    
 ];
 
 module.exports = function(app) {

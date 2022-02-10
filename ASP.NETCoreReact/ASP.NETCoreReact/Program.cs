@@ -70,8 +70,6 @@ app.MapControllers()
     .RequireAuthorization()
     .AsBffApiEndpoint();
 
-app.MapRemoteBffApiEndpoint("/WeatherForecast", "https://localhost:7143/WeatherForecast",false).RequireAccessToken();
-
 app.MapRemoteBffApiEndpoint("/api/Exams/GetAllExam", "https://localhost:7143/api/Exams/GetAllExam",false).RequireAccessToken();
 
 app.MapRemoteBffApiEndpoint("/api/Exams", "https://localhost:7143/api/Exams",false).RequireAccessToken();
@@ -97,6 +95,18 @@ app.MapRemoteBffApiEndpoint("/api/Students/Edit", "https://localhost:7143/api/St
 app.MapRemoteBffApiEndpoint("/api/Students/GetStudentById", "https://localhost:7143/api/Students/GetStudentById",false).RequireAccessToken();
 
 app.MapRemoteBffApiEndpoint("/api/Students/Upload", "https://localhost:7143/api/Students/Upload",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams/GetAllStudentExam", "https://localhost:7143/api/StudentExams/GetAllStudentExam",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams", "https://localhost:7143/api/StudentExams",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams/Create", "https://localhost:7143/api/StudentExams/Create",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams/Edit", "https://localhost:7143/api/StudentExams/Edit",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams/GetStudentExamById", "https://localhost:7143/api/StudentExams/GetStudentExamById",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/StudentExams/Upload", "https://localhost:7143/api/StudentExams/Upload",false).RequireAccessToken();
 
 app.MapFallbackToFile("index.html");
 

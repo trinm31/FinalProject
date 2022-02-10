@@ -119,41 +119,17 @@ namespace Management.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
+                    b.Property<string>("ExamId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamId");
-
-                    b.HasIndex("StudentId");
-
                     b.ToTable("StudentExams");
-                });
-
-            modelBuilder.Entity("Management.Services.Models.StudentExam", b =>
-                {
-                    b.HasOne("Management.Services.Models.Exam", "Exam")
-                        .WithMany()
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Management.Services.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Student");
                 });
 #pragma warning restore 612, 618
         }

@@ -42,6 +42,20 @@ namespace Management.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StudentExams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExamId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentExams", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -58,43 +72,6 @@ namespace Management.Services.Migrations
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "StudentExams",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
-                    ExamId = table.Column<int>(type: "int", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StudentExams", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StudentExams_Exams_ExamId",
-                        column: x => x.ExamId,
-                        principalTable: "Exams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StudentExams_Students_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentExams_ExamId",
-                table: "StudentExams",
-                column: "ExamId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentExams_StudentId",
-                table: "StudentExams",
-                column: "StudentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -103,10 +80,10 @@ namespace Management.Services.Migrations
                 name: "Downloads");
 
             migrationBuilder.DropTable(
-                name: "StudentExams");
+                name: "Exams");
 
             migrationBuilder.DropTable(
-                name: "Exams");
+                name: "StudentExams");
 
             migrationBuilder.DropTable(
                 name: "Students");

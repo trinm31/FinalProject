@@ -1,7 +1,6 @@
-using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
-using ClosedXML.Excel;
+using ExcelDataReader;
 using Management.Services.Dtos;
 using Management.Services.Models;
 using Management.Services.Services.IRepository;
@@ -10,181 +9,171 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Management.Services.Controllers;
-
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = SD.Admin + "," + SD.Staff)]
-public class StudentExamsController : ControllerBase
+public class StudentExamsController : Controller
 {
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger _logger;
+
+    private static string _fileName;
     private readonly IMapper _mapper;
 
-    public StudentExamsController(IUnitOfWork unitOfWork, IMapper mapper)
+    public StudentExamsController(
+        IWebHostEnvironment webHostEnvironment,
+        IUnitOfWork unitOfWork, 
+        ILogger<ExamsController> logger,
+        IMapper mapper
+    )
     {
+        _webHostEnvironment = webHostEnvironment;
         _unitOfWork = unitOfWork;
+        _logger = logger;
         _mapper = mapper;
     }
-
-    [HttpGet("[action]/{studentId}/{eventId:int}")]
-    public async Task<IActionResult> CheckIn(string studentId,int eventId)
-    {
-        var checkStdValid = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == studentId);
-
-        var examInDb = await _unitOfWork.Exam.GetAsync(eventId);
-
-        if (checkStdValid != null)
-        {
-            var studentEventValid = await _unitOfWork.StudentExam
-                .GetAllAsync(s => s.StudentId == checkStdValid.Id && s.ExamId == eventId);
-
-            if (studentEventValid.Any())
-            {
-                return Ok(new { success = false, valid = true, studentName = checkStdValid.Name, studentAva = checkStdValid.Avatar });
-            }
-
-            StudentExam userExamValid = new StudentExam()
-            {
-                ExamId = examInDb.Id,
-                StudentId = checkStdValid.Id,
-                TimeStamp = DateTime.Now
-            };
-
-            await _unitOfWork.StudentExam.AddAsync(userExamValid);
-            _unitOfWork.Save();
-            return Ok(new { success = true, valid = true, studentName = checkStdValid.Name, studentAva = checkStdValid.Avatar });
-        }
-
-        if (studentId == null)
-        {
-            return Ok(new { success = false, valid = false });
-        }
-
-        if (studentId.Length % 4 != 0)
-        {
-            return Ok(new { success = false, valid = false });
-        }
-
-        var studentInDb = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == Decrypt(studentId));
-
-        if (studentInDb == null)
-        {
-            return Ok(new { success = false, valid = false });
-        }
-
-        var studentEvent = await _unitOfWork.StudentExam
-            .GetAllAsync(s => s.StudentId == studentInDb.Id && s.ExamId == eventId);
-
-        if (studentEvent.Any())
-        {
-            return Ok(new { success = false, valid = true, studentName = studentInDb.Name, studentAva = studentInDb.Avatar });
-        }
-
-        StudentExam studentExam = new StudentExam()
-        {
-            ExamId = examInDb.Id,
-            StudentId = studentInDb.Id,
-            TimeStamp = DateTime.Now
-        };
-        
-        await _unitOfWork.StudentExam.AddAsync(studentExam);
-        _unitOfWork.Save();
-
-        return Ok(new { success = true, valid = true, studentName = studentInDb.Name, studentAva = studentInDb.Avatar });
-    }
-
-    [HttpGet("[action]/{id:int}")]
-    public async Task<IActionResult> Report(int id)
+    
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Upload([FromForm] FileModel file)
     {
         try
         {
-            var examInDb = await _unitOfWork.Exam.GetAsync(id);
-
-            var listStudentId = await _unitOfWork.StudentExam.GetStudentsIdInExam(id);
-            
-            var userExams = await _unitOfWork.StudentExam
-                .GetAllAsync(
-                    e => listStudentId.Any(stdId => stdId.Equals(e.StudentId)),
-                    q => q.OrderBy(t => t.TimeStamp),
-                    "Student,Event");
-
-            StudentExamReportDto studentExamReportDto = new StudentExamReportDto
+            if (file == null)
             {
-                Exam = _mapper.Map<ExamDto>(examInDb),
-                StudentExams = _mapper.Map<List<StudentExamDto>>(userExams)
-            };
+                return BadRequest();
+            }
+            var separator = Path.DirectorySeparatorChar;
+            string fileName = $"{_webHostEnvironment.WebRootPath}{separator}files{separator}{file.FileName}";
 
-            return Ok(studentExamReportDto);
+            _fileName = file.FileName.Split(".")[0];
+
+            await using (FileStream fileStream = System.IO.File.Create(fileName))
+            {
+                await file.FormFile[0].CopyToAsync(fileStream);
+                fileStream.Flush();
+            }
+
+            var studentExam = GetStudent(file.FileName);
+            
+            FileInfo fileNeedToDeleted = new FileInfo(fileName);
+            
+            if (fileNeedToDeleted.Exists)
+            {  
+                fileNeedToDeleted.Delete();
+            }  
+            
+            return Ok(_mapper.Map<List<StudentExamDto>>(studentExam.Result));
         }
         catch (Exception exception)
         {
+            _logger.LogInformation(exception.Message);
             return StatusCode(500, $"Internal server error: {exception.Message}");
         }
     }
+    
+    private async Task<List<StudentExam>> GetStudent(string fName)
+    {
+         var errorCount = 0;
+         var examCount = 0;
+         var studentExam = new List<StudentExam>();
+         try
+         {
+             var separator = Path.DirectorySeparatorChar;
+             var fileName = $"{Directory.GetCurrentDirectory()}{$"{separator}wwwroot{separator}files"}{separator}" + fName;
+             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+             await using var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read);
+             using var reader = ExcelReaderFactory.CreateReader(stream);
+             reader.AsDataSet(new ExcelDataSetConfiguration
+             {
+                 ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                 {
+                     UseHeaderRow = true
+                 }
+             });
 
+             while (reader.Read())
+             {
+                 studentExam.Add(new StudentExam()
+                 {
+                     ExamId = reader.GetValue(0).ToString(),
+                     StudentId = reader.GetValue(1).ToString(),
+                 });
+                 
+             }
+             await _unitOfWork.StudentExam.AddRangeAsync(studentExam);
+         }
+         catch (Exception exception)
+         {
+             
+         }
+         
+         _unitOfWork.Save();
+       
+         return studentExam;
+    }
+    
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetAllStudentExam()
+    {
+        var studentExams = await _unitOfWork.StudentExam.GetAllAsync();
+        return Ok(_mapper.Map<List<StudentExamDto>>(studentExams));
+    }
+
+    //Post :: Create
     [HttpPost("[action]")]
-    public static string Decrypt([FromBody] string cipherText)
+    public async Task<IActionResult> Create([FromBody] StudentExamDto studentExamDto)
     {
-        try
+        var studentExam = _mapper.Map<StudentExam>(studentExamDto);
+        if (ModelState.IsValid)
         {
-            string EncryptionKey = Key.PrivateKey;
-            cipherText = cipherText.Replace(" ", "+");
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            using (Aes encryptor = Aes.Create())
+            if (await _unitOfWork.StudentExam.CheckExistStudentExam(studentExam))
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
-                encryptor.Key = pdb.GetBytes(32);
-                encryptor.IV = pdb.GetBytes(16);
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
-                    {
-                        cs.Write(cipherBytes, 0, cipherBytes.Length);
-                        cs.Close();
-                    }
-                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
-                }
+                return BadRequest(ModelState);
             }
-            return cipherText;
+            await _unitOfWork.StudentExam.AddAsync(studentExam);
+            _unitOfWork.Save();
+            return Ok();
         }
-        catch (Exception)
-        {
-            return "StudentWrong";
-        }
+        return BadRequest(ModelState);
     }
-
+    
     [HttpGet("[action]/{id:int}")]
-    public async Task<IActionResult> Excel(int id)
+    public async Task<IActionResult> GetStudentExamById(int id)
     {
-        var listStudentId = await _unitOfWork.StudentExam.GetStudentsIdInExam(id);
-
-        var userEvents = await _unitOfWork.StudentExam
-            .GetAllAsync(
-                e => listStudentId.Any(stdId => stdId.Equals(e.StudentId)),
-                q => q.OrderBy(t => t.TimeStamp),
-                "Student,Event");
-
-        using (var workbook = new XLWorkbook())
+        var studentExam = await _unitOfWork.StudentExam.GetAsync(id);
+        if (studentExam == null)
         {
-            var worksheet = workbook.Worksheets.Add("Student");
-            var currentRow = 1;
-            worksheet.Cell(currentRow, 1).Value = "No.";
-            worksheet.Cell(currentRow, 2).Value = "Student Id";
-            worksheet.Cell(currentRow, 3).Value = "Student Name";
-
-            foreach (var student in userEvents)
-            {
-                currentRow++;
-                worksheet.Cell(currentRow, 1).Value = currentRow - 1;
-                worksheet.Cell(currentRow, 2).Value = student.Student.StudentId;
-                worksheet.Cell(currentRow, 3).Value = student.Student.Name;
-            }
-
-            await using (var stream = new MemoryStream())
-            {
-                workbook.SaveAs(stream);
-                var content = stream.ToArray();
-                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "student.xlsx");
-            }
+            return NotFound();
         }
+        return Ok(_mapper.Map<StudentExamDto>(studentExam));
     }
+    
+   
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Edit([FromBody] StudentExamDto studentExamDto)
+    {
+        var studentExam = _mapper.Map<StudentExam>(studentExamDto);
+        if (ModelState.IsValid)
+        {
+            if (await _unitOfWork.StudentExam.CheckExistStudentExam(studentExam))
+            {
+                return BadRequest(ModelState);
+            }
+            await _unitOfWork.StudentExam.Update(studentExam);
+            _unitOfWork.Save();
+            return Ok();
+        }
+        return BadRequest(ModelState);
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _unitOfWork.StudentExam.RemoveAsync(id);
+        _unitOfWork.Save();
+        return Ok();
+    }
+    
+    
 }
