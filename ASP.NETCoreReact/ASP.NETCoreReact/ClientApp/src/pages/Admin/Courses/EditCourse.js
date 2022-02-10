@@ -13,7 +13,11 @@ const initialState = {
 
 const EditCourse = ({history, match}) => {
     const [values, setValues] = useState(initialState);
-
+    const [errors, setErrors] = useState({
+        name: "",
+        examId:""
+    });
+    
     useEffect(()=>{console.log(values)},[values]);
 
     // router
@@ -34,18 +38,28 @@ const EditCourse = ({history, match}) => {
         })
     }
 
+    const validateForm = () =>{
+        let temp = {};
+        temp.name = values.name !== "" ? "" : "This field is required";
+        temp.examId = values.examId !== "" ? "" : "This field is required";
+        setErrors({...temp});
+        return Object.values(temp).every(x=> x === "");
+    }
+    
     const handleSubmit = (e) => {
         e.preventDefault();
-        editCourse(values)
-            .then((res) => {
-                console.log(res);
-                toast.success("Item is updated");
-                history.push("/admin/courses")
-            })
-            .catch((err) => {
-                console.log(err);
-                toast.error(err.response.data.err);
-            });
+        if (validateForm()){
+            editCourse(values)
+                .then((res) => {
+                    console.log(res);
+                    toast.success("Item is updated");
+                    history.push("/admin/courses")
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error(err.response.data.err);
+                });
+        }
     };
 
     const handleChange = (e) => {
@@ -53,7 +67,7 @@ const EditCourse = ({history, match}) => {
     };
 
     return(
-        <UpSertCourseForm setValues={setValues} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <UpSertCourseForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
     );
 }
 

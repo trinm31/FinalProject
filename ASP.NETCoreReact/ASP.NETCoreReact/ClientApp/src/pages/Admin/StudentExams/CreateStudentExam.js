@@ -16,6 +16,10 @@ const CreateStudentExam = ({history}) => {
     const [values, setValues] = useState(initialState);
     const [exams, setExams] = useState([]);
     const [students, setStudents] = useState([]);
+    const [errors, setErrors] = useState({
+        studentId: "",
+        examId:""
+    });
 
     useEffect(()=>{console.log(values)},[values]);
     
@@ -23,6 +27,14 @@ const CreateStudentExam = ({history}) => {
         loadExams();
         loadStudent();
     },[]);
+
+    const validateForm = () =>{
+        let temp = {};
+        temp.studentId = values.studentId !== "" ? "" : "This field is required";
+        temp.examId = values.examId !== "" ? "" : "This field is required";
+        setErrors({...temp});
+        return Object.values(temp).every(x=> x === "");
+    }
     
     const loadExams =() =>{
         getAllExams().then((res)=>{
@@ -46,20 +58,22 @@ const CreateStudentExam = ({history}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createStudentExam(values)
-            .then((res) => {
-                console.log(res);
-                toast.success("Item is created");
-                history.push("/admin/studentExams")
-            })
-            .catch((err) => {
-                console.log(err);
-                toast.error(err.response.data.err);
-            });
+        if(validateForm()){
+            createStudentExam(values)
+                .then((res) => {
+                    console.log(res);
+                    toast.success("Item is created");
+                    history.push("/admin/studentExams")
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error(err.response.data.err);
+                });   
+        }
     };
     
     return(
-        <UpSertStudentExamForm setValues={setValues} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
+        <UpSertStudentExamForm setValues={setValues} errors={errors} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
     );
 }
 

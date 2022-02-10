@@ -1,7 +1,7 @@
 import React from "react";
 import Resizer from "react-image-file-resizer";
 
-const UpSertStudentForm = ( {handleSubmit, handleChange, values, setValues}) => {
+const UpSertStudentForm = ( {handleSubmit, handleChange, values, setValues, errors}) => {
     
     const {name, studentId, email, avatar} = values;
 
@@ -30,25 +30,34 @@ const UpSertStudentForm = ( {handleSubmit, handleChange, values, setValues}) => 
         <div className="min-h-screen flex items-center justify-center bg-light">
             <div className="bg-white p-16 rounded shadow-2xl w-2/3">
 
-                <h2 className="text-3xl font-bold mb-10 text-gray-800">Create New Stdent</h2>
+                <h2 className="text-3xl font-bold mb-10 text-gray-800">{values.id !== "" ? "Edit":"Create"} Student</h2>
 
                 <form className="space-y-5" onSubmit={handleSubmit}>
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">StudentName</label>
                         <input type="text" onChange={handleChange} name="name" value={name}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
+                        {
+                            errors.name.length > 0 && <span className="text-red-500">{errors.name}</span>
+                        }
                     </div>
 
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">Student Id</label>
                         <input type="text" onChange={handleChange} name="studentId" value={studentId}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
+                        {
+                            errors.studentId.length > 0 && <span className="text-red-500">{errors.studentId}</span>
+                        }
                     </div>
 
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">Email</label>
                         <input type="text" onChange={handleChange} name="email" value={email}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
+                        {
+                            errors.email.length > 0 && <span className="text-red-500">{errors.email}</span>
+                        }
                     </div>
                     {
                         avatar?(
