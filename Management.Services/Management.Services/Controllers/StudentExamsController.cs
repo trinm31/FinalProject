@@ -94,12 +94,16 @@ public class StudentExamsController : Controller
 
              while (reader.Read())
              {
-                 studentExam.Add(new StudentExam()
+                 var studenttemp = new StudentExam()
                  {
                      ExamId = reader.GetValue(0).ToString(),
                      StudentId = reader.GetValue(1).ToString(),
-                 });
+                 };
                  
+                 if (await _unitOfWork.StudentExam.CheckExistStudentExam(studenttemp))
+                 {
+                     studentExam.Add(studenttemp);
+                 }
              }
              await _unitOfWork.StudentExam.AddRangeAsync(studentExam);
          }
