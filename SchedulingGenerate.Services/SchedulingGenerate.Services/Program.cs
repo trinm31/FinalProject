@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SchedulingGenerate.Services.BackgroundService;
 using SchedulingGenerate.Services.DbContext;
 using SchedulingGenerate.Services.DbInitializer;
 using SchedulingGenerate.Services.Messaging;
 using SchedulingGenerate.Services.RabbitMQSender;
+using SchedulingGenerate.Services.Services.IRepository;
+using SchedulingGenerate.Services.Services.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +26,7 @@ builder.Services.AddHostedService<LongRunningService>();
 builder.Services.AddSingleton<BackgroundWorkerQueue>();
 builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedulingSVMessageSender>();
 builder.Services.AddHostedService<RabbitMQSchedulingConsumer>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
