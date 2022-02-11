@@ -33,7 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Messages" />
       <Folder Include="Messaging" />
       <Folder Include="wwwroot\files" />
       <Folder Include="wwwroot\qr" />

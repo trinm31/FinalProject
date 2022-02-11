@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 using SchedulingGenerate.Services.Messages;
 using SchedulingGenerate.Services.Models;
 using SchedulingGenerate.Services.Services.IRepository;
+using SchedulingGenerate.Services.Services.Repository;
 
 namespace SchedulingGenerate.Services.Messaging;
 
@@ -12,9 +13,9 @@ public class RabbitMQSchedulingCrudCourseConsumer: Microsoft.Extensions.Hosting.
 {
     private IConnection _connection;
     private IModel _channel;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly ExamRepository _examRepository;
 
-    public RabbitMQSchedulingCrudCourseConsumer(IUnitOfWork unitOfWork)
+    public RabbitMQSchedulingCrudCourseConsumer(ExamRepository examRepository)
     {
         //Todo: clean here
         var factory = new ConnectionFactory
@@ -24,7 +25,7 @@ public class RabbitMQSchedulingCrudCourseConsumer: Microsoft.Extensions.Hosting.
             Password = "guest"
         };
 
-        _unitOfWork = unitOfWork;
+        _examRepository = examRepository;
 
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
@@ -52,27 +53,29 @@ public class RabbitMQSchedulingCrudCourseConsumer: Microsoft.Extensions.Hosting.
     {
         if (schedulingCrudCourseRequestDto.MethodType == "create")
         {
-            await _unitOfWork.Exam.AddAsync(new Course()
+            await _examRepository.Create(new Course()
             {
-                Id = schedulingCrudCourseRequestDto.Id,
+                ExamId = schedulingCrudCourseRequestDto.Id,
                 Name = schedulingCrudCourseRequestDto.Name
             });
         }
         
         if (schedulingCrudCourseRequestDto.MethodType == "update")
         {
-            var examIndb = await _unitOfWork.Exam.GetFirstOrDefaultAsync(e => e.Id == schedulingCrudCourseRequestDto.Id);
-            examIndb.Id = schedulingCrudCourseRequestDto.Id;
-            examIndb.Name = schedulingCrudCourseRequestDto.Name;
-            
-            await _unitOfWork.Exam.Update(examIndb);
+            await _examRepository.Update(new Course()
+            {
+                ExamId = schedulingCrudCourseRequestDto.Id,
+                Name = schedulingCrudCourseRequestDto.Name
+            });
         }
         
         if (schedulingCrudCourseRequestDto.MethodType == "delete")
         {
-            await _unitOfWork.Exam.RemoveAsync(schedulingCrudCourseRequestDto.Id);
+            await _examRepository.Delete(new Course()
+            {
+                ExamId = schedulingCrudCourseRequestDto.Id,
+                Name = schedulingCrudCourseRequestDto.Name
+            });
         }
-        
-        _unitOfWork.Save();
     }
 }

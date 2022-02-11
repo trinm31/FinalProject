@@ -134,7 +134,7 @@ namespace SchedulingGenerate.Services.Controllers
             
             foreach (var course in CoursesDb)
             {
-                graph.CreateNode(course.Id);
+                graph.CreateNode(course.ExamId);
             }
 
             AllNodesHashSet = graph.AllNodes.ToHashSet();

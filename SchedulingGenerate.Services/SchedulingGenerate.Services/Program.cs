@@ -4,7 +4,6 @@ using SchedulingGenerate.Services.DbContext;
 using SchedulingGenerate.Services.DbInitializer;
 using SchedulingGenerate.Services.Messaging;
 using SchedulingGenerate.Services.RabbitMQSender;
-using SchedulingGenerate.Services.Services.IRepository;
 using SchedulingGenerate.Services.Services.Repository;
 
 
@@ -18,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         sqlOptions.EnableRetryOnFailure();
     }));
 
+var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -28,7 +30,9 @@ builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedu
 builder.Services.AddHostedService<RabbitMQSchedulingCrudCourseConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentCourseConsumer>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton(new ExamRepository(optionBuilder.Options));
+builder.Services.AddSingleton(new StudentRepository(optionBuilder.Options));
+builder.Services.AddSingleton(new StudentExamRepository(optionBuilder.Options));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SchedulingGenerate.Services.Messages;
 using SchedulingGenerate.Services.Models;
-using SchedulingGenerate.Services.Services.IRepository;
+using SchedulingGenerate.Services.Services.Repository;
 
 namespace SchedulingGenerate.Services.Messaging;
 
@@ -12,9 +12,9 @@ public class RabbitMQSchedulingCrudStudentConsumer: Microsoft.Extensions.Hosting
 {
     private IConnection _connection;
     private IModel _channel;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly StudentRepository _studentReposzitory;
 
-    public RabbitMQSchedulingCrudStudentConsumer(IUnitOfWork unitOfWork)
+    public RabbitMQSchedulingCrudStudentConsumer(StudentRepository studentRepository)
     {
         //Todo: clean here
         var factory = new ConnectionFactory
@@ -24,8 +24,8 @@ public class RabbitMQSchedulingCrudStudentConsumer: Microsoft.Extensions.Hosting
             Password = "guest"
         };
 
-        _unitOfWork = unitOfWork;
-
+        _studentReposzitory = studentRepository;
+        
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
         _channel.QueueDeclare(queue: "schedulingcrudstudentmessagequeue", false, false, false, arguments: null);
@@ -52,27 +52,29 @@ public class RabbitMQSchedulingCrudStudentConsumer: Microsoft.Extensions.Hosting
     {
         if (schedulingCrudStudentRequestDto.MethodType == "create")
         {
-            await _unitOfWork.Student.AddAsync(new Student()
+            await _studentReposzitory.Create(new Student()
             {
-                Id = schedulingCrudStudentRequestDto.Id,
+                StudentId = schedulingCrudStudentRequestDto.Id,
                 Name = schedulingCrudStudentRequestDto.Name
             });
         }
         
         if (schedulingCrudStudentRequestDto.MethodType == "update")
         {
-            var studentIndb = await _unitOfWork.Student.GetFirstOrDefaultAsync(e => e.Id == schedulingCrudStudentRequestDto.Id);
-            studentIndb.Id = schedulingCrudStudentRequestDto.Id;
-            studentIndb.Name = schedulingCrudStudentRequestDto.Name;
-            
-            _unitOfWork.Student.Update(studentIndb);
+            await _studentReposzitory.Update(new Student()
+            {
+                StudentId = schedulingCrudStudentRequestDto.Id,
+                Name = schedulingCrudStudentRequestDto.Name
+            }, schedulingCrudStudentRequestDto.oldStudentId);
         }
         
         if (schedulingCrudStudentRequestDto.MethodType == "delete")
         {
-            await _unitOfWork.Student.RemoveAsync(schedulingCrudStudentRequestDto.Id);
+            await _studentReposzitory.Delete(new Student()
+            {
+                StudentId = schedulingCrudStudentRequestDto.Id,
+                Name = schedulingCrudStudentRequestDto.Name
+            });
         }
-        
-        _unitOfWork.Save();
     }
 }

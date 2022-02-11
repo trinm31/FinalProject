@@ -2,7 +2,9 @@ using System.Text;
 using AutoMapper;
 using ExcelDataReader;
 using Management.Services.Dtos;
+using Management.Services.Messages;
 using Management.Services.Models;
+using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
@@ -21,18 +23,21 @@ public class ExamsController : ControllerBase
 
     private static string _fileName;
     private readonly IMapper _mapper;
+    private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
 
     public ExamsController(
         IWebHostEnvironment webHostEnvironment,
         IUnitOfWork unitOfWork, 
         ILogger<ExamsController> logger,
-        IMapper mapper
+        IMapper mapper,
+        IRabbitMQManagementMessageSender rabbitMqManagementMessageSender
     )
     {
         _webHostEnvironment = webHostEnvironment;
         _unitOfWork = unitOfWork;
         _logger = logger;
         _mapper = mapper;
+        _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
     }
     
     [HttpPost("[action]")]
@@ -105,13 +110,31 @@ public class ExamsController : ControllerBase
                  }
                  else
                  {
-                     exams.Add(new Exam()
+                     var exam = new Exam()
                      {
                          ExamId = reader.GetValue(0).ToString(),
                          Name = reader.GetValue(1).ToString(),
                          Description = reader.GetValue(2).ToString(),
                          Status = true,
-                     });
+                     };
+                     
+                     exams.Add(exam);
+                     
+                     SchedulingCrudCourseMessage schedulingCrudCourseMessage = new SchedulingCrudCourseMessage()
+                     {
+                         MethodType = "create",
+                         Id = exam.ExamId,
+                         Name = exam.ExamId
+                     };
+                     try
+                     {
+                         _rabbitMqManagementMessageSender.SendMessage(schedulingCrudCourseMessage, "schedulingcrudcoursemessagequeue");
+                     }
+                     catch (Exception e)
+                     {
+                         throw;
+                     }
+                     
                      examCount++;
                  }
              }
@@ -151,6 +174,23 @@ public class ExamsController : ControllerBase
             }
             await _unitOfWork.Exam.AddAsync(exam);
             _unitOfWork.Save();
+
+            SchedulingCrudCourseMessage schedulingCrudCourseMessage = new SchedulingCrudCourseMessage()
+            {
+                MethodType = "create",
+                Id = exam.ExamId,
+                Name = exam.ExamId
+            };
+            try
+            {
+                _rabbitMqManagementMessageSender.SendMessage(schedulingCrudCourseMessage, "schedulingcrudcoursemessagequeue");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+           
+            
             return Ok();
         }
         return BadRequest(ModelState);
@@ -172,14 +212,31 @@ public class ExamsController : ControllerBase
     public async Task<IActionResult> Edit([FromBody] ExamDto examDto)
     {
         var exam = _mapper.Map<Exam>(examDto);
+        var examMessage = await _unitOfWork.Exam.GetAsync(exam.Id);
         if (ModelState.IsValid)
         {
+            SchedulingCrudCourseMessage schedulingCrudCourseMessage = new SchedulingCrudCourseMessage()
+            {
+                MethodType = "update",
+                Id = examMessage.ExamId,
+                Name = exam.ExamId
+            };
+            try
+            {
+                _rabbitMqManagementMessageSender.SendMessage(schedulingCrudCourseMessage, "schedulingcrudcoursemessagequeue");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            
             if (await _unitOfWork.Exam.CheckExistExam(exam))
             {
                 return BadRequest(ModelState);
             }
             await _unitOfWork.Exam.Update(exam);
             _unitOfWork.Save();
+
             return Ok();
         }
         return BadRequest(ModelState);
@@ -188,19 +245,25 @@ public class ExamsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        var exam = await _unitOfWork.Exam.GetAsync(id);
         await _unitOfWork.Exam.RemoveAsync(id);
         _unitOfWork.Save();
-        return Ok();
-    }
-    
-    [HttpPost("[action]")]
-    public async Task<IActionResult> Status(int id)
-    {
-        if (await _unitOfWork.Exam.ChangeStatusExam(id))
+
+        SchedulingCrudCourseMessage schedulingCrudCourseMessage = new SchedulingCrudCourseMessage()
         {
-            _unitOfWork.Save();
-            return Ok();
+            MethodType = "delete",
+            Id = exam.ExamId,
+            Name = exam.ExamId
+        };
+        try
+        {
+            _rabbitMqManagementMessageSender.SendMessage(schedulingCrudCourseMessage, "schedulingcrudcoursemessagequeue");
         }
-        return BadRequest();
+        catch (Exception e)
+        {
+            throw;
+        }
+        
+        return Ok();
     }
 }

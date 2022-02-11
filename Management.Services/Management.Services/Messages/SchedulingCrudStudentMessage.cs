@@ -1,6 +1,8 @@
-namespace SchedulingGenerate.Services.Messages;
+using Management.Services.MessageBus;
 
-public class SchedulingCrudStudentRequestDto
+namespace Management.Services.Messages;
+
+public class SchedulingCrudStudentMessage:BaseMessage
 {
     public string MethodType { get; set; }
     public string Id { get; set; }
