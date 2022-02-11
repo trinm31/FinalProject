@@ -25,7 +25,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<LongRunningService>();
 builder.Services.AddSingleton<BackgroundWorkerQueue>();
 builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedulingSVMessageSender>();
-builder.Services.AddHostedService<RabbitMQSchedulingConsumer>();
+builder.Services.AddHostedService<RabbitMQSchedulingCrudCourseConsumer>();
+builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentConsumer>();
+builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentCourseConsumer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 

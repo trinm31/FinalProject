@@ -19,5 +19,6 @@ public interface IRepositoryAsync<T> where T :class
     Task AddRangeAsync(List<T> entities);
     Task AddAsync(T entity);
     Task RemoveAsync(int id);
+    Task RemoveAsync(string id);
     Task RemoveRangeAsync(IEnumerable<T> entity);
 }

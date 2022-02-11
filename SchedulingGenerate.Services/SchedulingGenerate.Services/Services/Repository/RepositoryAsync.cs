@@ -88,6 +88,12 @@ public class RepositoryAsync<T> : IRepositoryAsync<T> where T : class
             T entity = await dbSet.FindAsync(id);
             dbSet.Remove(entity);
         }
+        
+        public async Task RemoveAsync(string id)
+        {
+            T entity = await dbSet.FindAsync(id);
+            dbSet.Remove(entity);
+        }
 
         public async Task RemoveRangeAsync(IEnumerable<T> entity)
         {
