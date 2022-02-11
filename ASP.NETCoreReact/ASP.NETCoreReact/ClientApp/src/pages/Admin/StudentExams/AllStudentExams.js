@@ -7,6 +7,7 @@ import ListAllStudentExamTable                   from "../../../components/table
 const AllStudentExam = () => {
     const [studentExams, setStudentExams] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [filter, setFilter] = useState([]);
 
     //redux
     const { user } = useSelector((state) => ({ ...state }));
@@ -19,6 +20,7 @@ const AllStudentExam = () => {
         setLoading(true);
         getAllStudentExam().then((res)=> {
             setStudentExams(res.data);
+            setFilter(res.data);
             console.log(res.data);
             setLoading(false)}
         ).catch((err) => {
@@ -27,6 +29,19 @@ const AllStudentExam = () => {
         });
     }
 
+    const handleSearch = e => {
+        let target = e.target;
+        if(e.target.value === ""){
+            setFilter(studentExams)
+        }
+
+        let filteredData = studentExams.filter(x =>
+            x.studentId.toLowerCase().includes(target.value)||
+            x.examId.toLowerCase().includes(target.value)
+        )
+        setFilter(filteredData);
+    }
+    
     const handleRemove = (id) => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeStudentExam(id)
@@ -46,7 +61,7 @@ const AllStudentExam = () => {
             {loading ? (
                 <h4 className="text-danger">Loading...</h4>
             ) : (
-                <ListAllStudentExamTable studentExamLists={studentExams} handleRemove={handleRemove}/>
+                <ListAllStudentExamTable handleSearch={handleSearch} studentExamLists={filter} handleRemove={handleRemove}/>
             )
             }
         </>

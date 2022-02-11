@@ -7,6 +7,7 @@ import ListAllStudentTable                                  from "../../../compo
 const AllStudents = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [filter, setFilter] = useState([]);
 
     //redux
     const { user } = useSelector((state) => ({ ...state }));
@@ -19,6 +20,7 @@ const AllStudents = () => {
         setLoading(true);
         getAllStudents().then((res)=> {
             setStudents(res.data);
+            setFilter(res.data);
             console.log(res.data);
             setLoading(false)}
         ).catch((err) => {
@@ -52,12 +54,26 @@ const AllStudents = () => {
             });
     }
 
+    const handleSearch = e => {
+        let target = e.target;
+        if(e.target.value === ""){
+            setFilter(students)
+        }
+
+        let filteredData = students.filter(x =>
+            x.name.toLowerCase().includes(target.value)||
+            x.studentId.toLowerCase().includes(target.value) ||
+            x.email.toLowerCase().includes(target.value)
+        )
+        setFilter(filteredData);
+    }
+
     return (
         <>
             {loading ? (
                 <h4 className="text-danger">Loading...</h4>
             ) : (
-                <ListAllStudentTable studentLists={students} handleRemove={handleRemove} createQrCode={createQrCode}/>
+                <ListAllStudentTable handleSearch={handleSearch} studentLists={filter} handleRemove={handleRemove} createQrCode={createQrCode}/>
             )
             }
         </>

@@ -6,6 +6,7 @@ import ListAllCourseTable             from "../../../components/tables/ListAllCo
 
 const AllCourse = () => {
     const [courses, setCourses] = useState([]);
+    const [filter, setFilter] = useState([]);
     const [loading, setLoading] = useState(false);
     
     //redux
@@ -19,12 +20,27 @@ const AllCourse = () => {
         setLoading(true);
         getAllExams().then((res)=> {
             setCourses(res.data);
+            setFilter(res.data);
             console.log(res.data);
             setLoading(false)}
         ).catch((err) => {
             setLoading(false);
             console.log(err);
         });
+    }
+
+    const handleSearch = e => {
+        let target = e.target;
+        if(e.target.value === ""){
+            setFilter(courses)
+        }
+
+        let filteredData = courses.filter(x =>
+            x.name.toLowerCase().includes(target.value)||
+            x.examId.toLowerCase().includes(target.value) ||
+            x.status === (target.value.toLowerCase() === "active") 
+        )
+        setFilter(filteredData);
     }
 
     const handleRemove = (id) => {
@@ -46,7 +62,7 @@ const AllCourse = () => {
             {loading ? (
                 <h4 className="text-danger">Loading...</h4>
             ) : (
-                <ListAllCourseTable courseLists={courses} handleRemove={handleRemove}/>
+                <ListAllCourseTable handleSearch={handleSearch} courseLists={filter} handleRemove={handleRemove}/>
             )
             }
         </>
