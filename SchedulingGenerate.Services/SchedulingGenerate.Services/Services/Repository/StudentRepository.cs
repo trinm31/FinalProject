@@ -31,7 +31,7 @@ public class StudentRepository : IStudentRepository
     {
         await using var _db = new ApplicationDbContext(_dbContext);
         var objInDb = await _db.Students.FirstOrDefaultAsync(e => e.StudentId == student.StudentId);
-        if (objInDb == null)
+        if (objInDb != null)
         {
             _db.Students.Remove(objInDb);
         }
@@ -43,7 +43,7 @@ public class StudentRepository : IStudentRepository
     {
         await using var _db = new ApplicationDbContext(_dbContext);
         var objInDb = await _db.Students.FirstOrDefaultAsync(e => e.StudentId == oldStudentId);
-        if (objInDb == null)
+        if (objInDb != null)
         {
             objInDb.StudentId = student.StudentId;
             objInDb.Name = student.Name;

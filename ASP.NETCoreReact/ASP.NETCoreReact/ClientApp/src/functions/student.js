@@ -31,8 +31,9 @@ export const createStudentQr = async () =>
     });
 
 export const editStudent = async (values) =>
-    await axios.post(`api/Students/Edit`, values,{
+    await axios.put(`api/Students/Edit`, values,{
         headers: {
+            'content-type': 'application/json',
             'X-CSRF': '1'
         }
     });

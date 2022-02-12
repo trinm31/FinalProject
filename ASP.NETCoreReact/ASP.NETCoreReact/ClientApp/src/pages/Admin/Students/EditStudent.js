@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast }                      from "react-toastify";
-import {editStudent, getStudent}                from "../../../functions/student";
+import {editStudent, getStudent}      from "../../../functions/student";
 import UpSertStudentForm              from "../../../components/Form/UpSertStudentForm";
-import { getCourse }                  from "../../../functions/exam";
 
 const initialState = {
     id: "",

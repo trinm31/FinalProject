@@ -5,7 +5,9 @@ using System.Text;
 using AutoMapper;
 using ExcelDataReader;
 using Management.Services.Dtos;
+using Management.Services.Messages;
 using Management.Services.Models;
+using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
@@ -26,18 +28,21 @@ public class StudentsController : ControllerBase
 
     private static string _fileName;
     private readonly IMapper _mapper;
+    private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
 
     public StudentsController(
          IWebHostEnvironment webHostEnvironment,
          IUnitOfWork unitOfWork, 
          ILogger<StudentsController> logger,
-         IMapper mapper
+         IMapper mapper,
+         IRabbitMQManagementMessageSender rabbitMqManagementMessageSender
      )
     {
          _webHostEnvironment = webHostEnvironment;
          _unitOfWork = unitOfWork;
          _logger = logger;
          _mapper = mapper;
+         _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
     }
 
     [HttpPost("[action]")]
@@ -78,7 +83,7 @@ public class StudentsController : ControllerBase
          }
      }
     
-    [HttpPost("[action]")]
+    [HttpPut("[action]")]
     public async Task<IActionResult> Edit([FromBody] StudentDto studentDto)
     {
          var studentInDb = await _unitOfWork.Student.GetAsync(studentDto.Id);
@@ -89,6 +94,23 @@ public class StudentsController : ControllerBase
          {
              ModelState.AddModelError("",$"Something went wrong went update the recored {studentDto.Name}");
              return BadRequest(ModelState);
+         }
+         
+         SchedulingCrudStudentMessage schedulingCrudStudentMessage = new SchedulingCrudStudentMessage()
+         {
+             MethodType = "update",
+             Id = studentDto.StudentId,
+             Name = studentDto.Name,
+             oldStudentId = studentInDb.StudentId
+         };
+                     
+         try
+         {
+             _rabbitMqManagementMessageSender.SendMessage(schedulingCrudStudentMessage, "schedulingcrudstudentmessagequeue");
+         }
+         catch (Exception e)
+         {
+             throw;
          }
 
          studentInDb.StudentId = studentDto.StudentId;
@@ -134,12 +156,31 @@ public class StudentsController : ControllerBase
                  }
                  else
                  {
-                     students.Add(new Student()
+                     var student = new Student()
                      {
                          StudentId = reader.GetValue(0).ToString(),
                          Name = reader.GetValue(1).ToString(),
                          Email = reader.GetValue(2).ToString(),
-                     });
+                     };
+                     
+                     students.Add(student);
+
+                     SchedulingCrudStudentMessage schedulingCrudStudentMessage = new SchedulingCrudStudentMessage()
+                     {
+                         MethodType = "create",
+                         Id = student.StudentId,
+                         Name = student.Name
+                     };
+                     
+                     try
+                     {
+                         _rabbitMqManagementMessageSender.SendMessage(schedulingCrudStudentMessage, "schedulingcrudstudentmessagequeue");
+                     }
+                     catch (Exception e)
+                     {
+                         throw;
+                     }
+                     
                      studentCount++;
                  }
              }
@@ -236,6 +277,22 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
          var student = await _unitOfWork.Student.GetAsync(id);
+         
+         SchedulingCrudStudentMessage schedulingCrudStudentMessage = new SchedulingCrudStudentMessage()
+         {
+             MethodType = "delete",
+             Id = student.StudentId,
+             Name = student.Name
+         };
+                     
+         try
+         {
+             _rabbitMqManagementMessageSender.SendMessage(schedulingCrudStudentMessage, "schedulingcrudstudentmessagequeue");
+         }
+         catch (Exception e)
+         {
+             throw;
+         }
 
          if (student == null)
          {
@@ -261,15 +318,33 @@ public class StudentsController : ControllerBase
             return BadRequest("User Already Exist");
         }
 
-        await _unitOfWork.Student.AddAsync(new Student()
+        var student = new Student()
         {
             Name = studentCreateDto.Name,
             Email = studentCreateDto.Email,
             StudentId = studentCreateDto.StudentId,
-            Avatar = studentCreateDto.Avatar 
-        });
+            Avatar = studentCreateDto.Avatar
+        };
+
+        await _unitOfWork.Student.AddAsync(student);
 
         _unitOfWork.Save();
+        
+        SchedulingCrudStudentMessage schedulingCrudStudentMessage = new SchedulingCrudStudentMessage()
+        {
+            MethodType = "create",
+            Id = student.StudentId,
+            Name = student.Name
+        };
+                     
+        try
+        {
+            _rabbitMqManagementMessageSender.SendMessage(schedulingCrudStudentMessage, "schedulingcrudstudentmessagequeue");
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
 
         return Ok();
     }
