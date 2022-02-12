@@ -7,7 +7,6 @@ import UpSertStudentExamForm          from "../../../components/Form/UpsertStude
 
 
 const initialState = {
-    id: "",
     studentId: "",
     examId:""
 }

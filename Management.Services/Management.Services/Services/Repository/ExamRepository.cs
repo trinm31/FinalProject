@@ -19,7 +19,7 @@ public class ExamRepository: RepositoryAsync<Exam>,IExamRepository
         var objInDb = await _db.Exams.FirstOrDefaultAsync(e => e.Id == exam.Id);
         if (objInDb != null)
         {
-            if (!await CheckExistExam(exam))
+            if (await CheckExistExam(exam))
             {
                 objInDb.ExamId = exam.ExamId;
                 objInDb.Name = exam.Name;

@@ -32,7 +32,7 @@ public class StudentExamRepository: IStudentExamRepository
     {
         await using var _db = new ApplicationDbContext(_dbContext);
         var objInDb = await _db.StudentCourses.FirstOrDefaultAsync(e => e.CourseId == studentCourse.CourseId || e.StudentId == studentCourse.StudentId);
-        if (objInDb != null)
+        if (objInDb == null)
         {
             _db.StudentCourses.Add(studentCourse);
         }
@@ -46,7 +46,7 @@ public class StudentExamRepository: IStudentExamRepository
         var objInDb = await _db.StudentCourses.FirstOrDefaultAsync(e => e.CourseId == studentCourse.CourseId || e.StudentId == studentCourse.StudentId);
         if (objInDb != null)
         {
-            _db.StudentCourses.Remove(studentCourse);
+            _db.StudentCourses.Remove(objInDb);
         }
 
         _db.SaveChanges();

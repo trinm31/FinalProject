@@ -19,6 +19,7 @@ export const removeStudentExam = async (id) =>
 export const createStudentExam = async (values) =>
     await axios.post(`api/StudentExams/Create`, values,{
         headers: {
+            'content-type': 'application/json',
             'X-CSRF': '1'
         }
     });

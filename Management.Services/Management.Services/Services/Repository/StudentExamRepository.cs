@@ -26,7 +26,7 @@ public class StudentExamRepository:RepositoryAsync<StudentExam>, IStudentExamRep
         var studentCheck = await _db.Students.AnyAsync(e => e.StudentId.Contains(studentExam.StudentId));
         var examCheck = await _db.Exams.AnyAsync(e => e.ExamId.Contains(studentExam.ExamId));
 
-        return !(studentCheck && examCheck);
+        return (studentCheck && examCheck);
     }
 
     public async Task Update(StudentExam studentExam)
@@ -34,7 +34,7 @@ public class StudentExamRepository:RepositoryAsync<StudentExam>, IStudentExamRep
         var objInDb = await _db.StudentExams.FirstOrDefaultAsync(e => e.Id == studentExam.Id);
         if (objInDb != null)
         {
-            if (!await CheckExistStudentExam(studentExam))
+            if (await CheckExistStudentExam(studentExam))
             {
                 objInDb.ExamId = studentExam.ExamId;
                 objInDb.StudentId = studentExam.StudentId;

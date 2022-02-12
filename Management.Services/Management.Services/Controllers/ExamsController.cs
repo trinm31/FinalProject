@@ -229,15 +229,11 @@ public class ExamsController : ControllerBase
             {
                 throw;
             }
-            
-            if (await _unitOfWork.Exam.CheckExistExam(exam))
-            {
-                return BadRequest(ModelState);
-            }
+
             await _unitOfWork.Exam.Update(exam);
             _unitOfWork.Save();
-
             return Ok();
+            
         }
         return BadRequest(ModelState);
     }
