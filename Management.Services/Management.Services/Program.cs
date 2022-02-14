@@ -2,6 +2,7 @@ using AutoMapper;
 using Management.Services;
 using Management.Services.BackgroudService;
 using Management.Services.DbContext;
+using Management.Services.Messaging;
 using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
 using Management.Services.Services.Repository;
@@ -90,9 +91,16 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSingleton<IRabbitMQManagementMessageSender, RabbitMQManagementMessageSender>();
 
+builder.Services.AddHostedService<RabbitMQSchedulingResultConsumer>();
+
 builder.Services.AddHostedService<LongRunningService>();
 
 builder.Services.AddSingleton<BackgroundWorkerQueue>();
+
+var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+builder.Services.AddSingleton(new ScheduleRepository(optionBuilder.Options));
 
 var app = builder.Build();
 

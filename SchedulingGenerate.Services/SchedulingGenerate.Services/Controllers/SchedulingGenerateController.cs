@@ -9,7 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SchedulingGenerate.Services.BackgroundService;
 using SchedulingGenerate.Services.DbContext;
 using SchedulingGenerate.Services.MatrixHelper;
+using SchedulingGenerate.Services.Messages;
 using SchedulingGenerate.Services.Models;
+using SchedulingGenerate.Services.RabbitMQSender;
 
 namespace SchedulingGenerate.Services.Controllers
 {
@@ -32,11 +34,13 @@ namespace SchedulingGenerate.Services.Controllers
         public static HashSet<Node> AllNodesHashSet;
         private readonly BackgroundWorkerQueue _backgroundWorkerQueue;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IRabbitMQSchedulingSVMessageSender _rabbitMqSchedulingSvMessageSender;
 
-        public SchedulingGenerateController( BackgroundWorkerQueue backgroundWorkerQueue, IServiceScopeFactory serviceScopeFactory)
+        public SchedulingGenerateController( BackgroundWorkerQueue backgroundWorkerQueue, IServiceScopeFactory serviceScopeFactory, IRabbitMQSchedulingSVMessageSender rabbitMqSchedulingSvMessageSender)
         {
             _backgroundWorkerQueue = backgroundWorkerQueue;
             _serviceScopeFactory = serviceScopeFactory;
+            _rabbitMqSchedulingSvMessageSender = rabbitMqSchedulingSvMessageSender;
         }
 
         [HttpGet]
@@ -90,6 +94,20 @@ namespace SchedulingGenerate.Services.Controllers
                 var result = db.Results.ToList();
                 db.RemoveRange(result);
                 db.SaveChanges();
+                
+                SchedulingResultMessage schedulingResultMessage = new SchedulingResultMessage()
+                {
+                    MethodType = "delete"
+                };
+                
+                try
+                {
+                    _rabbitMqSchedulingSvMessageSender.SendMessage(schedulingResultMessage, "schedulingresultmessagequeue");
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
             }
 
             foreach (var coursesDb in coursesDbTemp)
@@ -150,6 +168,22 @@ namespace SchedulingGenerate.Services.Controllers
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
                 db.Results.AddRange(results);
                 db.SaveChanges();
+
+                SchedulingResultMessage schedulingResultMessage = new SchedulingResultMessage()
+                {
+                    MethodType = "create",
+                    ResultList = results
+                };
+                
+                try
+                {
+                    _rabbitMqSchedulingSvMessageSender.SendMessage(schedulingResultMessage, "schedulingresultmessagequeue");
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+                
             }
         }
 
