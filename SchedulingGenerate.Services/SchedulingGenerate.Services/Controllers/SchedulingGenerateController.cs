@@ -77,17 +77,42 @@ namespace SchedulingGenerate.Services.Controllers
         
         private void GetDataFromDb()
         {
+            HashSet<Course> coursesDbTemp;
+            HashSet<StudentCourse> StudentCoursesTemp;
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
                 
                 Students = db.Students.AsNoTracking().ToHashSet();
-                CoursesDb = db.Courses.AsNoTracking().ToHashSet();
-                StudentCourses = db.StudentCourses.AsNoTracking().ToHashSet();
+                coursesDbTemp = db.Courses.AsNoTracking().ToHashSet();
+                StudentCoursesTemp = db.StudentCourses.AsNoTracking().ToHashSet();
                 
                 var result = db.Results.ToList();
                 db.RemoveRange(result);
                 db.SaveChanges();
+            }
+
+            foreach (var coursesDb in coursesDbTemp)
+            {
+                var value = coursesDb.ExamId.Substring(0, 7);
+
+                if (CoursesDb.Any(x=> x.ExamId == value) == false)
+                {
+                    CoursesDb.Add(new Course()
+                    {
+                        ExamId = value,
+                        Name = value
+                    });
+                }
+            }
+            
+            foreach (var studentCourse in StudentCoursesTemp)
+            {
+                StudentCourses.Add(new StudentCourse()
+                {
+                    StudentId = studentCourse.StudentId,
+                    CourseId = studentCourse.CourseId.Substring(0,7)
+                });
             }
 
         }

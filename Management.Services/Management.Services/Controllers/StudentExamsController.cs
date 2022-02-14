@@ -1,6 +1,8 @@
 using System.Text;
 using AutoMapper;
 using ExcelDataReader;
+using Management.Services.BackgroudService;
+using Management.Services.DbContext;
 using Management.Services.Dtos;
 using Management.Services.Messages;
 using Management.Services.Models;
@@ -9,6 +11,7 @@ using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Management.Services.Controllers;
 [Route("api/[controller]")]
@@ -23,13 +26,17 @@ public class StudentExamsController : Controller
     private static string _fileName;
     private readonly IMapper _mapper;
     private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
+    private readonly BackgroundWorkerQueue _backgroundWorkerQueue;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public StudentExamsController(
         IWebHostEnvironment webHostEnvironment,
         IUnitOfWork unitOfWork, 
         ILogger<ExamsController> logger,
         IMapper mapper,
-        IRabbitMQManagementMessageSender rabbitMqManagementMessageSender
+        IRabbitMQManagementMessageSender rabbitMqManagementMessageSender,
+        BackgroundWorkerQueue backgroundWorkerQueue, 
+        IServiceScopeFactory serviceScopeFactory
     )
     {
         _webHostEnvironment = webHostEnvironment;
@@ -37,9 +44,12 @@ public class StudentExamsController : Controller
         _logger = logger;
         _mapper = mapper;
         _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
+        _backgroundWorkerQueue = backgroundWorkerQueue;
+        _serviceScopeFactory = serviceScopeFactory;
     }
     
     [HttpPost("[action]")]
+    [RequestSizeLimit(100_000_000)]
     public async Task<IActionResult> Upload([FromForm] FileModel file)
     {
         try
@@ -59,16 +69,13 @@ public class StudentExamsController : Controller
                 fileStream.Flush();
             }
 
-            var studentExam = GetStudent(file.FileName);
+            _backgroundWorkerQueue.QueueBackgroundWorkItem(async token =>
+            {
+                await GetStudent(file.FileName);
+            });
             
-            FileInfo fileNeedToDeleted = new FileInfo(fileName);
             
-            if (fileNeedToDeleted.Exists)
-            {  
-                fileNeedToDeleted.Delete();
-            }  
-            
-            return Ok(_mapper.Map<List<StudentExamDto>>(studentExam.Result));
+            return Ok();
         }
         catch (Exception exception)
         {
@@ -77,65 +84,89 @@ public class StudentExamsController : Controller
         }
     }
     
-    private async Task<List<StudentExam>> GetStudent(string fName)
+    private async Task GetStudent(string fName)
     {
          var errorCount = 0;
          var examCount = 0;
          var studentExam = new List<StudentExam>();
-         try
+         using (var scope = _serviceScopeFactory.CreateScope())
          {
-             var separator = Path.DirectorySeparatorChar;
-             var fileName = $"{Directory.GetCurrentDirectory()}{$"{separator}wwwroot{separator}files"}{separator}" + fName;
-             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-             await using var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read);
-             using var reader = ExcelReaderFactory.CreateReader(stream);
-             reader.AsDataSet(new ExcelDataSetConfiguration
+             var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                
+             try
              {
-                 ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                 var separator = Path.DirectorySeparatorChar;
+                 var fileName = $"{Directory.GetCurrentDirectory()}{$"{separator}wwwroot{separator}files"}{separator}" + fName;
+                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                 await using var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read);
+                 using var reader = ExcelReaderFactory.CreateReader(stream);
+                 reader.AsDataSet(new ExcelDataSetConfiguration
                  {
-                     UseHeaderRow = true
-                 }
-             });
-
-             while (reader.Read())
-             {
-                 var studenttemp = new StudentExam()
-                 {
-                     ExamId = reader.GetValue(0).ToString(),
-                     StudentId = reader.GetValue(1).ToString(),
-                 };
-                 
-                 if (await _unitOfWork.StudentExam.CheckExistStudentExam(studenttemp))
-                 {
-                     studentExam.Add(studenttemp);
-
-                     SchedulingCrudStudentCourseMessage schedulingCrudStudentCourseMessage = new SchedulingCrudStudentCourseMessage()
+                     ConfigureDataTable = _ => new ExcelDataTableConfiguration
                      {
-                         MethodType = "create",
-                         CourseId = studenttemp.ExamId,
-                         StudentId = studenttemp.StudentId
+                         UseHeaderRow = true
+                     }
+                 });
+
+                 while (reader.Read())
+                 {
+                     var studenttemp = new StudentExam()
+                     {
+                         ExamId = reader.GetValue(0).ToString(),
+                         StudentId = reader.GetValue(1).ToString(),
                      };
                      
-                     try
+                     var studentCheck = await db.Students.AnyAsync(e => e.StudentId.Contains(studenttemp.StudentId));
+                     var examCheck = await db.Exams.AnyAsync(e => e.ExamId.Contains(studenttemp.ExamId));
+                     
+                     if (studentCheck && examCheck)
                      {
-                         _rabbitMqManagementMessageSender.SendMessage(schedulingCrudStudentCourseMessage, "schedulingcrudstudentcoursemessagequeue");
-                     }
-                     catch (Exception e)
-                     {
-                         throw;
+                         studentExam.Add(studenttemp);
                      }
                  }
+
+                 List<StudentCourse> studentcourseList = new List<StudentCourse>();
+
+                 foreach (var se in studentExam)
+                 {
+                     studentcourseList.Add(new StudentCourse()
+                     {
+                         CourseId = se.ExamId,
+                         StudentId = se.StudentId
+                     });
+                 }
+                
+                 SchedulingCreateStudentCourseMessage schedulingCreateStudentCourseMessage = new SchedulingCreateStudentCourseMessage()
+                 {
+                    StudentCourses = studentcourseList
+                 };
+                 
+                 try
+                 {
+                     _rabbitMqManagementMessageSender.SendMessage(schedulingCreateStudentCourseMessage, "schedulingcreatestudentcoursemessagequeue");
+                 }
+                 catch (Exception e)
+                 {
+                     throw;
+                 }
+                 
+                 await db.StudentExams.AddRangeAsync(studentExam);
              }
-             await _unitOfWork.StudentExam.AddRangeAsync(studentExam);
-         }
-         catch (Exception exception)
-         {
+             catch (Exception exception)
+             {
+                 
+             }
              
+             db.SaveChanges();
          }
          
-         _unitOfWork.Save();
-       
-         return studentExam;
+         FileInfo fileNeedToDeleted = new FileInfo(fName);
+            
+         if (fileNeedToDeleted.Exists)
+         {  
+             fileNeedToDeleted.Delete();
+         }  
+        
     }
     
     [HttpGet("[action]")]

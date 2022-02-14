@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using ExcelDataReader;
+using Management.Services.DbContext;
 using Management.Services.Dtos;
 using Management.Services.Messages;
 using Management.Services.Models;
@@ -12,6 +13,7 @@ using Management.Services.Services.IRepository;
 using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Net.Codecrete.QrCodeGenerator;
 using Key = Management.Services.Utiliy.Key;
 
@@ -29,13 +31,15 @@ public class StudentsController : ControllerBase
     private static string _fileName;
     private readonly IMapper _mapper;
     private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
+    private readonly ApplicationDbContext _db;
 
     public StudentsController(
          IWebHostEnvironment webHostEnvironment,
          IUnitOfWork unitOfWork, 
          ILogger<StudentsController> logger,
          IMapper mapper,
-         IRabbitMQManagementMessageSender rabbitMqManagementMessageSender
+         IRabbitMQManagementMessageSender rabbitMqManagementMessageSender,
+         ApplicationDbContext db
      )
     {
          _webHostEnvironment = webHostEnvironment;
@@ -43,9 +47,11 @@ public class StudentsController : ControllerBase
          _logger = logger;
          _mapper = mapper;
          _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
+         _db = db;
     }
 
     [HttpPost("[action]")]
+    [RequestSizeLimit(100_000_000)]
     public async Task<IActionResult> Upload([FromForm] FileModel file)
      {
          try
@@ -201,10 +207,24 @@ public class StudentsController : ControllerBase
     }
      
     [HttpGet("[action]")]
-    public IActionResult ListAllStudent()
+    public async Task<IActionResult> ListAllStudent()
     {
-        var students = _unitOfWork.Student.GetAllAsync().Result;
-         return Ok(_mapper.Map<List<StudentDto>>(students));
+        List<StudentDto> studentTemp = new List<StudentDto>();
+        var students = _db.Students.AsNoTracking().Take(5000).Select(s => new
+        {
+            s.Id, s.Email,s.Name,s.StudentId
+        }).ToList();
+        foreach (var student in students)
+        {
+            studentTemp.Add(new StudentDto()
+            {
+                Id = student.Id,
+                Email = student.Email,
+                Name = student.Name,
+                StudentId = student.StudentId
+            });
+        }
+         return Ok(studentTemp);
     }
      
     [HttpGet("[action]")]

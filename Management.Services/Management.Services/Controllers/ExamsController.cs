@@ -41,6 +41,7 @@ public class ExamsController : ControllerBase
     }
     
     [HttpPost("[action]")]
+    [RequestSizeLimit(100_000_000)]
     public async Task<IActionResult> Upload([FromForm] FileModel file)
     {
         try

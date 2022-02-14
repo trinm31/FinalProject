@@ -1,5 +1,6 @@
 using AutoMapper;
 using Management.Services;
+using Management.Services.BackgroudService;
 using Management.Services.DbContext;
 using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
@@ -88,6 +89,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSingleton<IRabbitMQManagementMessageSender, RabbitMQManagementMessageSender>();
+
+builder.Services.AddHostedService<LongRunningService>();
+
+builder.Services.AddSingleton<BackgroundWorkerQueue>();
 
 var app = builder.Build();
 

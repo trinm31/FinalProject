@@ -46,8 +46,6 @@ const ListAllCourseTable = ( {studentLists,handleRemove, createQrCode , handleSe
                             <th className="w-30 p-3 text-sm font-semibold tracking-wide text-left">Student Id</th>
                             <th className="w-54 p-3 text-sm font-semibold tracking-wide text-left">Name</th>
                             <th className="w-34 p-3 text-sm font-semibold tracking-wide text-left">Email</th>
-                            <th className="w-134 p-3 text-sm font-semibold tracking-wide text-left">Qr</th>
-                            <th className="w-34 p-3 text-sm font-semibold tracking-wide text-left">Avatar</th>
                             <th className="p-3 text-sm font-semibold tracking-wide text-left">Action</th>
                         </tr>
                     </thead>
@@ -63,12 +61,6 @@ const ListAllCourseTable = ( {studentLists,handleRemove, createQrCode , handleSe
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                                     {student.email}
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    <img src={student.qr} height="300" width="300" alt=""/>
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    <img src={student.avatar? student.avatar: avatar} height="300" width="300" alt=""/>
                                 </td>
                                 <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
                                     <Link
