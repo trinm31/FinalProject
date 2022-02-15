@@ -27,7 +27,9 @@ const context = [
     "/api/StudentExams/Create",
     "/api/StudentExams/Edit",
     "/api/StudentExams/GetStudentExamById",
-    "/api/StudentExams/Upload"
+    "/api/StudentExams/Upload",
+    "/api/Setting/Update",
+    "/api/Setting/GetSetting"
 ];
 
 module.exports = function(app) {

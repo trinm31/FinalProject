@@ -19,5 +19,7 @@ namespace SchedulingGenerate.Services.DbContext
         public DbSet<StudentCourse> StudentCourses { get; set; }
         
         public DbSet<Result> Results { get; set; }
+
+        public DbSet<Setting> Settings { get; set; }
     }
 }

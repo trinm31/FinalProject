@@ -14,5 +14,6 @@ public class ApplicationDbContext: Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Student> Students { get; set; }  
     public DbSet<StudentExam> StudentExams { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
+    public DbSet<Setting> Settings { get; set; }
     
 }

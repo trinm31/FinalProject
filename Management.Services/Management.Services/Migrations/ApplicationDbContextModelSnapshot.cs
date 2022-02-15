@@ -103,6 +103,37 @@ namespace Management.Services.Migrations
                     b.ToTable("Schedules");
                 });
 
+            modelBuilder.Entity("Management.Services.Models.Setting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ConcurrencyLevelDefault")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExternalDistance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InternalDistance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NoOfTimeSlot")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("Management.Services.Models.Student", b =>
                 {
                     b.Property<int>("Id")

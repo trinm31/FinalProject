@@ -19,14 +19,14 @@ namespace SchedulingGenerate.Services.Controllers
     [Route("api/SchedulingGenerate")]
     public class SchedulingGenerateController: ControllerBase
     {
-        public static DateTime StartDate = DateTime.Today;
-        public static DateTime EndDate = DateTime.Today.AddDays(31);
+        public static DateTime StartDate;
+        public static DateTime EndDate;
         public static int MaxScheduleDays = (int)(EndDate - StartDate).TotalDays;
-        public static int NoOfTimeSlots = 4;
+        public static int NoOfTimeSlots;
         public static int[,] concurrencyLevel = new int[MaxScheduleDays,NoOfTimeSlots];
-        public static int ConcurrencyLevelDefault = 10;
-        public static int D2 = 1; // external distance 10 - 4 
-        public static int D1 = 1;
+        public static int ConcurrencyLevelDefault ;
+        public static int D2; // external distance 10 - 4 
+        public static int D1;
         public static HashSet<Student> Students = new HashSet<Student>();
         public static HashSet<StudentCourse> StudentCourses = new HashSet<StudentCourse>();
         public static HashSet<Course> CoursesDb = new HashSet<Course>();
@@ -90,6 +90,13 @@ namespace SchedulingGenerate.Services.Controllers
                 Students = db.Students.AsNoTracking().ToHashSet();
                 coursesDbTemp = db.Courses.AsNoTracking().ToHashSet();
                 StudentCoursesTemp = db.StudentCourses.AsNoTracking().ToHashSet();
+
+                StartDate = db.Settings.First().StartDate;
+                EndDate = db.Settings.First().EndDate;
+                ConcurrencyLevelDefault = db.Settings.First().ConcurrencyLevelDefault;
+                D1 = db.Settings.First().InternalDistance;
+                D2 = db.Settings.First().ExternalDistance;
+                NoOfTimeSlots = db.Settings.First().NoOfTimeSlot;
                 
                 var result = db.Results.ToList();
                 db.RemoveRange(result);

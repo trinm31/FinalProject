@@ -108,6 +108,10 @@ app.MapRemoteBffApiEndpoint("/api/StudentExams/GetStudentExamById", "https://loc
 
 app.MapRemoteBffApiEndpoint("/api/StudentExams/Upload", "https://localhost:7143/api/StudentExams/Upload",false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Setting/GetSetting", "https://localhost:7143/api/Setting/GetSetting",false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Setting/Update", "https://localhost:7143/api/Setting/Update",false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

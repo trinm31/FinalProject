@@ -24,6 +24,8 @@ import AllStudentExams       from "./pages/Admin/StudentExams/AllStudentExams";
 import CreateStudentExam     from "./pages/Admin/StudentExams/CreateStudentExam";
 import EditStudentExam       from "./pages/Admin/StudentExams/EditStudentExam";
 import UploadStudentExamFile from "./pages/Admin/StudentExams/UploadStudentExamFile";
+import AllSetting            from "./pages/Admin/Settings/AllSetting";
+import EditSetting           from "./pages/Admin/Settings/EditSetting";
 import { Home }              from './components/Home';
 import { UserSession }       from './components/UserSession';
 
@@ -73,6 +75,8 @@ const App = () => {
                 <AdminRoute exact path="/admin/studentExam" component={CreateStudentExam}/>
                 <AdminRoute exact path="/admin/studentExam/:id" component={EditStudentExam}/>
                 <AdminRoute exact path="/admin/studentExamUpload" component={UploadStudentExamFile}/>
+                <AdminRoute exact path="/admin/settings" component={AllSetting}/>
+                <AdminRoute exact path="/admin/setting" component={EditSetting}/>
             </Switch>
        </>
         

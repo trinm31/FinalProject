@@ -30,9 +30,11 @@ builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedu
 builder.Services.AddHostedService<RabbitMQSchedulingCrudCourseConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentCourseConsumer>();
+builder.Services.AddHostedService<RabbitMQSchedulingUpdateSettingConsumer>();
 builder.Services.AddSingleton(new ExamRepository(optionBuilder.Options));
 builder.Services.AddSingleton(new StudentRepository(optionBuilder.Options));
 builder.Services.AddSingleton(new StudentExamRepository(optionBuilder.Options));
+builder.Services.AddSingleton(new SettingRepository(optionBuilder.Options));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
