@@ -1,26 +1,27 @@
 import React, { useEffect, useState }     from "react";
 import { useSelector }                    from "react-redux";
-import { toast }                                            from "react-toastify";
-import { createStudentQr , getAllStudents , removeStudent } from "../../../functions/student";
-import ListAllStudentTable                                  from "../../../components/tables/ListAllStudentTable";
+import { toast }                                                                from "react-toastify";
+import { createStudentQr , paginationStudent , removeStudent } from "../../../functions/student";
+import ListAllStudentTable                                                      from "../../../components/tables/ListAllStudentTable";
 
 const AllStudents = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState([]);
+    const [page, setPage] = useState(1);
 
     //redux
     const { user } = useSelector((state) => ({ ...state }));
 
     useEffect(() => {
-        loadAllStudents();
-    }, []);
+        loadMoreStudents(page);
+    }, [page]);
 
-    const loadAllStudents = () =>{
+    const loadMoreStudents = (page) =>{
         setLoading(true);
-        getAllStudents().then((res)=> {
-            setStudents(res.data);
-            setFilter(res.data);
+        paginationStudent(page).then((res)=> {
+            setStudents([...students, ...res.data]);
+            setFilter([...students, ...res.data]);
             console.log(res.data);
             setLoading(false)}
         ).catch((err) => {
@@ -29,11 +30,21 @@ const AllStudents = () => {
         });
     }
 
+    const scrollToEnd = () => {
+        setPage(page + 1);
+    }
+
+    window.onscroll = function(){
+        if((window.innerHeight + Math.ceil(window.pageYOffset + 1)) >= document.body.offsetHeight){
+            scrollToEnd();
+        }
+    }
+
     const handleRemove = (id) => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeStudent(id)
                 .then((res) => {
-                    loadAllStudents();
+                    loadMoreStudents(page);
                     toast.error(`Item is deleted`);
                 })
                 .catch((err) => {
@@ -45,7 +56,7 @@ const AllStudents = () => {
 
     const createQrCode = () =>{
         createStudentQr() .then((res) => {
-            loadAllStudents();
+            loadMoreStudents(page);
             toast.success(`QR code is created`);
         })
             .catch((err) => {

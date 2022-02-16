@@ -5,7 +5,7 @@ import {AiOutlineSearch} from "react-icons/ai";
 const ListAllCourseTable = ( {courseLists,handleRemove, handleSearch}) => {
    
     return (
-        <div className="p-5 h-screen bg-gray-100">
+        <div className="p-5 bg-gray-100">
             <div className="grid grid-cols-3">
                 <div className="flex justify-start my-3 items-center">
                     <h1 className="text-xl mb-2">All Courses</h1>

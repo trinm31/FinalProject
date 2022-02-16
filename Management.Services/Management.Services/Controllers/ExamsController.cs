@@ -1,6 +1,7 @@
 using System.Text;
 using AutoMapper;
 using ExcelDataReader;
+using Management.Services.DbContext;
 using Management.Services.Dtos;
 using Management.Services.Messages;
 using Management.Services.Models;
@@ -24,13 +25,15 @@ public class ExamsController : ControllerBase
     private static string _fileName;
     private readonly IMapper _mapper;
     private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
+    private readonly ApplicationDbContext _db;
 
     public ExamsController(
         IWebHostEnvironment webHostEnvironment,
-        IUnitOfWork unitOfWork, 
+        IUnitOfWork unitOfWork,
         ILogger<ExamsController> logger,
         IMapper mapper,
-        IRabbitMQManagementMessageSender rabbitMqManagementMessageSender
+        IRabbitMQManagementMessageSender rabbitMqManagementMessageSender,
+        ApplicationDbContext db
     )
     {
         _webHostEnvironment = webHostEnvironment;
@@ -38,6 +41,19 @@ public class ExamsController : ControllerBase
         _logger = logger;
         _mapper = mapper;
         _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
+        _db = db;
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> StudentsPagination([FromQuery] PaginationDto paginationDto)
+    {
+        var values = _db.Exams
+            .OrderBy(x=>x.ExamId)
+            .Skip((paginationDto.PageNumber - 1) * paginationDto.PageSize)
+            .Take(paginationDto.PageSize)
+            .ToList();
+
+        return Ok(values);
     }
     
     [HttpPost("[action]")]

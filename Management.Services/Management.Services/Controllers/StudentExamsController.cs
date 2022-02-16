@@ -28,6 +28,7 @@ public class StudentExamsController : Controller
     private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
     private readonly BackgroundWorkerQueue _backgroundWorkerQueue;
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ApplicationDbContext _db;
 
     public StudentExamsController(
         IWebHostEnvironment webHostEnvironment,
@@ -36,7 +37,8 @@ public class StudentExamsController : Controller
         IMapper mapper,
         IRabbitMQManagementMessageSender rabbitMqManagementMessageSender,
         BackgroundWorkerQueue backgroundWorkerQueue, 
-        IServiceScopeFactory serviceScopeFactory
+        IServiceScopeFactory serviceScopeFactory,
+        ApplicationDbContext db
     )
     {
         _webHostEnvironment = webHostEnvironment;
@@ -46,8 +48,21 @@ public class StudentExamsController : Controller
         _rabbitMqManagementMessageSender = rabbitMqManagementMessageSender;
         _backgroundWorkerQueue = backgroundWorkerQueue;
         _serviceScopeFactory = serviceScopeFactory;
+        _db = db;
     }
-    
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> StudentExamPagination([FromQuery] PaginationDto paginationDto)
+    {
+        var values = _db.StudentExams
+            .OrderBy(x=>x.StudentId)
+            .Skip((paginationDto.PageNumber - 1) * paginationDto.PageSize)
+            .Take(paginationDto.PageSize)
+            .ToList();
+
+        return Ok(values);
+    }
+
     [HttpPost("[action]")]
     [RequestSizeLimit(100_000_000)]
     public async Task<IActionResult> Upload([FromForm] FileModel file)

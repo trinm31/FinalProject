@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useSelector }                from "react-redux";
-import { toast }                      from "react-toastify";
-import { getAllExams , removeCourse } from "../../../functions/exam";
-import ListAllCourseTable             from "../../../components/tables/ListAllCourseTable";
+import { toast }                                         from "react-toastify";
+import {paginationCourse , removeCourse } from "../../../functions/exam";
+import ListAllCourseTable                                from "../../../components/tables/ListAllCourseTable";
 
 const AllCourse = () => {
     const [courses, setCourses] = useState([]);
     const [filter, setFilter] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
     
     //redux
     const { user } = useSelector((state) => ({ ...state }));
 
     useEffect(() => {
-        loadAllCourses();
-    }, []);
+        console.log(page)
+        loadMoreCourses(page);
+    }, [page]);
     
-    const loadAllCourses = () =>{
+    const loadMoreCourses = (page) =>{
         setLoading(true);
-        getAllExams().then((res)=> {
-            setCourses(res.data);
-            setFilter(res.data);
+        paginationCourse(page).then((res)=> {
+            setCourses([...courses, ...res.data]);
+            setFilter([...courses, ...res.data]);
             console.log(res.data);
             setLoading(false)}
         ).catch((err) => {
             setLoading(false);
             console.log(err);
         });
+    }
+    
+    const scrollToEnd = () => {
+        setPage(page + 1);
+    }
+    
+    window.onscroll = function(){
+        if((window.innerHeight + Math.ceil(window.pageYOffset + 1)) >= document.body.offsetHeight){
+            scrollToEnd();
+        }
     }
 
     const handleSearch = e => {
@@ -47,7 +59,7 @@ const AllCourse = () => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeCourse(id)
                 .then((res) => {
-                    loadAllCourses();
+                    loadMoreCourses(page);
                     toast.error(`Item is deleted`);
                 })
                 .catch((err) => {

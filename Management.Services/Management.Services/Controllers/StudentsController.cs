@@ -129,6 +129,18 @@ public class StudentsController : ControllerBase
          return Ok();
         
     }
+    
+    [HttpGet("[action]")]
+    public async Task<IActionResult> StudentsPagination([FromQuery] PaginationDto paginationDto)
+    {
+        var values = _db.Students
+            .OrderBy(x=>x.StudentId)
+            .Skip((paginationDto.PageNumber - 1) * paginationDto.PageSize)
+            .Take(paginationDto.PageSize)
+            .ToList();
+
+        return Ok(values);
+    }
 
     private async Task<List<Student>> GetStudentList(string fName)
     {
@@ -210,7 +222,7 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> ListAllStudent()
     {
         List<StudentDto> studentTemp = new List<StudentDto>();
-        var students = _db.Students.AsNoTracking().Take(5000).Select(s => new
+        var students = _db.Students.AsNoTracking().Select(s => new
         {
             s.Id, s.Email,s.Name,s.StudentId
         }).ToList();

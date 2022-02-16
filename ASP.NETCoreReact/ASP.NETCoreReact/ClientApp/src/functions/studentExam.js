@@ -45,3 +45,10 @@ export const uploadStudentExam = async (file) =>
             'X-CSRF': '1'
         }
     });
+
+export const paginationStudentExam = async (page) =>
+    await axios.get(`api/StudentExams/StudentExamPagination?PageNumber=${page}&PageSize=25`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
