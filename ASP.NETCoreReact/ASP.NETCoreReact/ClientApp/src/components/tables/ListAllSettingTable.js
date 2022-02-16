@@ -1,8 +1,15 @@
-import React    from "react";
-import { Link } from "react-router-dom";
+import React            from "react";
+import { Link }         from "react-router-dom";
+import { removeCourse } from "../../functions/exam";
+import { toast }        from "react-toastify";
 
 const ListAllSettingTable = ( {setting}) => {
-
+    
+    const handleGenerate = () => {
+        if (window.confirm("Wait about one hour to get the results and do not slick 2 times")) {
+            return true;
+        }
+    };
     return (
         <div className="p-5 h-screen bg-gray-100">
             <div className="grid grid-cols-2">
@@ -14,6 +21,10 @@ const ListAllSettingTable = ( {setting}) => {
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" to="/admin/setting">
                         Update Setting
                     </Link>
+                    <a
+                        className="mx-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleGenerate} href="/api/SchedulingGenerate">
+                        Generate Schedule
+                    </a>
                 </div>
             </div>
 

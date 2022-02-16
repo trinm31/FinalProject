@@ -24,6 +24,7 @@ public class StudentExamsController : Controller
     private readonly ILogger _logger;
 
     private static string _fileName;
+    private static string _fileUrl;
     private readonly IMapper _mapper;
     private readonly IRabbitMQManagementMessageSender _rabbitMqManagementMessageSender;
     private readonly BackgroundWorkerQueue _backgroundWorkerQueue;
@@ -75,7 +76,7 @@ public class StudentExamsController : Controller
             }
             var separator = Path.DirectorySeparatorChar;
             string fileName = $"{_webHostEnvironment.WebRootPath}{separator}files{separator}{file.FileName}";
-
+            _fileUrl = fileName;
             _fileName = file.FileName.Split(".")[0];
 
             await using (FileStream fileStream = System.IO.File.Create(fileName))
@@ -175,7 +176,7 @@ public class StudentExamsController : Controller
              db.SaveChanges();
          }
          
-         FileInfo fileNeedToDeleted = new FileInfo(fName);
+         FileInfo fileNeedToDeleted = new FileInfo(_fileUrl);
             
          if (fileNeedToDeleted.Exists)
          {  

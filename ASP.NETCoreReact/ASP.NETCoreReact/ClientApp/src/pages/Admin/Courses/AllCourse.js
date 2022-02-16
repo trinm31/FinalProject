@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector }                from "react-redux";
-import { toast }                                         from "react-toastify";
+import { toast }                      from "react-toastify";
 import {paginationCourse , removeCourse } from "../../../functions/exam";
-import ListAllCourseTable                                from "../../../components/tables/ListAllCourseTable";
+import ListAllCourseTable             from "../../../components/tables/ListAllCourseTable";
 
 const AllCourse = () => {
     const [courses, setCourses] = useState([]);
