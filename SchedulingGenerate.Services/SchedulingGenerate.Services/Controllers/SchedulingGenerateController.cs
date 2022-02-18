@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace SchedulingGenerate.Services.Controllers
 {
     [ApiController]
     [Route("api/SchedulingGenerate")]
+    [Authorize(Roles = "Admin")]
     public class SchedulingGenerateController: ControllerBase
     {
         public static DateTime StartDate;

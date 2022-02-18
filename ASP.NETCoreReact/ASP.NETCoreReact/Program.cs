@@ -112,8 +112,7 @@ app.MapRemoteBffApiEndpoint("/api/Setting/GetSetting", "https://localhost:7143/a
 
 app.MapRemoteBffApiEndpoint("/api/Setting/Update", "https://localhost:7143/api/Setting/Update",false).RequireAccessToken();
 
-app.MapRemoteBffApiEndpoint("/api/SchedulingGenerate", "https://localhost:7065/api/SchedulingGenerate", false)
-    .AllowAnonymous();
+app.MapRemoteBffApiEndpoint("/api/SchedulingGenerate", "https://localhost:7065/api/SchedulingGenerate", false).RequireAccessToken();
 
 app.MapFallbackToFile("index.html");
 
