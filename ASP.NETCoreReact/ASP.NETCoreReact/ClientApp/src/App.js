@@ -28,7 +28,6 @@ import AllSetting            from "./pages/Admin/Settings/AllSetting";
 import EditSetting           from "./pages/Admin/Settings/EditSetting";
 import { Home }              from './components/Home';
 import { UserSession }       from './components/UserSession';
-import Testinfinityscroll    from "./pages/Testinfinityscroll";
 
 import './Index.css';
 
@@ -78,7 +77,6 @@ const App = () => {
                 <AdminRoute exact path="/admin/studentExamUpload" component={UploadStudentExamFile}/>
                 <AdminRoute exact path="/admin/settings" component={AllSetting}/>
                 <AdminRoute exact path="/admin/setting" component={EditSetting}/>
-                <Route exact path="/test" component={Testinfinityscroll} />
             </Switch>
        </>
         
