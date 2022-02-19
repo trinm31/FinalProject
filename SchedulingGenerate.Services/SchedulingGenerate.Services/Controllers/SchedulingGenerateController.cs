@@ -23,9 +23,9 @@ namespace SchedulingGenerate.Services.Controllers
     {
         public static DateTime StartDate;
         public static DateTime EndDate;
-        public static int MaxScheduleDays = (int)(EndDate - StartDate).TotalDays;
+        public static int MaxScheduleDays;
         public static int NoOfTimeSlots;
-        public static int[,] concurrencyLevel = new int[MaxScheduleDays,NoOfTimeSlots];
+        public static int[,] concurrencyLevel; 
         public static int ConcurrencyLevelDefault ;
         public static int D2; // external distance 10 - 4 
         public static int D1;
@@ -99,7 +99,10 @@ namespace SchedulingGenerate.Services.Controllers
                 D1 = db.Settings.First().InternalDistance;
                 D2 = db.Settings.First().ExternalDistance;
                 NoOfTimeSlots = db.Settings.First().NoOfTimeSlot;
-                
+                MaxScheduleDays = (EndDate - StartDate).Days;
+                concurrencyLevel = new int[MaxScheduleDays,NoOfTimeSlots];
+               
+                    
                 var result = db.Results.ToList();
                 db.RemoveRange(result);
                 db.SaveChanges();

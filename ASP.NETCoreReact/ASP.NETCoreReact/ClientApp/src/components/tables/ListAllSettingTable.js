@@ -1,13 +1,21 @@
-import React            from "react";
-import { Link }         from "react-router-dom";
-import { removeCourse } from "../../functions/exam";
-import { toast }        from "react-toastify";
+import React                from "react";
+import { Link }             from "react-router-dom";
+import { removeCourse }     from "../../functions/exam";
+import { toast }            from "react-toastify";
+import { generateSchedule } from "../../functions/setting";
 
 const ListAllSettingTable = ( {setting}) => {
     
     const handleGenerate = () => {
-        if (window.confirm("Wait about one hour to get the results and do not slick 2 times")) {
-            return true;
+        if (window.confirm("Wait about one hour to get the results and do not click 2 times")) {
+            generateSchedule().then(
+                (res)=>{
+                    toast.success("Generating Scheduling please wait");
+                    history.push("/admin/settings")
+                }
+            ).catch((err)=>{
+                console.log(err);
+            });
         }
     };
     return (
@@ -22,7 +30,7 @@ const ListAllSettingTable = ( {setting}) => {
                         Update Setting
                     </Link>
                     <a
-                        className="mx-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleGenerate} href="/api/SchedulingGenerate">
+                        className="mx-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleGenerate}>
                         Generate Schedule
                     </a>
                 </div>

@@ -16,3 +16,10 @@ export const editSetting = async (values) =>
             'X-CSRF': '1'
         }
     });
+
+export const generateSchedule = async () =>
+    await axios.get(`api/SchedulingGenerate`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
