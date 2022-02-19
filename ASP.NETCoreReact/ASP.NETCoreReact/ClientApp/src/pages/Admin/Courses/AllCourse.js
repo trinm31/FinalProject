@@ -1,53 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useSelector }                from "react-redux";
-import { toast }                      from "react-toastify";
-import {paginationCourse , removeCourse } from "../../../functions/exam";
-import ListAllCourseTable             from "../../../components/tables/ListAllCourseTable";
+import React , { useCallback , useEffect , useRef , useState } from "react";
+import { toast }                                               from "react-toastify";
+import {removeCourse }                      from "../../../functions/exam";
+import ListAllCourseTable                                      from "../../../components/tables/ListAllCourseTable";
+import useSearchBook                                           from "../../../Hooks/useSearchBook";
 
 const AllCourse = () => {
-    const [courses, setCourses] = useState([]);
     const [filter, setFilter] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-    
-    //redux
-    const { user } = useSelector((state) => ({ ...state }));
+    const { isLoading, error, courses, hasMore } = useSearchBook(page);
 
-    useEffect(() => {
-        console.log(page)
-        loadMoreCourses(page);
-    }, [page]);
-    
-    const loadMoreCourses = (page) =>{
-        setLoading(true);
-        paginationCourse(page).then((res)=> {
-            setCourses([...courses, ...res.data]);
-            setFilter([...courses, ...res.data]);
-            console.log(res.data);
-            setLoading(false)}
-        ).catch((err) => {
-            setLoading(false);
-            console.log(err);
-        });
-    }
-    
-    const scrollToEnd = () => {
-        setPage(page + 1);
-    }
-    
-    window.onscroll = function(){
-        if((window.innerHeight + Math.ceil(window.pageYOffset + 1)) >= document.body.offsetHeight){
-            scrollToEnd();
-        }
-    }
+    const observer = useRef();
+    const lastCourseElementRef = useCallback(
+        (node) => {
+            if (isLoading) return;
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage((prev) => prev + 1);
+                }
+            });
+            if (node) observer.current.observe(node);
+        },
+        [isLoading, hasMore]
+    );
 
     const handleSearch = e => {
         let target = e.target;
-        if(e.target.value === ""){
-            setFilter(courses)
-        }
-
-        let filteredData = courses.filter(x =>
+        let filteredData = filter.filter(x =>
             x.name.toLowerCase().includes(target.value)||
             x.examId.toLowerCase().includes(target.value) ||
             x.status === (target.value.toLowerCase() === "active") 
@@ -59,7 +38,6 @@ const AllCourse = () => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeCourse(id)
                 .then((res) => {
-                    loadMoreCourses(page);
                     toast.error(`Item is deleted`);
                 })
                 .catch((err) => {
@@ -71,12 +49,9 @@ const AllCourse = () => {
     
     return (
         <>
-            {loading ? (
-                <h4 className="text-danger">Loading...</h4>
-            ) : (
-                <ListAllCourseTable handleSearch={handleSearch} courseLists={filter} handleRemove={handleRemove}/>
-            )
-            }
+            <ListAllCourseTable lastCourseElementRef={lastCourseElementRef} handleSearch={handleSearch} courseLists={courses} handleRemove={handleRemove}/>
+            <div>{isLoading && "Loading..."}</div>
+            <div>{error && "Error..."}</div>
         </>
     );
 }

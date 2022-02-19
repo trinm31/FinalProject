@@ -1,9 +1,42 @@
 import React    from "react";
 import { Link } from "react-router-dom";
 import {AiOutlineSearch} from "react-icons/ai";
+import { List, AutoSizer } from "react-virtualized";
 
-const ListAllCourseTable = ( {courseLists,handleRemove, handleSearch}) => {
-   
+const ListAllCourseTable = ( {lastCourseElementRef,courseLists,handleRemove, handleSearch}) => {
+
+    const renderRow = ({ index, key, style }) => {
+        return (
+            <tr className="bg-white" key={}>
+                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    <a className="font-bold text-blue-500 hover:underline">{course.examId}</a>
+                </td>
+                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    {course.name}
+                </td>
+                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    {course.status ?
+                        (
+                            <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">Active</span>
+                        ):(
+                            <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-white-800 bg-red-200 rounded-lg bg-opacity-50">NonActive</span>
+                        )
+                    }
+                </td>
+                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
+                <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                    <Link
+                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
+                        Edit
+                    </Link>
+                    <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        );
+    
     return (
         <div className="p-5 bg-gray-100">
             <div className="grid grid-cols-3">
@@ -44,38 +77,74 @@ const ListAllCourseTable = ( {courseLists,handleRemove, handleSearch}) => {
                             <th className="p-3 text-sm font-semibold tracking-wide text-left">Action</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100" ref={lastCourseElementRef}>
                     {
-                        courseLists.map((course)=>(
-                            <tr className="bg-white" key={course.id}>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    <a className="font-bold text-blue-500 hover:underline">{course.examId}</a>
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    {course.name}
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    {course.status ?
-                                        (
-                                            <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">Active</span>
-                                        ):(
-                                            <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-white-800 bg-red-200 rounded-lg bg-opacity-50">NonActive</span>
-                                        )
-                                    }
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
-                                    <Link
-                                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
-                                        Edit
-                                    </Link>
-                                    <button
-                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
+                        courseLists.map((course,i)=>
+                        {
+                            if (course.length === i + 1) {
+                                return (
+                                    <tr className="bg-white" key={i}>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            <a className="font-bold text-blue-500 hover:underline">{course.examId}</a>
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {course.name}
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {course.status ?
+                                                (
+                                                    <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">Active</span>
+                                                ):(
+                                                    <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-white-800 bg-red-200 rounded-lg bg-opacity-50">NonActive</span>
+                                                )
+                                            }
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                                            <Link
+                                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
+                                                Edit
+                                            </Link>
+                                            <button
+                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            } else {
+                                return (
+                                    <tr className="bg-white" key={i}>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            <a className="font-bold text-blue-500 hover:underline">{course.examId}</a>
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {course.name}
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {course.status ?
+                                                (
+                                                    <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">Active</span>
+                                                ):(
+                                                    <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-white-800 bg-red-200 rounded-lg bg-opacity-50">NonActive</span>
+                                                )
+                                            }
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{course.description && course.description.substring(0, 40)}</td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                                            <Link
+                                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/course/${course.id}`}>
+                                                Edit
+                                            </Link>
+                                            <button
+                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(course.id)}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            }
+                        })
                     }
                     </tbody>
                 </table>
