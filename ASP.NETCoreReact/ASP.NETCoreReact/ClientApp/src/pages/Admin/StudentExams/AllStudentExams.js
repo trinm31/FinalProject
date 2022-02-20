@@ -1,45 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { useSelector }                from "react-redux";
-import { toast }                                                         from "react-toastify";
-import { getAllStudentExam , paginationStudentExam , removeStudentExam } from "../../../functions/studentExam";
+import React , { useCallback , useEffect , useRef , useState } from "react";
+import { toast }                                               from "react-toastify";
+import { removeStudentExam } from "../../../functions/studentExam";
 import ListAllStudentExamTable                                           from "../../../components/tables/ListAllStudentExamTable";
+import UseStudentCourse                                                  from "../../../Hooks/useStudentCourse";
 
 const AllStudentExam = () => {
     const [studentExams, setStudentExams] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState([]);
     const [page, setPage] = useState(1);
+    const { isLoading , error , hasMore } = UseStudentCourse(page , setFilter, setStudentExams);
 
-    //redux
-    const { user } = useSelector((state) => ({ ...state }));
-
-    useEffect(() => {
-        loadMoreStudentCourse(page);
-    }, [page]);
-
-    const loadMoreStudentCourse = (page) =>{
-        setLoading(true);
-        paginationStudentExam(page).then((res)=> {
-            setStudentExams([...studentExams, ...res.data]);
-            setFilter([...studentExams, ...res.data]);
-            console.log(res.data);
-            setLoading(false)}
-        ).catch((err) => {
-            setLoading(false);
-            console.log(err);
-        });
-    }
-
-    const scrollToEnd = () => {
-        setPage(page + 1);
-    }
-
-    window.onscroll = function(){
-        if((window.innerHeight + Math.ceil(window.pageYOffset + 1)) >= document.body.offsetHeight){
-            scrollToEnd();
-        }
-    }
-
+    const observer = useRef();
+    const lastCourseElementRef = useCallback(
+        ( node ) => {
+            if (isLoading) return;
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver(( entries ) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage(( prev ) => prev + 1);
+                }
+            });
+            if (node) observer.current.observe(node);
+        } ,
+        [isLoading , hasMore]
+    );
+    
     const handleSearch = e => {
         let target = e.target;
         if(e.target.value === ""){
@@ -57,7 +42,9 @@ const AllStudentExam = () => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeStudentExam(id)
                 .then((res) => {
-                    loadMoreStudentCourse(page);
+                    let studentCourseList = studentExams.filter(c=> c.id !== id);
+                    setFilter(studentCourseList);
+                    setStudentExams(studentCourseList);
                     toast.error(`Item is deleted`);
                 })
                 .catch((err) => {
@@ -69,12 +56,9 @@ const AllStudentExam = () => {
 
     return (
         <>
-            {loading ? (
-                <h4 className="text-danger">Loading...</h4>
-            ) : (
-                <ListAllStudentExamTable handleSearch={handleSearch} studentExamLists={filter} handleRemove={handleRemove}/>
-            )
-            }
+            <ListAllStudentExamTable lastCourseElementRef={lastCourseElementRef} handleSearch={handleSearch} studentExamLists={filter} handleRemove={handleRemove}/>
+            <div>{isLoading && "Loading..."}</div>
+            <div>{error && "Error..."}</div>
         </>
     );
 }

@@ -2,7 +2,7 @@ import React               from "react";
 import { Link }            from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 
-const ListAllStudentExamTable = ( {studentExamLists,handleRemove , handleSearch}) => {
+const ListAllStudentExamTable = ( { lastCourseElementRef, studentExamLists,handleRemove , handleSearch}) => {
 
     return (
         <div className="p-5 bg-gray-100">
@@ -42,30 +42,57 @@ const ListAllStudentExamTable = ( {studentExamLists,handleRemove , handleSearch}
                         <th className="p-3 text-sm font-semibold tracking-wide text-left">Action</th>
                     </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
                     {
-                        studentExamLists.map((studentCourse)=>(
-                            <tr className="bg-white" key={studentCourse.id}>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    <a className="font-bold text-blue-500 hover:underline">{studentCourse.examId}</a>
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                    {studentCourse.studentId}
-                                </td>
-                                <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
-                                    <Link
-                                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/studentExam/${studentCourse.id}`}>
-                                        Edit
-                                    </Link>
-                                    <button
-                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(studentCourse.id)}>
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
+                        studentExamLists.map(( studentCourse , i ) => {
+                            if (studentCourse.length === i + 1) {
+                                return (
+                                    <tbody key={i} className="divide-y divide-gray-100" ref={lastCourseElementRef}>
+                                    <tr className="bg-white" key={i}>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            <a className="font-bold text-blue-500 hover:underline">{studentCourse.examId}</a>
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {studentCourse.studentId}
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                                            <Link
+                                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/studentExam/${studentCourse.id}`}>
+                                                Edit
+                                            </Link>
+                                            <button
+                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(studentCourse.id)}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                );
+                            } else {
+                                return (
+                                    <tbody key={i} className="divide-y divide-gray-100" ref={lastCourseElementRef}>
+                                    <tr className="bg-white" key={i}>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            <a className="font-bold text-blue-500 hover:underline">{studentCourse.examId}</a>
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                                            {studentCourse.studentId}
+                                        </td>
+                                        <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
+                                            <Link
+                                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded" to={`/admin/studentExam/${studentCourse.id}`}>
+                                                Edit
+                                            </Link>
+                                            <button
+                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={()=> handleRemove(studentCourse.id)}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                );
+                            }
+                        })
                     }
-                    </tbody>
                 </table>
             </div>
 
