@@ -46,7 +46,6 @@ const ListAllCourseTable = ( { lastCourseElementRef , courseLists , handleRemove
                         <th className="p-3 text-sm font-semibold tracking-wide text-left">Action</th>
                     </tr>
                     </thead>
-
                     {
                         courseLists.map(( course , i ) => {
                             if (course.length === i + 1) {

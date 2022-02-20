@@ -1,50 +1,37 @@
-import React, { useEffect, useState }     from "react";
-import { useSelector }                    from "react-redux";
-import { toast }                                                                from "react-toastify";
-import { createStudentQr , paginationStudent , removeStudent } from "../../../functions/student";
-import ListAllStudentTable                                                      from "../../../components/tables/ListAllStudentTable";
+import React , { useCallback , useEffect , useRef , useState } from "react";
+import { toast }                                               from "react-toastify";
+import { createStudentQr , removeStudent } from "../../../functions/student";
+import ListAllStudentTable                                     from "../../../components/tables/ListAllStudentTable";
+import useStudent                                              from "../../../Hooks/useStudent";
 
 const AllStudents = () => {
     const [students, setStudents] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState([]);
     const [page, setPage] = useState(1);
-
-    //redux
-    const { user } = useSelector((state) => ({ ...state }));
-
-    useEffect(() => {
-        loadMoreStudents(page);
-    }, [page]);
-
-    const loadMoreStudents = (page) =>{
-        setLoading(true);
-        paginationStudent(page).then((res)=> {
-            setStudents([...students, ...res.data]);
-            setFilter([...students, ...res.data]);
-            console.log(res.data);
-            setLoading(false)}
-        ).catch((err) => {
-            setLoading(false);
-            console.log(err);
-        });
-    }
-
-    const scrollToEnd = () => {
-        setPage(page + 1);
-    }
-
-    window.onscroll = function(){
-        if((window.innerHeight + Math.ceil(window.pageYOffset + 1)) >= document.body.offsetHeight){
-            scrollToEnd();
-        }
-    }
+    const { isLoading , error , hasMore } = useStudent(page , setFilter, setStudents);
+    
+    const observer = useRef();
+    const lastStudentElementRef = useCallback(
+        ( node ) => {
+            if (isLoading) return;
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver(( entries ) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage(( prev ) => prev + 1);
+                }
+            });
+            if (node) observer.current.observe(node);
+        } ,
+        [isLoading , hasMore]
+    );
 
     const handleRemove = (id) => {
         if (window.confirm("Do You Want To Delete This Item?")) {
             removeStudent(id)
                 .then((res) => {
-                    loadMoreStudents(page);
+                    let courseList = students.filter(c=> c.id !== id);
+                    setFilter(courseList);
+                    setStudents(courseList);
                     toast.error(`Item is deleted`);
                 })
                 .catch((err) => {
@@ -56,7 +43,7 @@ const AllStudents = () => {
 
     const createQrCode = () =>{
         createStudentQr() .then((res) => {
-            loadMoreStudents(page);
+            Window.location.reload();
             toast.success(`QR code is created`);
         })
             .catch((err) => {
@@ -81,12 +68,9 @@ const AllStudents = () => {
 
     return (
         <>
-            {loading ? (
-                <h4 className="text-danger">Loading...</h4>
-            ) : (
-                <ListAllStudentTable handleSearch={handleSearch} studentLists={filter} handleRemove={handleRemove} createQrCode={createQrCode}/>
-            )
-            }
+            <ListAllStudentTable lastStudentElementRef={lastStudentElementRef} handleSearch={handleSearch} studentLists={filter} handleRemove={handleRemove} createQrCode={createQrCode}/>
+            <div>{isLoading && "Loading..."}</div>
+            <div>{error && "Error..."}</div>
         </>
     );
 }

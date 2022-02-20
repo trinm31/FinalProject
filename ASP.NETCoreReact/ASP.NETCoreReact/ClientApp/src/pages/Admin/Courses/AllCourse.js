@@ -3,8 +3,6 @@ import { toast }                                               from "react-toast
 import { removeCourse }                                        from "../../../functions/exam";
 import ListAllCourseTable  from "../../../components/tables/ListAllCourseTable";
 import useCourse           from "../../../Hooks/useCourse.js";
-import { AiOutlineSearch } from "react-icons/ai";
-import { Link }                                                from "react-router-dom";
 
 const AllCourse = () => {
     const [page , setPage] = useState(1);

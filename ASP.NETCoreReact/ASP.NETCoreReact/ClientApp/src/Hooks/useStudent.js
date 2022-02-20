@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function useCourse( pageNum, setFilter, setCourses) {
+function useStudent( pageNum, setFilter, setStudents) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
-   
+
     const [hasMore, setHasMore] = useState(false);
-    
+
     useEffect(() => {
         const CancelToken = axios.CancelToken;
         let cancel;
@@ -15,11 +15,11 @@ function useCourse( pageNum, setFilter, setCourses) {
         setError(false);
 
         axios
-            .get(`api/Exams/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`api/Students/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
                 cancelToken: new CancelToken((c) => (cancel = c))
             })
             .then((res) => {
-                setCourses(( prev) => {
+                setStudents(( prev) => {
                     return [...new Set([...prev, ...res.data])];
                 });
                 setFilter(( prev) => {
@@ -40,4 +40,4 @@ function useCourse( pageNum, setFilter, setCourses) {
     return { isLoading, error, hasMore };
 }
 
-export default useCourse;
+export default useStudent;
