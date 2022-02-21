@@ -30,7 +30,8 @@ const context = [
     "/api/StudentExams/Upload",
     "/api/Setting/Update",
     "/api/Setting/GetSetting",
-    "/api/SchedulingGenerate"
+    "/api/SchedulingGenerate",
+    "/api/Schedule/GetAll"
 ];
 
 module.exports = function(app) {

@@ -54,11 +54,11 @@ const Header = () => {
                     >
                         <Link to="/" className="hover:text-white">Home</Link>
                     </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/user-session" className="hover:text-white">User Session</Link>
-                    </div>
+                    {/*<div*/}
+                    {/*    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"*/}
+                    {/*>*/}
+                    {/*    <Link to="/user-session" className="hover:text-white">User Session</Link>*/}
+                    {/*</div>*/}
                     <div
                         className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
                     >
@@ -73,6 +73,11 @@ const Header = () => {
                         className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
                     >
                         <Link to="/admin/students" className="hover:text-white">All Students</Link>
+                    </div>
+                    <div
+                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                    >
+                        <Link to="/admin/schedules" className="hover:text-white">Schedule</Link>
                     </div>
                     <div
                         className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"

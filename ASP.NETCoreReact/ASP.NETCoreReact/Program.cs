@@ -114,6 +114,8 @@ app.MapRemoteBffApiEndpoint("/api/Setting/Update", "https://localhost:7143/api/S
 
 app.MapRemoteBffApiEndpoint("/api/SchedulingGenerate", "https://localhost:7065/api/SchedulingGenerate", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Schedule/GetAll", "https://localhost:7143/api/Schedule/GetAll", false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();
