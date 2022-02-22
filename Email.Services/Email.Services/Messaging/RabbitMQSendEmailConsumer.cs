@@ -13,7 +13,7 @@ using ContentType = MimeKit.ContentType;
 
 namespace Email.Services.Messaging;
 
-public class RabbitMQPaymentConsumer: BackgroundService
+public class RabbitMQSendEmailConsumer: BackgroundService
 {
     private IConnection _connection;
     private IModel _channel;
@@ -23,7 +23,7 @@ public class RabbitMQPaymentConsumer: BackgroundService
     string queueName = "";
     private readonly SendMailService _sendMailService;
 
-    public RabbitMQPaymentConsumer(EmailRepository emailRepo, SendMailService sendMailService)
+    public RabbitMQSendEmailConsumer(EmailRepository emailRepo, SendMailService sendMailService)
     {
         _emailRepo = emailRepo;
         _sendMailService = sendMailService;
