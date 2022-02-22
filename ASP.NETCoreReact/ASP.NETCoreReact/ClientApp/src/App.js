@@ -27,7 +27,7 @@ import UploadStudentExamFile from "./pages/Admin/StudentExams/UploadStudentExamF
 import AllSetting            from "./pages/Admin/Settings/AllSetting";
 import EditSetting           from "./pages/Admin/Settings/EditSetting";
 import SchedulePage          from "./pages/Admin/Schedules/";
-import { Home }              from './components/Home';
+import Home             from './components/Home';
 import { UserSession }       from './components/UserSession';
 
 import './Index.css';

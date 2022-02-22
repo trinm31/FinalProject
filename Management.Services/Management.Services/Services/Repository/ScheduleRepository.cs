@@ -33,6 +33,7 @@ public class ScheduleRepository : IScheduleRepository
 
     public async Task<ScheduleDto> GetAll()
     {
+        // TODO: Refactor depend on time slot not fix j value
         await using var _db = new ApplicationDbContext(_dbContext);
         var schedules = _db.Schedules.OrderBy(x=> x.Date).ToList();
         var setting = _db.Settings.First();
