@@ -102,6 +102,8 @@ optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCon
 
 builder.Services.AddSingleton(new ScheduleRepository(optionBuilder.Options));
 
+builder.Services.AddSingleton(new RoomRepository(optionBuilder.Options));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
