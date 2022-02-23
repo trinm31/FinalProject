@@ -13,8 +13,9 @@ public class RabbitMQSchedulingResultConsumer : Microsoft.Extensions.Hosting.Bac
     private IConnection _connection;
     private IModel _channel;
     private readonly ScheduleRepository _scheduleRepository;
+    private readonly RoomRepository _roomRepository;
 
-    public RabbitMQSchedulingResultConsumer(ScheduleRepository scheduleRepository)
+    public RabbitMQSchedulingResultConsumer(ScheduleRepository scheduleRepository, RoomRepository roomRepository)
     {
         //Todo: clean here
         var factory = new ConnectionFactory
@@ -25,6 +26,7 @@ public class RabbitMQSchedulingResultConsumer : Microsoft.Extensions.Hosting.Bac
         };
 
         _scheduleRepository = scheduleRepository;
+        _roomRepository = roomRepository;
         
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
@@ -53,6 +55,7 @@ public class RabbitMQSchedulingResultConsumer : Microsoft.Extensions.Hosting.Bac
         if (schedulingResultRequestDto.MethodType == "create")
         {
             List<Schedule> schedules = new List<Schedule>();
+            List<Room> rooms = new List<Room>();
             foreach (var result in schedulingResultRequestDto.ResultList)
             {
                 schedules.Add(new Schedule()
@@ -62,9 +65,16 @@ public class RabbitMQSchedulingResultConsumer : Microsoft.Extensions.Hosting.Bac
                     Date = result.Date,
                     Slot = result.Slot
                 });
+                
+                rooms.Add(new Room()
+                {
+                    CourseId = result.CourseId,
+                    Name = result.CourseId
+                });
             }
 
             await _scheduleRepository.CreateRange(schedules);
+            await _roomRepository.CreateRange(rooms);
         }
         
         

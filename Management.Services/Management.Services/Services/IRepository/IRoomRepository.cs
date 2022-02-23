@@ -9,4 +9,5 @@ public interface IRoomRepository
     Task<Room> Read(int id);
     Task Create(Room room);
     Task Delete(int id);
+    Task CreateRange(List<Room> rooms);
 }

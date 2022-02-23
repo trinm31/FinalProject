@@ -20,8 +20,8 @@ public class CheckQrController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpPost]
-    public async Task<IActionResult> GetQrCode([FromBody] string studentId)
+    [HttpGet("[action]/{studentId}")]
+    public async Task<IActionResult> GetQrCode(string studentId)
     {
         var getStudentQr = await _unitOfWork.Student.GetFirstOrDefaultAsync(e => e.StudentId == studentId);
         

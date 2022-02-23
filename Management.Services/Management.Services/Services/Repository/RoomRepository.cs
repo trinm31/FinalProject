@@ -69,4 +69,11 @@ public class RoomRepository: IRoomRepository
             _db.SaveChanges();
         }
     }
+
+    public async Task CreateRange(List<Room> rooms)
+    {
+        await using var _db = new ApplicationDbContext(_dbContext);
+        await _db.Rooms.AddRangeAsync(rooms);
+        _db.SaveChanges();
+    }
 }
