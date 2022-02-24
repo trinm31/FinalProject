@@ -31,7 +31,13 @@ const context = [
     "/api/Setting/Update",
     "/api/Setting/GetSetting",
     "/api/SchedulingGenerate",
-    "/api/Schedule/GetAll"
+    "/api/Schedule/GetAll",
+    "/api/Rooms/GetAll",
+    "/api/Rooms",
+    "/api/Rooms/Create",
+    "/api/Rooms/Edit",
+    "/api/Rooms/GetRoomById",
+    "/api/Rooms/RoomsPagination"
 ];
 
 module.exports = function(app) {

@@ -29,9 +29,10 @@ public class RoomRepository: IRoomRepository
         if (roomDb != null)
         {
             var nameCheck = _db.Rooms.Where(r => r.Name == room.Name && r.Id != room.Id).ToList();
-            if (nameCheck == null)
+            if (!nameCheck.Any())
             {
-                _db.Rooms.Update(room);
+                roomDb.Name = room.Name;
+                _db.Rooms.Update(roomDb);
                 _db.SaveChanges();
             }
         }
@@ -47,15 +48,11 @@ public class RoomRepository: IRoomRepository
     public async Task Create(Room room)
     {
         await using var _db = new ApplicationDbContext(_dbContext);
-        var roomDb = _db.Rooms.Find(room.Id);
-        if (roomDb != null)
+        var nameCheck = _db.Rooms.Where(r => r.Name == room.Name).ToList();
+        if (!nameCheck.Any())
         {
-            var nameCheck = _db.Rooms.Where(r => r.Name == room.Name).ToList();
-            if (nameCheck == null)
-            {
-                _db.Rooms.Add(room);
-                _db.SaveChanges();
-            }
+            _db.Rooms.Add(room);
+            _db.SaveChanges();
         }
     }
 

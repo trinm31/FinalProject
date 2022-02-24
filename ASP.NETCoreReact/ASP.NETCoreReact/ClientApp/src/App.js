@@ -27,7 +27,10 @@ import UploadStudentExamFile from "./pages/Admin/StudentExams/UploadStudentExamF
 import AllSetting            from "./pages/Admin/Settings/AllSetting";
 import EditSetting           from "./pages/Admin/Settings/EditSetting";
 import SchedulePage          from "./pages/Admin/Schedules/";
-import Home             from './components/Home';
+import Home                  from './components/Home';
+import AllRooms              from "./pages/Admin/Rooms/AllRooms";
+import CreateRoom            from "./pages/Admin/Rooms/CreateRoom";
+import EditRoom              from "./pages/Admin/Rooms/EditRoom";
 import { UserSession }       from './components/UserSession';
 
 import './Index.css';
@@ -80,6 +83,9 @@ const App = () => {
                 <AdminRoute exact path="/admin/settings" component={AllSetting}/>
                 <AdminRoute exact path="/admin/setting" component={EditSetting}/>
                 <AdminRoute exact path="/admin/schedules" component={SchedulePage}/>
+                <AdminRoute exact path="/admin/rooms" component={AllRooms}/>
+                <AdminRoute exact path="/admin/room" component={CreateRoom}/>
+                <AdminRoute exact path="/admin/room/:id" component={EditRoom}/>
             </Switch>
        </>
         

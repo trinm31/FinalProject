@@ -116,6 +116,18 @@ app.MapRemoteBffApiEndpoint("/api/SchedulingGenerate", "https://localhost:7065/a
 
 app.MapRemoteBffApiEndpoint("/api/Schedule/GetAll", "https://localhost:7143/api/Schedule/GetAll", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Rooms/GetAll", "https://localhost:7143/api/Rooms/GetAll", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Rooms", "https://localhost:7143/api/Rooms", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Rooms/Create", "https://localhost:7143/api/Rooms/Create", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Rooms/Edit", "https://localhost:7143/api/Rooms/Edit", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Rooms/GetRoomById", "https://localhost:7143/api/Rooms/GetRoomById", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Rooms/RoomsPagination", "https://localhost:7143/api/Rooms/RoomsPagination", false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

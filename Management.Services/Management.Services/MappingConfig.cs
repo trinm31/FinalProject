@@ -21,6 +21,8 @@ public class MappingConfig
              config.CreateMap<Exam, ExamCreateDto>();
              config.CreateMap<StudentExamDto, StudentExam>();
              config.CreateMap<StudentExam, StudentExamDto>();
+             config.CreateMap<Room, RoomDto>();
+             config.CreateMap<RoomDto, Room>();
         });
 
         return mappingConfig;
