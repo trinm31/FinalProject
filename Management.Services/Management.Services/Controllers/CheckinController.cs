@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using Abp.Extensions;
 using AutoMapper;
 using ClosedXML.Excel;
@@ -30,20 +31,22 @@ public class CheckinController : ControllerBase
     }
 
     [HttpGet("[action]/{studentId}/{roomId:int}")]
-    public async Task<IActionResult> CheckIn(string studentId,int roomId)
+    public async Task<IActionResult> CheckInConfirm(string studentId,int roomId)
     {
         if (studentId == null || roomId == null)
         {
             return Ok(new { success = false, data = "StudentId or RoomId is null" });
         }
+
+        var studentIdEncode = Decrypt(HttpUtility.UrlDecode(studentId));
         
-        var studentInDb = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == Decrypt(studentId));
+        var studentInDb = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == studentIdEncode);
 
         var roomInDb = _db.Rooms.Find(roomId);
 
         if (studentInDb != null && roomInDb != null)
         {
-            var studentRoomValid = _db.Checkins.Where(x => x.StudentId == studentId && x.RoomId == roomId);
+            var studentRoomValid = _db.Checkins.Where(x => x.StudentId == studentIdEncode && x.RoomId == roomId);
 
             if (studentRoomValid.Any())
             {
@@ -53,17 +56,31 @@ public class CheckinController : ControllerBase
             _db.Checkins.Add(new Checkin()
             {
                 RoomId = roomId,
-                StudentId = studentId
+                StudentId = studentIdEncode
             });
+            
+            _db.SaveChanges();
             
             return Ok(new { success = true, studentId = studentInDb.StudentId ,studentName = studentInDb.Name, studentAva = studentInDb.Avatar });
         }
 
         return Ok(new { success = false, data = "StudentId or RoomId is invalid" });
     }
+    
+    [HttpGet("[action]/{studentId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CheckIn(string studentId)
+    {
+        var studentInDb = await _unitOfWork.Student.GetFirstOrDefaultAsync(s => s.StudentId == Decrypt(HttpUtility.UrlDecode(studentId)));
 
-    [HttpPost("[action]")]
-    public static string Decrypt([FromBody] string cipherText)
+        if (studentInDb == null)
+        {
+            return NotFound();
+        }
+        return Ok(new { studentId = studentInDb.StudentId ,studentName = studentInDb.Name, studentAva = studentInDb.Avatar });
+    }
+    
+    private string Decrypt(string cipherText)
     {
         try
         {

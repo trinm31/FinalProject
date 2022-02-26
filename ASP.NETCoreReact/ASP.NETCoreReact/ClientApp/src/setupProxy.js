@@ -37,7 +37,10 @@ const context = [
     "/api/Rooms/Create",
     "/api/Rooms/Edit",
     "/api/Rooms/GetRoomById",
-    "/api/Rooms/RoomsPagination"
+    "/api/Rooms/RoomsPagination",
+    "/api/Checkin/CheckIn",
+    "/api/Checkin/CheckInConfirm"
+    
 ];
 
 module.exports = function(app) {

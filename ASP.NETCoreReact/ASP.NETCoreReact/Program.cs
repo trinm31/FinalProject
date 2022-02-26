@@ -128,6 +128,10 @@ app.MapRemoteBffApiEndpoint("/api/Rooms/GetRoomById", "https://localhost:7143/ap
 
 app.MapRemoteBffApiEndpoint("/api/Rooms/RoomsPagination", "https://localhost:7143/api/Rooms/RoomsPagination", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Checkin/CheckInConfirm", "https://localhost:7143/api/Checkin/CheckInConfirm", false).RequireAccessToken();
+
+app.MapRemoteBffApiEndpoint("/api/Checkin/CheckIn", "https://localhost:7143/api/Checkin/CheckIn", false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

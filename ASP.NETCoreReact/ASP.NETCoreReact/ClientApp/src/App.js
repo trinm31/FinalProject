@@ -31,13 +31,10 @@ import Home                  from './components/Home';
 import AllRooms              from "./pages/Admin/Rooms/AllRooms";
 import CreateRoom            from "./pages/Admin/Rooms/CreateRoom";
 import EditRoom              from "./pages/Admin/Rooms/EditRoom";
+import CheckinQr             from "./pages/Admin/Rooms/CheckinQr";
 import { UserSession }       from './components/UserSession';
 
 import './Index.css';
-
-
-
-
 
 const App = () => {
 
@@ -86,6 +83,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/rooms" component={AllRooms}/>
                 <AdminRoute exact path="/admin/room" component={CreateRoom}/>
                 <AdminRoute exact path="/admin/room/:id" component={EditRoom}/>
+                <AdminRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
             </Switch>
        </>
         

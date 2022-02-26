@@ -98,11 +98,13 @@ const Header = () => {
                     )
                     }
                     {!user&&(
-                        <div
-                            className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                        >
-                            <a href="/bff/login" className="hover:text-white">Log In</a>
-                        </div>
+                        <>
+                            <div
+                                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                            >
+                                <a href="/bff/login" className="hover:text-white">Log In</a>
+                            </div>
+                        </>
                     )
                     }
                 </div>
