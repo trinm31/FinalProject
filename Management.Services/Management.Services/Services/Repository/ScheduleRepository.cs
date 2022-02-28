@@ -180,7 +180,9 @@ public class ScheduleRepository : IScheduleRepository
                     @event.Id = id;
                     foreach (var exam  in noOfExamInOneDay)
                     {
-                        @event.Title += " " + exam.CourseId;
+                        var title = _db.Exams.Where(e => e.ExamId.Substring(0, 7) == exam.CourseId).FirstOrDefault()
+                            .Name;
+                        @event.Title += " " + title;
                     }
                     @event.Start = date.AddHours(7);
                     @event.End = date.AddHours(9);
@@ -199,7 +201,9 @@ public class ScheduleRepository : IScheduleRepository
                     @event.Id = id;
                     foreach (var exam  in noOfExamInOneDay)
                     {
-                        @event.Title += " " + exam.CourseId;
+                        var title = _db.Exams.Where(e => e.ExamId.Substring(0, 7) == exam.CourseId).FirstOrDefault()
+                            .Name;
+                        @event.Title += " " + title;
                     }
                     @event.Start = date.AddHours(9).AddMinutes(30);
                     @event.End = date.AddHours(11).AddMinutes(30);
@@ -219,7 +223,9 @@ public class ScheduleRepository : IScheduleRepository
                     @event.Id = id;
                     foreach (var exam  in noOfExamInOneDay)
                     {
-                        @event.Title += " " + exam.CourseId;
+                        var title = _db.Exams.Where(e => e.ExamId.Substring(0, 7) == exam.CourseId).FirstOrDefault()
+                            .Name;
+                        @event.Title += " " + title;
                     }
                     @event.Start = date.AddHours(13);
                     @event.End = date.AddHours(15);
@@ -239,7 +245,9 @@ public class ScheduleRepository : IScheduleRepository
                     @event.Id = id;
                     foreach (var exam  in noOfExamInOneDay)
                     {
-                        @event.Title += " " + exam.CourseId;
+                        var title = _db.Exams.Where(e => e.ExamId.Substring(0, 7) == exam.CourseId).FirstOrDefault()
+                            .Name;
+                        @event.Title += " " + title;
                     }
                     @event.Start = date.AddHours(15).AddMinutes(30);
                     @event.End = date.AddHours(17).AddMinutes(30);

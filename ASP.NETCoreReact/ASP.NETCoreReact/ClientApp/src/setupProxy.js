@@ -48,7 +48,10 @@ const context = [
 module.exports = function(app) {
   const appProxy = createProxyMiddleware(context, { 
     target: target,
-    secure: false
+    secure: false, 
+      headers: {
+          Connection: 'keep-alive'
+      }
   });
 
   app.use(appProxy);
