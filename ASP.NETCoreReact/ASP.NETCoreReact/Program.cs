@@ -132,6 +132,8 @@ app.MapRemoteBffApiEndpoint("/api/Checkin/CheckInConfirm", "https://localhost:71
 
 app.MapRemoteBffApiEndpoint("/api/Checkin/CheckIn", "https://localhost:7143/api/Checkin/CheckIn", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/CheckQr/GetQrCode", "https://localhost:7143/api/CheckQr/GetQrCode", false).AllowAnonymous();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

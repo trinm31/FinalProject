@@ -24,15 +24,17 @@ import AllStudentExams       from "./pages/Admin/StudentExams/AllStudentExams";
 import CreateStudentExam     from "./pages/Admin/StudentExams/CreateStudentExam";
 import EditStudentExam       from "./pages/Admin/StudentExams/EditStudentExam";
 import UploadStudentExamFile from "./pages/Admin/StudentExams/UploadStudentExamFile";
-import AllSetting            from "./pages/Admin/Settings/AllSetting";
-import EditSetting           from "./pages/Admin/Settings/EditSetting";
-import SchedulePage          from "./pages/Admin/Schedules/";
-import Home                  from './components/Home';
-import AllRooms              from "./pages/Admin/Rooms/AllRooms";
-import CreateRoom            from "./pages/Admin/Rooms/CreateRoom";
-import EditRoom              from "./pages/Admin/Rooms/EditRoom";
-import CheckinQr             from "./pages/Admin/Rooms/CheckinQr";
-import { UserSession }       from './components/UserSession';
+import AllSetting      from "./pages/Admin/Settings/AllSetting";
+import EditSetting     from "./pages/Admin/Settings/EditSetting";
+import SchedulePage    from "./pages/Admin/Schedules/";
+import Home            from './components/Home';
+import AllRooms        from "./pages/Admin/Rooms/AllRooms";
+import CreateRoom      from "./pages/Admin/Rooms/CreateRoom";
+import EditRoom        from "./pages/Admin/Rooms/EditRoom";
+import CheckinQr       from "./pages/Admin/Rooms/CheckinQr";
+import SearchInfo      from "./pages/Student/SearchInfo";
+import StudentSchedule from "./pages/Student/StudentSchedule";
+import { UserSession } from './components/UserSession';
 
 import './Index.css';
 
@@ -84,6 +86,8 @@ const App = () => {
                 <AdminRoute exact path="/admin/room" component={CreateRoom}/>
                 <AdminRoute exact path="/admin/room/:id" component={EditRoom}/>
                 <AdminRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
+                <Route exact path="/student" component={SearchInfo} />
+                <Route exact path="/student/schedule/:id" component={StudentSchedule} />
             </Switch>
        </>
         

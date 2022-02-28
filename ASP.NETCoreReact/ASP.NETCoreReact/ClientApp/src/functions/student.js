@@ -59,3 +59,10 @@ export const paginationStudent = async (page) =>
             'X-CSRF': '1'
         }
     });
+
+export const getStudentQr = async (id) =>
+    await axios.get(`api/CheckQr/GetQrCode/${id}`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });

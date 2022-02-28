@@ -39,7 +39,8 @@ const context = [
     "/api/Rooms/GetRoomById",
     "/api/Rooms/RoomsPagination",
     "/api/Checkin/CheckIn",
-    "/api/Checkin/CheckInConfirm"
+    "/api/Checkin/CheckInConfirm",
+    "/api/CheckQr/GetQrCode"
     
 ];
 
