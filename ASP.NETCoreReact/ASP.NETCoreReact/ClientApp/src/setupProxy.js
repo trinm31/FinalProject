@@ -40,7 +40,8 @@ const context = [
     "/api/Rooms/RoomsPagination",
     "/api/Checkin/CheckIn",
     "/api/Checkin/CheckInConfirm",
-    "/api/CheckQr/GetQrCode"
+    "/api/CheckQr/GetQrCode",
+    "/api/Schedule/GetByStudentId"
     
 ];
 

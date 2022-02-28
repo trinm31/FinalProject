@@ -8,3 +8,12 @@ export const getAllSchedule = async () => {
             }
         });
 };
+
+export const getScheduleByStudentId = async (id) => {
+    return await axios.get(`api/Schedule/GetByStudentId/${id}`,
+        {
+            headers: {
+                'X-CSRF': '1'
+            }
+        });
+};

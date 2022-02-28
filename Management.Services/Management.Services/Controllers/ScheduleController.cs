@@ -36,4 +36,12 @@ public class ScheduleController : ControllerBase
         return Ok(values);
     }
     
+    [HttpGet("[action]/{studentId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetByStudentId(string studentId)
+    {
+        var values = await _scheduleRepository.GetByStudentId(studentId);
+        return Ok(values);
+    }
+    
 }
