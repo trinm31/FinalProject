@@ -26,27 +26,32 @@ body {
 
 .landing-page {
     position: relative;
-    background-color: #FFF;
+    height: 92vh;
+    background-image: url("../public/banner-01.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .landing-page .info {
-    width: 35%;
+    width: 55%;
     float: left;
-    margin-top: 130px;
+    margin-top: 100px;
 }
 
 .landing-page .info h1 {
-    font-size: 44px;
+    font-size: 50px;
+    font-weight: 900;
     margin: 0 0 20px;
     line-height: 1.4;
-    color: #5d5d5d;
+    color: #006124;
 }
 
 .landing-page .info p {
     margin: 0;
     line-height: 1.6;
-    font-size: 15px;
-    color: #5d5d5d;
+    font-size: 25px;
+    color: #006124;
 }
 
 .landing-page .info button {
@@ -56,17 +61,13 @@ body {
     margin-top: 30px;
     cursor: pointer;
     color: #FFF;
-    background-color: #6c63ff;
+    background-color: #006124;
 }
 
-.landing-page .image {
-    width: 50%;
-    float: right;
-    margin-top: 35px;
-}
-
-.landing-page .image img {
-    max-width: 100%;
+.landing-page .info button:hover {
+    cursor: pointer;
+    color: #FFF;
+    background-color: #169c05;
 }
 
 .clearfix {

@@ -1,11 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState} from "react";
 
 import { AiFillSchedule,AiOutlineBars } from "react-icons/ai";
 import { Link } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-
 
 const Header = () => {
 
@@ -13,8 +10,6 @@ const Header = () => {
     
     let dispatch = useDispatch();
     let { user } = useSelector((state) => ({ ...state }));
-
-    let history = useHistory();
 
     const logout = () => {
        
@@ -49,51 +44,47 @@ const Header = () => {
                 <div
                     className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto"
                 >
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/" className="hover:text-white">Home</Link>
-                    </div>
-                    {/*<div*/}
-                    {/*    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"*/}
-                    {/*>*/}
-                    {/*    <Link to="/user-session" className="hover:text-white">User Session</Link>*/}
-                    {/*</div>*/}
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/student" className="hover:text-white">Student Check</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/rooms" className="hover:text-white">Rooms</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/studentExams" className="hover:text-white">Student Exams</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/courses" className="hover:text-white">All Courses</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/students" className="hover:text-white">All Students</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/schedules" className="hover:text-white">Schedule</Link>
-                    </div>
-                    <div
-                        className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
-                    >
-                        <Link to="/admin/settings" className="hover:text-white">Setting Schedule</Link>
-                    </div>
+                    {
+                        user&&(
+                            <div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/" className="hover:text-white">Home</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/rooms" className="hover:text-white">Rooms</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/studentExams" className="hover:text-white">Student Exams</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/courses" className="hover:text-white">All Courses</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/students" className="hover:text-white">All Students</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/schedules" className="hover:text-white">Schedule</Link>
+                                </div>
+                                <div
+                                    className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                >
+                                    <Link to="/admin/settings" className="hover:text-white">Setting Schedule</Link>
+                                </div>
+                            </div>
+                        )
+                    }
                     {user&&(
                         <div
                             className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"

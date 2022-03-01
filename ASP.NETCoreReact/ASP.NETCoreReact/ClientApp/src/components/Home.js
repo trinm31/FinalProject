@@ -1,4 +1,5 @@
 import React  from "react";
+import { Link } from "react-router-dom";
 
 const Home = () =>{
         return (
@@ -6,13 +7,13 @@ const Home = () =>{
                 <div className="landing-page">
                     <div className="container">
                         <div className="info">
-                            <h1>Looking For Inspiration</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus odit nihil ullam
-                                nesciunt quidem iste, Repellendus odit nihil</p>
-                            <button>Button name</button>
-                        </div>
-                        <div className="image">
-                            <img src="https://i.postimg.cc/65QxYYzh/001234.png"/>
+                            <h1>Exam Scheduling App</h1>
+                            <p>A fantastic app that allows you to divide the exam schedule and check in to the exam room using a QR code</p>
+                            <div
+                                className="mt-2 lg:inline-flex lg:w-auto w-full px-3 py-2 rounded-lg bg-green-900 text-white items-center justify-center hover:bg-green-600 hover:text-white"
+                            >
+                                <Link to="/student" className="hover:text-white">Student Check</Link>
+                            </div>
                         </div>
                         <div className="clearfix"></div>
                     </div>

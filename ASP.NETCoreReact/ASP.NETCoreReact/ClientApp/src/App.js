@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from "react";
 import {
     Switch,
-    Route, Redirect
+    Route
 } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useDispatch } from "react-redux";
-import { currentUser } from "./functions/auth";
+import { currentUser }               from "./functions/auth";
 import AdminRoute from "./components/routes/AdminRoute"
 
 import CreateCourse    from "./pages/Admin/Courses/CreateCourse";
 import EditCourse      from "./pages/Admin/Courses/EditCourse";
 import AllCourse  from "./pages/Admin/Courses/AllCourse";
 import UploadFile        from "./pages/Admin/Courses/UploadFile";
-import Header            from './components/nav/Header';
+import Header            from "./components/nav/Header";
 import AllStudents           from "./pages/Admin/Students/AllStudents";
 import CreateStudent         from "./pages/Admin/Students/CreateStudent";
 import EditStudent           from "./pages/Admin/Students/EditStudent";
@@ -27,7 +27,7 @@ import UploadStudentExamFile from "./pages/Admin/StudentExams/UploadStudentExamF
 import AllSetting      from "./pages/Admin/Settings/AllSetting";
 import EditSetting     from "./pages/Admin/Settings/EditSetting";
 import SchedulePage    from "./pages/Admin/Schedules/";
-import Home            from './components/Home';
+import Home            from "./components/Home";
 import AllRooms        from "./pages/Admin/Rooms/AllRooms";
 import CreateRoom      from "./pages/Admin/Rooms/CreateRoom";
 import EditRoom        from "./pages/Admin/Rooms/EditRoom";
@@ -35,9 +35,9 @@ import CheckinQr       from "./pages/Admin/Rooms/CheckinQr";
 import SearchInfo      from "./pages/Student/SearchInfo";
 import StudentSchedule from "./pages/Student/StudentSchedule";
 import Detail          from "./pages/Admin/Rooms/Detail";
-import { UserSession } from './components/UserSession';
+import { UserSession } from "./components/UserSession";
 
-import './Index.css';
+import "./Index.css";
 
 const App = () => {
 
@@ -57,7 +57,7 @@ const App = () => {
                 });
             }
         ).catch(err =>{
-            window.location.assign("/bff/login")
+            console.log(err)
         });
     },[dispatch]);
     
