@@ -42,7 +42,8 @@ const context = [
     "/api/Checkin/CheckInConfirm",
     "/api/CheckQr/GetQrCode",
     "/api/Schedule/GetByStudentId",
-    "/api/Checkin/Excel"
+    "/api/Checkin/Excel",
+    "/api/Checkin/Detail"
     
 ];
 

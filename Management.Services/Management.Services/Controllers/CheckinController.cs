@@ -142,14 +142,14 @@ public class CheckinController : ControllerBase
             {
                 workbook.SaveAs(stream);
                 var content = stream.ToArray();
-                string fileName = roomDb.Name + "student.xlsx";
+                string fileName = roomDb.Name + "-student.xlsx";
                 return File(content, "application/octet-stream", fileName);
             }
         }
     }
     
-    [HttpGet("[action]/{id:int}")]
-    public async Task<IActionResult> Report(int roomId)
+    [HttpGet("[action]/{roomId:int}")]
+    public async Task<IActionResult> Detail(int roomId)
     {
         try
         {
@@ -157,8 +157,11 @@ public class CheckinController : ControllerBase
             if (roomInDb != null)
             {
                 var listStudentId = _db.Checkins.Where(x=>x.RoomId == roomId);
-                var studentList =
-                    _db.Students.Where(x => x.StudentId.IsIn(listStudentId.Select(x => x.StudentId).ToArray()));
+                var studentList = new List<Student>();
+                foreach (var student in listStudentId)
+                {
+                    studentList.AddRange(_db.Students.Where(x => x.StudentId == student.StudentId));
+                }
 
                 return Ok(studentList);
             }

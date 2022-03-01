@@ -63,6 +63,11 @@ const ListAllRoomTable = ( {download,  lastRoomElementRef , roomLists , handleRe
                                                 to={`/admin/roomCheckin/${room.id}`}>
                                                 Checkin Room
                                             </Link>
+                                            <Link
+                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
+                                                to={`/admin/roomDetail/${room.id}`}>
+                                                Detail
+                                            </Link>
                                             <button
                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
                                                 onClick={()=>download(room.id)}>
@@ -102,6 +107,11 @@ const ListAllRoomTable = ( {download,  lastRoomElementRef , roomLists , handleRe
                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
                                                 to={`/admin/roomCheckin/${room.id}`}>
                                                 Checkin Room
+                                            </Link>
+                                            <Link
+                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
+                                                to={`/admin/roomDetail/${room.id}`}>
+                                                Detail
                                             </Link>
                                             <button
                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"

@@ -38,6 +38,13 @@ export const getRoomById = async (id) =>
         }
     });
 
+export const getDetail = async (id) =>
+    await axios.get(`api/Checkin/Detail/${id}`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
 export function downloadExcelReportRoom(id) {
     let instance = axios.create();
     let url = `api/Checkin/Excel/${id}`;

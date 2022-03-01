@@ -34,6 +34,7 @@ import EditRoom        from "./pages/Admin/Rooms/EditRoom";
 import CheckinQr       from "./pages/Admin/Rooms/CheckinQr";
 import SearchInfo      from "./pages/Student/SearchInfo";
 import StudentSchedule from "./pages/Student/StudentSchedule";
+import Detail          from "./pages/Admin/Rooms/Detail";
 import { UserSession } from './components/UserSession';
 
 import './Index.css';
@@ -85,6 +86,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/rooms" component={AllRooms}/>
                 <AdminRoute exact path="/admin/room" component={CreateRoom}/>
                 <AdminRoute exact path="/admin/room/:id" component={EditRoom}/>
+                <AdminRoute exact path="/admin/roomDetail/:id" component={Detail}/>
                 <AdminRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
                 <Route exact path="/student" component={SearchInfo} />
                 <Route exact path="/student/schedule/:id" component={StudentSchedule} />
