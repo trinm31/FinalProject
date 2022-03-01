@@ -110,13 +110,18 @@ public class CheckinController : ControllerBase
         }
     }
 
-    [HttpGet("[action]/{id:int}")]
+    [HttpGet("[action]/{roomId:int}")]
     public async Task<IActionResult> Excel(int roomId)
     {
-        var listStudentId = _db.Checkins.Where(x=>x.RoomId == roomId);
-        var studentList =
-            _db.Students.Where(x => x.StudentId.IsIn(listStudentId.Select(x => x.StudentId).ToArray()));
-    
+        var roomDb = _db.Rooms.Find(roomId);
+        var listStudentId = _db.Checkins.Where(x=>x.RoomId == roomId).ToList();
+
+        var studentList = new List<Student>();
+        foreach (var checkin in listStudentId)
+        {
+            studentList.AddRange(_db.Students.Where(x => x.StudentId == checkin.StudentId));
+        }
+        
         using (var workbook = new XLWorkbook())
         {
             var worksheet = workbook.Worksheets.Add("Student");
@@ -137,7 +142,8 @@ public class CheckinController : ControllerBase
             {
                 workbook.SaveAs(stream);
                 var content = stream.ToArray();
-                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "student.xlsx");
+                string fileName = roomDb.Name + "student.xlsx";
+                return File(content, "application/octet-stream", fileName);
             }
         }
     }

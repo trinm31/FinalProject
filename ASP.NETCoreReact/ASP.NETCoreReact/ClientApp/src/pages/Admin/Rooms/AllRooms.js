@@ -1,6 +1,6 @@
 import React , { useCallback , useEffect , useRef , useState } from "react";
 import { toast }                                               from "react-toastify";
-import { removeRoom }                                          from "../../../functions/room";
+import { removeRoom, downloadExcelReportRoom }                                          from "../../../functions/room";
 import useRoom                                               from "../../../Hooks/useRoom";
 import ListAllRoomTable                                        from "../../../components/tables/ListAllRoomTable";
 
@@ -57,7 +57,7 @@ const AllRooms = () => {
 
     return (
         <>
-            <ListAllRoomTable lastRoomElementRef={lastRoomElementRef} handleSearch={handleSearch} roomLists={filter} handleRemove={handleRemove}/>
+            <ListAllRoomTable download={downloadExcelReportRoom} lastRoomElementRef={lastRoomElementRef} handleSearch={handleSearch} roomLists={filter} handleRemove={handleRemove}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>
         </>

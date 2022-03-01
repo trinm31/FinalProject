@@ -2,7 +2,7 @@ import React               from "react";
 import { Link }            from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 
-const ListAllRoomTable = ( { lastRoomElementRef , roomLists , handleRemove , handleSearch } ) => {
+const ListAllRoomTable = ( {download,  lastRoomElementRef , roomLists , handleRemove , handleSearch } ) => {
 
     return (
         <div className="p-5 bg-gray-100">
@@ -59,6 +59,16 @@ const ListAllRoomTable = ( { lastRoomElementRef , roomLists , handleRemove , han
                                         <td className="p-3 text-sm text-gray-700 whitespace-nowrap">{room.courseId }</td>
                                         <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
                                             <Link
+                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
+                                                to={`/admin/roomCheckin/${room.id}`}>
+                                                Checkin Room
+                                            </Link>
+                                            <button
+                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
+                                                onClick={()=>download(room.id)}>
+                                                Excel
+                                            </button>
+                                            <Link
                                                 className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded"
                                                 to={`/admin/room/${room.id}`}>
                                                 Edit
@@ -93,6 +103,11 @@ const ListAllRoomTable = ( { lastRoomElementRef , roomLists , handleRemove , han
                                                 to={`/admin/roomCheckin/${room.id}`}>
                                                 Checkin Room
                                             </Link>
+                                            <button
+                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-4 rounded"
+                                                onClick={()=>download(room.id)}>
+                                                Excel
+                                            </button>
                                             <Link
                                                 className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded"
                                                 to={`/admin/room/${room.id}`}>

@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 export const getAllRooms = async () => {
     return await axios.get("api/Rooms/GetAll",
@@ -36,3 +37,24 @@ export const getRoomById = async (id) =>
             'X-CSRF': '1'
         }
     });
+
+export function downloadExcelReportRoom(id) {
+    let instance = axios.create();
+    let url = `api/Checkin/Excel/${id}`;
+    let options = {
+        url,
+        method: 'get',
+        responseType: 'blob' 
+    };
+    return instance.request(options)
+        .then(response => {
+            let filename = response.headers['content-disposition']
+                .split(';')
+                .find((n) => n.includes('filename='))
+                .replace('filename=', '')
+                .trim();
+            let url = window.URL
+                .createObjectURL(new Blob([response.data]));
+            saveAs(url, filename);
+        });
+}
