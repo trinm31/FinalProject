@@ -33,8 +33,10 @@ const UploadStudentExamFile = ({history}) => {
         })
     }
 
+    const downloadFileTemplate = "/Static/StudentCourseExcelTemplate.xlsx";
+
     return (
-        <FileUpload handleSubmit={handleSubmit} saveFile={saveFile} fileName={fileName}/>
+        <FileUpload downloadFileTemplate={downloadFileTemplate} handleSubmit={handleSubmit} saveFile={saveFile} fileName={fileName}/>
     );
 }
 

@@ -28,7 +28,7 @@ const Header = () => {
     return(
         <nav className="flex items-center bg-grey p-3 flex-wrap">
             <a href="#" className="p-2 mr-4 inline-flex items-center text-white text-2xl">
-              <AiFillSchedule className="text-white text-4xl"/> Exam Management System
+              <AiFillSchedule className="text-white text-4xl mr-2"/> Exam Management System
             </a>
             <button
                 className="text-white inline-flex p-3 hover:bg-gray-900 rounded lg:hidden ml-auto hover:text-white outline-none nav-toggler"
