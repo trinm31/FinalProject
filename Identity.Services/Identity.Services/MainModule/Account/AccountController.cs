@@ -223,162 +223,163 @@ namespace IdentityServerHost.Quickstart.UI
             return View();
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Register(string returnUrl)
-        {
-            // build a model so we know what to show on the reg page
-            var vm = await BuildRegisterViewModelAsync(returnUrl);
-
-            return View(vm);
-        }
+        // [HttpGet]
+        // [Authorize("api")]
+        // public async Task<IActionResult> Register(string returnUrl)
+        // {
+        //     // build a model so we know what to show on the reg page
+        //     var vm = await BuildRegisterViewModelAsync(returnUrl);
+        //
+        //     return View(vm);
+        // }
 
        
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-
-                var user = new ApplicationUser
-                {
-                    UserName = model.Username,
-                    Email = model.Email,
-                    EmailConfirmed = true,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Position = model.Position
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    if (!_roleManager.RoleExistsAsync(model.RoleName).GetAwaiter().GetResult())
-                    {
-                        var userRole = new IdentityRole
-                        {
-                            Name = model.RoleName,
-                            NormalizedName = model.RoleName,
-
-                        };
-                        await _roleManager.CreateAsync(userRole);
-                    }
-
-                    await _userManager.AddToRoleAsync(user, model.RoleName);
-
-                    await _userManager.AddClaimsAsync(user, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, model.Username),
-                            new Claim(JwtClaimTypes.Email, model.Email),
-                            new Claim(JwtClaimTypes.FamilyName, model.FirstName),
-                            new Claim(JwtClaimTypes.GivenName, model.LastName),
-                            new Claim(JwtClaimTypes.WebSite, "http://"+model.Username+".com"),
-                            new Claim(JwtClaimTypes.Role,"Staff") });
-
-                    var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-                    var loginresult = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: true);
-                    if (loginresult.Succeeded)
-                    {
-                        var checkuser = await _userManager.FindByNameAsync(model.Username);
-                        await _events.RaiseAsync(new UserLoginSuccessEvent(checkuser.UserName, checkuser.Id, checkuser.UserName, clientId: context?.Client.ClientId));
-
-                        if (context != null)
-                        {
-                            if (context.IsNativeClient())
-                            {
-                                // The client is native, so this change in how to
-                                // return the response is for better UX for the end user.
-                                return this.LoadingPage("Redirect", model.ReturnUrl);
-                            }
-
-                            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                            return Redirect(model.ReturnUrl);
-                        }
-
-                        // request for a local page
-                        if (Url.IsLocalUrl(model.ReturnUrl))
-                        {
-                            return Redirect(model.ReturnUrl);
-                        }
-                        else if (string.IsNullOrEmpty(model.ReturnUrl))
-                        {
-                            return Redirect("~/");
-                        }
-                        else
-                        {
-                            // user might have clicked on a malicious link - should be logged
-                            throw new Exception("invalid return URL");
-                        }
-                    }
-
-                }
-            }
-            var vm = await BuildRegisterViewModelAsync(returnUrl);
-
-            return View(vm);
-        }
-        private async Task<RegisterViewModel> BuildRegisterViewModelAsync(string returnUrl)
-        {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            List<string> roles = new List<string>();
-            roles.Add("Student");
-            roles.Add("Staff");
-            ViewBag.message = roles;
-            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
-            {
-                var local = context.IdP == Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider;
-
-                // this is meant to short circuit the UI and only trigger the one external IdP
-                var vm = new RegisterViewModel
-                {
-                    EnableLocalLogin = local,
-                    ReturnUrl = returnUrl,
-                    Username = context?.LoginHint,
-                };
-
-                if (!local)
-                {
-                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
-                }
-
-                return vm;
-            }
-
-            var schemes = await _schemeProvider.GetAllSchemesAsync();
-
-            var providers = schemes
-                .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider
-                {
-                    DisplayName = x.DisplayName ?? x.Name,
-                    AuthenticationScheme = x.Name
-                }).ToList();
-
-            var allowLocal = true;
-            if (context?.Client.ClientId != null)
-            {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
-                if (client != null)
-                {
-                    allowLocal = client.EnableLocalLogin;
-
-                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                    {
-                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
-                    }
-                }
-            }
-
-            return new RegisterViewModel
-            {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
-                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
-                ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
-            };
-        }
+        // [HttpPost]
+        // [Authorize("api")]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        // {
+        //     ViewData["ReturnUrl"] = returnUrl;
+        //     if (ModelState.IsValid)
+        //     {
+        //
+        //         var user = new ApplicationUser
+        //         {
+        //             UserName = model.Username,
+        //             Email = model.Email,
+        //             EmailConfirmed = true,
+        //             FirstName = model.FirstName,
+        //             LastName = model.LastName,
+        //             Position = model.Position
+        //         };
+        //
+        //         var result = await _userManager.CreateAsync(user, model.Password);
+        //         if (result.Succeeded)
+        //         {
+        //             if (!_roleManager.RoleExistsAsync(model.RoleName).GetAwaiter().GetResult())
+        //             {
+        //                 var userRole = new IdentityRole
+        //                 {
+        //                     Name = model.RoleName,
+        //                     NormalizedName = model.RoleName,
+        //
+        //                 };
+        //                 await _roleManager.CreateAsync(userRole);
+        //             }
+        //
+        //             await _userManager.AddToRoleAsync(user, model.RoleName);
+        //
+        //             await _userManager.AddClaimsAsync(user, new Claim[]{
+        //                     new Claim(JwtClaimTypes.Name, model.Username),
+        //                     new Claim(JwtClaimTypes.Email, model.Email),
+        //                     new Claim(JwtClaimTypes.FamilyName, model.FirstName),
+        //                     new Claim(JwtClaimTypes.GivenName, model.LastName),
+        //                     new Claim(JwtClaimTypes.WebSite, "http://"+model.Username+".com"),
+        //                     new Claim(JwtClaimTypes.Role,"Staff") });
+        //
+        //             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        //             var loginresult = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: true);
+        //             if (loginresult.Succeeded)
+        //             {
+        //                 var checkuser = await _userManager.FindByNameAsync(model.Username);
+        //                 await _events.RaiseAsync(new UserLoginSuccessEvent(checkuser.UserName, checkuser.Id, checkuser.UserName, clientId: context?.Client.ClientId));
+        //
+        //                 if (context != null)
+        //                 {
+        //                     if (context.IsNativeClient())
+        //                     {
+        //                         // The client is native, so this change in how to
+        //                         // return the response is for better UX for the end user.
+        //                         return this.LoadingPage("Redirect", model.ReturnUrl);
+        //                     }
+        //
+        //                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+        //                     return Redirect(model.ReturnUrl);
+        //                 }
+        //
+        //                 // request for a local page
+        //                 if (Url.IsLocalUrl(model.ReturnUrl))
+        //                 {
+        //                     return Redirect(model.ReturnUrl);
+        //                 }
+        //                 else if (string.IsNullOrEmpty(model.ReturnUrl))
+        //                 {
+        //                     return Redirect("~/");
+        //                 }
+        //                 else
+        //                 {
+        //                     // user might have clicked on a malicious link - should be logged
+        //                     throw new Exception("invalid return URL");
+        //                 }
+        //             }
+        //
+        //         }
+        //     }
+        //     var vm = await BuildRegisterViewModelAsync(returnUrl);
+        //
+        //     return View(vm);
+        // }
+        // private async Task<RegisterViewModel> BuildRegisterViewModelAsync(string returnUrl)
+        // {
+        //     var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        //     List<string> roles = new List<string>();
+        //     roles.Add("Student");
+        //     roles.Add("Staff");
+        //     ViewBag.message = roles;
+        //     if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+        //     {
+        //         var local = context.IdP == Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider;
+        //
+        //         // this is meant to short circuit the UI and only trigger the one external IdP
+        //         var vm = new RegisterViewModel
+        //         {
+        //             EnableLocalLogin = local,
+        //             ReturnUrl = returnUrl,
+        //             Username = context?.LoginHint,
+        //         };
+        //
+        //         if (!local)
+        //         {
+        //             vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
+        //         }
+        //
+        //         return vm;
+        //     }
+        //
+        //     var schemes = await _schemeProvider.GetAllSchemesAsync();
+        //
+        //     var providers = schemes
+        //         .Where(x => x.DisplayName != null)
+        //         .Select(x => new ExternalProvider
+        //         {
+        //             DisplayName = x.DisplayName ?? x.Name,
+        //             AuthenticationScheme = x.Name
+        //         }).ToList();
+        //
+        //     var allowLocal = true;
+        //     if (context?.Client.ClientId != null)
+        //     {
+        //         var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+        //         if (client != null)
+        //         {
+        //             allowLocal = client.EnableLocalLogin;
+        //
+        //             if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+        //             {
+        //                 providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+        //             }
+        //         }
+        //     }
+        //
+        //     return new RegisterViewModel
+        //     {
+        //         AllowRememberLogin = AccountOptions.AllowRememberLogin,
+        //         EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+        //         ReturnUrl = returnUrl,
+        //         Username = context?.LoginHint,
+        //         ExternalProviders = providers.ToArray()
+        //     };
+        // }
 
         /*****************************************/
         /* helper APIs for the AccountController */
@@ -520,188 +521,188 @@ namespace IdentityServerHost.Quickstart.UI
             return vm;
         } 
         
-        [HttpGet]
-        [Authorize(Roles = SD.Admin)]
-         public async Task<IActionResult> Index()
-         {
-             var identity = (ClaimsIdentity)User.Identity;
-             IEnumerable<Claim> claims = identity.Claims;
-             var userList = _db.Users.Where(u=>u.Id != claims.First().Value);
-             foreach (var user in userList)
-             {
-                 var userTemp = await _userManager.FindByIdAsync(user.Id);
-                 var roleTemp = await _userManager.GetRolesAsync(userTemp);
-                 user.Role = roleTemp.FirstOrDefault();
-             }
-             ViewData["Message"] = TempData["Message"];
-             return View(userList);
-         }
+        // [HttpGet]
+        // [Authorize(Roles = SD.Admin)]
+        //  public async Task<IActionResult> Index()
+        //  {
+        //      var identity = (ClaimsIdentity)User.Identity;
+        //      IEnumerable<Claim> claims = identity.Claims;
+        //      var userList = _db.Users.Where(u=>u.Id != claims.First().Value);
+        //      foreach (var user in userList)
+        //      {
+        //          var userTemp = await _userManager.FindByIdAsync(user.Id);
+        //          var roleTemp = await _userManager.GetRolesAsync(userTemp);
+        //          user.Role = roleTemp.FirstOrDefault();
+        //      }
+        //      ViewData["Message"] = TempData["Message"];
+        //      return View(userList);
+        //  }
 
-         [HttpGet]
-         [Authorize(Roles = SD.Admin)]
-         public async Task<IActionResult> ConfirmDelete(string id)
-         {
-             var applicationUser = _db.Users.Find(id);
-             return View(applicationUser);
-         }
+         // [HttpGet]
+         // [Authorize(Roles = SD.Admin)]
+         // public async Task<IActionResult> ConfirmDelete(string id)
+         // {
+         //     var applicationUser = _db.Users.Find(id);
+         //     return View(applicationUser);
+         // }
          
-         [HttpGet]
-         [Authorize(Roles = SD.Admin)]
-         public async Task<IActionResult> Delete(string id)
-         {
-             var applicationUser = _db.Users.Find(id);
-             if (applicationUser != null)
-             {
-                 await _userManager.DeleteAsync(applicationUser);
-                 TempData["Message"] = "Success: Delete successfully";
-             }
-
-             return RedirectToAction(nameof(Index));
-         }
+         // [HttpGet]
+         // [Authorize(Roles = SD.Admin)]
+         // public async Task<IActionResult> Delete(string id)
+         // {
+         //     var applicationUser = _db.Users.Find(id);
+         //     if (applicationUser != null)
+         //     {
+         //         await _userManager.DeleteAsync(applicationUser);
+         //         TempData["Message"] = "Success: Delete successfully";
+         //     }
+         //
+         //     return RedirectToAction(nameof(Index));
+         // }
          
-         [HttpGet]
-         [Authorize(Roles = SD.Admin)]
-        public async Task<IActionResult> Edit(string id)
-        {
-            var user = _db.Users.Find(id);
-            if (user == null)
-            {
-                ViewData["Message"] = "Error: User not found";
-                return NotFound();
-            }
+        //  [HttpGet]
+        //  [Authorize(Roles = SD.Admin)]
+        // public async Task<IActionResult> Edit(string id)
+        // {
+        //     var user = _db.Users.Find(id);
+        //     if (user == null)
+        //     {
+        //         ViewData["Message"] = "Error: User not found";
+        //         return NotFound();
+        //     }
+        //
+        //     return View(user);
+        // }
         
-            return View(user);
-        }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // [Authorize(Roles = SD.Admin)]
+        // public async Task<IActionResult> Edit(ApplicationUser user)
+        // {
+        //     if (user == null)
+        //     {
+        //         ViewData["Message"] = "Error: Data null";
+        //         return RedirectToAction(nameof(Index), "Account");
+        //     }
+        //
+        //     var userDb = _db.Users.Find(user.Id);
+        //     userDb.FirstName = user.FirstName;
+        //     userDb.LastName = user.LastName;
+        //     userDb.Position = user.Position;
+        //     userDb.PhoneNumber = user.PhoneNumber;
+        //     
+        //     _db.Users.Update(userDb);
+        //     _db.SaveChanges();
+        //     return RedirectToAction(nameof(Index), "Account");
+        // }
         
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = SD.Admin)]
-        public async Task<IActionResult> Edit(ApplicationUser user)
-        {
-            if (user == null)
-            {
-                ViewData["Message"] = "Error: Data null";
-                return RedirectToAction(nameof(Index), "Account");
-            }
+        // [Authorize(Roles = SD.Admin)]
+        // public async Task<IActionResult> ForgotPassword(string id)
+        // {
+        //     var user =  _db.Users.Find(id);
+        //
+        //     if (user == null)
+        //     {
+        //         return View();
+        //     }
+        //
+        //     ForgotPasswordViewModel UserEmail = new ForgotPasswordViewModel()
+        //     {
+        //         Email = user.Email
+        //     };
+        //     return View(UserEmail);
+        // }
+        // [Authorize(Roles = SD.Admin)]
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         var user = await _userManager.FindByEmailAsync(model.Email);
+        //         if (user != null)
+        //         {
+        //             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //
+        //             return RedirectToAction("ResetPassword", "Account", new {email = model.Email, token = token});
+        //         }
+        //
+        //         return View("ForgotPasswordConfirmation");
+        //     }
+        //     return View(model);
+        // }
+        // [Authorize(Roles = SD.Admin)]
+        // public async Task<IActionResult> ResetPassword(string token, string email)
+        // {
+        //     if (token == null || email == null)
+        //     {
+        //         ModelState.AddModelError("","Invalid password reset token");
+        //     }
+        //
+        //     return View();
+        // }
+        // [Authorize(Roles = SD.Admin)]
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         var user = await _userManager.FindByEmailAsync(model.Email);
+        //         if (user != null)
+        //         {
+        //             var result = await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
+        //             if (result.Succeeded)
+        //             {
+        //                 return View("ResetPasswordConfirmation");
+        //             }
+        //             else
+        //             {
+        //                 ViewData["Message"] = "Error: Your Password not permitted";
+        //                 return View(model);
+        //             }
+        //
+        //             foreach (var error in result.Errors)
+        //             {
+        //                 ModelState.AddModelError("",error.Description);
+        //             }
+        //
+        //             return View(model);
+        //         }
+        //     }
+        //     return View(model);
+        // }
 
-            var userDb = _db.Users.Find(user.Id);
-            userDb.FirstName = user.FirstName;
-            userDb.LastName = user.LastName;
-            userDb.Position = user.Position;
-            userDb.PhoneNumber = user.PhoneNumber;
-            
-            _db.Users.Update(userDb);
-            _db.SaveChanges();
-            return RedirectToAction(nameof(Index), "Account");
-        }
-        
-        [Authorize(Roles = SD.Admin)]
-        public async Task<IActionResult> ForgotPassword(string id)
-        {
-            var user =  _db.Users.Find(id);
-
-            if (user == null)
-            {
-                return View();
-            }
-
-            ForgotPasswordViewModel UserEmail = new ForgotPasswordViewModel()
-            {
-                Email = user.Email
-            };
-            return View(UserEmail);
-        }
-        [Authorize(Roles = SD.Admin)]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-                    return RedirectToAction("ResetPassword", "Account", new {email = model.Email, token = token});
-                }
-
-                return View("ForgotPasswordConfirmation");
-            }
-            return View(model);
-        }
-        [Authorize(Roles = SD.Admin)]
-        public async Task<IActionResult> ResetPassword(string token, string email)
-        {
-            if (token == null || email == null)
-            {
-                ModelState.AddModelError("","Invalid password reset token");
-            }
-
-            return View();
-        }
-        [Authorize(Roles = SD.Admin)]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var result = await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
-                    if (result.Succeeded)
-                    {
-                        return View("ResetPasswordConfirmation");
-                    }
-                    else
-                    {
-                        ViewData["Message"] = "Error: Your Password not permitted";
-                        return View(model);
-                    }
-
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("",error.Description);
-                    }
-
-                    return View(model);
-                }
-            }
-            return View(model);
-        }
-
-        [Authorize(Roles = SD.Admin)]
-        [HttpGet]
-        public IActionResult LockUnlock(string id)
-        {
-            var identity = (ClaimsIdentity)User.Identity;
-            IEnumerable<Claim> claims = identity.Claims;
-            var claimUser = _db.Users.FirstOrDefault(u => u.Id == claims.First().Value);
-
-            var applicationUser = _db.Users.FirstOrDefault(u => u.Id == id);
-            if (applicationUser == null)
-            {
-                return NotFound();
-            }
-            if (claimUser.Id == applicationUser.Id)
-            {
-                return NotFound();
-            }
-            if (applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now)
-            {
-                //user is currently locked, we will unlock them
-                applicationUser.LockoutEnd = DateTime.Now;
-                _db.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
-                _db.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-        }
+        // [Authorize(Roles = SD.Admin)]
+        // [HttpGet]
+        // public IActionResult LockUnlock(string id)
+        // {
+        //     var identity = (ClaimsIdentity)User.Identity;
+        //     IEnumerable<Claim> claims = identity.Claims;
+        //     var claimUser = _db.Users.FirstOrDefault(u => u.Id == claims.First().Value);
+        //
+        //     var applicationUser = _db.Users.FirstOrDefault(u => u.Id == id);
+        //     if (applicationUser == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     if (claimUser.Id == applicationUser.Id)
+        //     {
+        //         return NotFound();
+        //     }
+        //     if (applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now)
+        //     {
+        //         //user is currently locked, we will unlock them
+        //         applicationUser.LockoutEnd = DateTime.Now;
+        //         _db.SaveChanges();
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     else
+        //     {
+        //         applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
+        //         _db.SaveChanges();
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        // }
     }
 }

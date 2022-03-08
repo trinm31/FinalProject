@@ -1,4 +1,6 @@
 using AutoMapper;
+using UserManagement.Services.Dtos;
+using UserManagement.Services.Models;
 
 namespace UserManagement.Services;
 
@@ -8,8 +10,7 @@ public class MappingConfig
     {
         var mappingConfig = new MapperConfiguration(config =>
         {
-            //config.CreateMap<Student, CheckQrDto>();
-            
+            config.CreateMap<ApplicationUser, UserDto>();
         });
 
         return mappingConfig;

@@ -127,7 +127,8 @@ namespace Identity.Services.Initializer;
                     PhoneNumber = "111111111111",
                     FirstName = "Admin",
                     LastName = "Admin",
-                    Position = "Adminstrator"
+                    Position = "Adminstrator",
+                    PersionalId = "A1"
                 };
 
                 _userManager.CreateAsync(adminUser, "Admin123@").GetAwaiter().GetResult();
@@ -154,7 +155,8 @@ namespace Identity.Services.Initializer;
                     PhoneNumber = "111111111111",
                     FirstName = "Staff",
                     LastName = "Staff",
-                    Position = "Staff"
+                    Position = "Staff",
+                    PersionalId = "S1"
                 };
 
                 _userManager.CreateAsync(StaffUser, "Staff123@").GetAwaiter().GetResult();
@@ -182,7 +184,8 @@ namespace Identity.Services.Initializer;
                     PhoneNumber = "111111111111",
                     FirstName = "Student",
                     LastName = "Student",
-                    Position = "Student"
+                    Position = "Student",
+                    PersionalId = "Sv1"
                 };
 
                 _userManager.CreateAsync(StudentUser, "Student123@").GetAwaiter().GetResult();
