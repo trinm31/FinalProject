@@ -158,11 +158,6 @@ public class UsersController : ControllerBase
             return Ok(new { success = false, message = "Error while Deleting" });
         }
 
-        if (User.IsInRole("Admin"))
-        {
-            return Ok(new { success = false, message = "You can not delete yourself" });
-        }
-
         _db.Users.Remove(applicationUser);
         _db.SaveChanges();
         return Ok(new { success = true, message = "Delete successful" });

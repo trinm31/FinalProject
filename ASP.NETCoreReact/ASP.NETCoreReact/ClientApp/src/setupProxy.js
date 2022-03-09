@@ -44,8 +44,8 @@ const context = [
     "/api/Schedule/GetByStudentId",
     "/api/Checkin/Excel",
     "/api/Checkin/Detail",
-    "/api/Users/UsersPagination"
-    
+    "/api/Users/UsersPagination",
+    "/api/Users"
 ];
 
 module.exports = function(app) {

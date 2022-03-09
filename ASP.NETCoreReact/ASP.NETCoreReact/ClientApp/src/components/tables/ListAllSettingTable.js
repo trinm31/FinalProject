@@ -18,6 +18,14 @@ const ListAllSettingTable = ( {setting}) => {
             });
         }
     };
+
+    const dateFormatter = (day) => {
+        const d = new Date(day);
+        var datestring =
+            d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+        return datestring;
+    };
+    
     return (
         <div className="p-5 h-screen bg-gray-100">
             <div className="grid grid-cols-2">
@@ -50,7 +58,7 @@ const ListAllSettingTable = ( {setting}) => {
                                 <a className="font-bold text-blue-500 hover:underline"> Start Date</a>
                             </td>
                             <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                {setting.startDate}
+                                {dateFormatter(setting.startDate)}
                             </td>
                         </tr>
                         <tr className="bg-white">
@@ -58,7 +66,7 @@ const ListAllSettingTable = ( {setting}) => {
                                 <a className="font-bold text-blue-500 hover:underline"> End Date</a>
                             </td>
                             <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                                {setting.endDate}
+                                {dateFormatter(setting.endDate)}
                             </td>
                         </tr>
                         <tr className="bg-white">

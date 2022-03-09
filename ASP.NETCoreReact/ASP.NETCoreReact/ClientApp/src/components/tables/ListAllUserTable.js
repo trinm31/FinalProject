@@ -8,7 +8,7 @@ const ListAllUserTable = ( { lastUserElementRef , userLists , handleRemove , han
         <div className="p-5 bg-gray-100">
             <div className="grid grid-cols-3">
                 <div className="flex justify-start my-3 items-center">
-                    <h1 className="text-xl mb-2">All Courses</h1>
+                    <h1 className="text-xl mb-2">All Users</h1>
                 </div>
                 <div className="flex items-center">
                     <label className="relative block flex-1">
