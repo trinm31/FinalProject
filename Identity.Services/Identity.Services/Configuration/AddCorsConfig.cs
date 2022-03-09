@@ -17,7 +17,9 @@ public static partial class ServiceExtension {
                 "http://localhost:5055",
                 "https://localhost:7153",
                 "http://localhost:5114",
-                "https://localhost:5001"
+                "https://localhost:5001",
+                "https://localhost:7065",
+                "https://localhost:7132",
             };
         }else{
             // Add your production origins hire

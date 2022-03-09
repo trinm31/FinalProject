@@ -136,6 +136,8 @@ app.MapRemoteBffApiEndpoint("/api/Checkin/Excel", "https://localhost:7143/api/Ch
 
 app.MapRemoteBffApiEndpoint("/api/Checkin/Detail", "https://localhost:7143/api/Checkin/Detail", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Users/UsersPagination", "https://localhost:7132/api/Users/UsersPagination", false).RequireAccessToken();
+
 app.MapRemoteBffApiEndpoint("/api/CheckQr/GetQrCode", "https://localhost:7143/api/CheckQr/GetQrCode", false).AllowAnonymous();
 
 app.MapRemoteBffApiEndpoint("/api/Schedule/GetByStudentId", "https://localhost:7143/api/Schedule/GetByStudentId", false).AllowAnonymous();

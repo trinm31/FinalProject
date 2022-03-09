@@ -20,6 +20,7 @@ public static partial class ServiceExtension
                     "https://localhost:44491", 
                     "http://localhost:5055",
                     "https://localhost:7153",
+                    "https://localhost:7132",
                     "http://localhost:5114",
                     "https://localhost:5001"
                 });

@@ -11,8 +11,8 @@ using UserManagement.Services.Dtos;
 namespace UserManagement.Services.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
-[Authorize(Roles = SD.Admin)]
+[ApiController] 
+[Authorize(Roles = "Admin")] 
 public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -27,10 +27,20 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public IActionResult GetAllUsers()
+    public async Task<IActionResult> UsersPagination([FromQuery] PaginationDto paginationDto)
     {
-        var result = _db.Users.ToList();
-        return Ok(_mapper.Map<List<UserDto>>(result));
+        var values = _db.Users
+            .OrderBy(x=>x.FirstName)
+            .Skip((paginationDto.PageNumber - 1) * paginationDto.PageSize)
+            .Take(paginationDto.PageSize)
+            .ToList();
+        foreach (var user in values)
+        {
+            var userTemp = await _userManager.FindByIdAsync(user.Id);
+            var roleTemp = await _userManager.GetRolesAsync(userTemp);
+            user.Role = roleTemp.FirstOrDefault();
+        }
+        return Ok(_mapper.Map<List<UserDto>>(values));
     }
 
     [HttpGet("[action]/{studentId}")]
@@ -146,6 +156,11 @@ public class UsersController : ControllerBase
         if (applicationUser == null)
         {
             return Ok(new { success = false, message = "Error while Deleting" });
+        }
+
+        if (User.IsInRole("Admin"))
+        {
+            return Ok(new { success = false, message = "You can not delete yourself" });
         }
 
         _db.Users.Remove(applicationUser);

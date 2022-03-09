@@ -1,10 +1,13 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using UserManagement.Services;
 using UserManagement.Services.Data;
+using UserManagement.Services.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();;
+
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -28,11 +34,17 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ESM.Services.UserManagement", Version = "v1" });
 });
 
-builder.Services.AddAuthentication("token")
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = "token";
+        options.DefaultChallengeScheme = "token";
+        options.DefaultScheme = "token";
+    })
     .AddJwtBearer("token", options =>
     {
         options.Authority = "https://localhost:7153";
         options.MapInboundClaims = false;
+        options.IncludeErrorDetails = true;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -99,10 +111,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
 });
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
 
 app.UseAuthentication();
 
