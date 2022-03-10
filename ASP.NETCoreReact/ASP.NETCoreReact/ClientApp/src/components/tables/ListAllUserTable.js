@@ -73,7 +73,7 @@ const ListAllUserTable = ( { lastUserElementRef , userLists , handleRemove , han
                                         <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
                                             <Link
                                                 className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded"
-                                                to={`/admin/course/${user.id}`}>
+                                                to={`/admin/user/${user.id}`}>
                                                 Edit
                                             </Link>
                                             {
@@ -112,7 +112,7 @@ const ListAllUserTable = ( { lastUserElementRef , userLists , handleRemove , han
                                         <td className="p-3 text-sm text-gray-700 whitespace-nowrap flex items-center">
                                             <Link
                                                 className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-4 rounded"
-                                                to={`/admin/User/${user.id}`}>
+                                                to={`/admin/user/${user.id}`}>
                                                 Edit
                                             </Link>
                                             {

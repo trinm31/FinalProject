@@ -52,7 +52,7 @@ public class UsersController : ControllerBase
         }
 
         var result = _db.Users.Find(studentId);
-        return Ok(_mapper.Map<UserDto>(result));
+        return Ok(_mapper.Map<UpdateApplicationUserDto>(result));
     }
 
     [HttpPost("[action]")]
@@ -98,7 +98,7 @@ public class UsersController : ControllerBase
         return Ok(new {success = false, message = "Username Already Existed"});
     }
 
-    [HttpPost("[action]")]
+    [HttpPut("[action]")]
     public IActionResult UpdateUser([FromBody] UpdateApplicationUserDto updateApplicationUserDto)
     {
         var userDb = _db.Users.FirstOrDefault(u => u.Id == updateApplicationUserDto.Id);
