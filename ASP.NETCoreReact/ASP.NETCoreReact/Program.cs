@@ -146,6 +146,8 @@ app.MapRemoteBffApiEndpoint("/api/Users/UpdateUser", "https://localhost:7132/api
 
 app.MapRemoteBffApiEndpoint("/api/Users/GetUserById", "https://localhost:7132/api/Users/GetUserById", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Users/Upload", "https://localhost:7132/api/Users/Upload", false).RequireAccessToken();
+
 app.MapRemoteBffApiEndpoint("/api/CheckQr/GetQrCode", "https://localhost:7143/api/CheckQr/GetQrCode", false).AllowAnonymous();
 
 app.MapRemoteBffApiEndpoint("/api/Schedule/GetByStudentId", "https://localhost:7143/api/Schedule/GetByStudentId", false).AllowAnonymous();

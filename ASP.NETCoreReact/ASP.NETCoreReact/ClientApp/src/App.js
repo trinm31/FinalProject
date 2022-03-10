@@ -31,13 +31,14 @@ import Home            from "./components/Home";
 import AllRooms        from "./pages/Admin/Rooms/AllRooms";
 import CreateRoom      from "./pages/Admin/Rooms/CreateRoom";
 import EditRoom        from "./pages/Admin/Rooms/EditRoom";
-import CheckinQr       from "./pages/Admin/Rooms/CheckinQr";
+import CheckinQr       from "./pages/Admin/Rooms/CheckinQr"; 
 import SearchInfo      from "./pages/Student/SearchInfo";
 import StudentSchedule from "./pages/Student/StudentSchedule";
 import Detail          from "./pages/Admin/Rooms/Detail";
 import AllUser         from "./pages/Admin/Users/AllUser";
 import CreateUser      from "./pages/Admin/Users/CreateUser";
 import UpdateUser      from "./pages/Admin/Users/UpdateUser";
+import UploadUserFile  from "./pages/Admin/Users/UploadFile";
 import { UserSession } from "./components/UserSession";
 
 import "./Index.css";
@@ -95,6 +96,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/users" component={AllUser}/>
                 <AdminRoute exact path="/admin/user" component={CreateUser}/>
                 <AdminRoute exact path="/admin/user/:id" component={UpdateUser}/>
+                <AdminRoute exact path="/admin/userUpload" component={UploadUserFile}/>
                 <Route exact path="/student" component={SearchInfo} />
                 <Route exact path="/student/schedule/:id" component={StudentSchedule} />
             </Switch>

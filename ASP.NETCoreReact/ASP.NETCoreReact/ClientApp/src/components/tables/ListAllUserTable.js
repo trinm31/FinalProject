@@ -29,7 +29,7 @@ const ListAllUserTable = ( { lastUserElementRef , userLists , handleRemove , han
                     </Link>
                     <Link
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        to="/admin/courseUpload">
+                        to="/admin/userUpload">
                         Upload Users
                     </Link>
                 </div>

@@ -28,3 +28,11 @@ export const getUser = async (id) =>
             'X-CSRF': '1'
         }
     });
+
+export const uploadUser = async (file) =>
+    await axios.post(`api/Users/Upload`, file,{
+        headers: {
+            'content-type': 'multipart/form-data',
+            'X-CSRF': '1'
+        }
+    });

@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using System.Text;
 using AutoMapper;
+using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +20,15 @@ public class UsersController : ControllerBase
     private readonly IMapper _mapper;
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    private static string _fileName;
 
-    public UsersController(IMapper mapper, ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+    public UsersController(IWebHostEnvironment webHostEnvironment, IMapper mapper, ApplicationDbContext db, UserManager<ApplicationUser> userManager)
     {
         _mapper = mapper;
         _db = db;
         _userManager = userManager;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet("[action]")]
@@ -162,4 +167,122 @@ public class UsersController : ControllerBase
         _db.SaveChanges();
         return Ok(new { success = true, message = "Delete successful" });
     }
+    
+    [HttpPost("[action]")]
+    [RequestSizeLimit(100_000_000)]
+    public async Task<IActionResult> Upload([FromForm] FileModel file)
+    {
+        try
+        {
+            if (file == null)
+            {
+                return BadRequest();
+            }
+            var separator = Path.DirectorySeparatorChar;
+            string fileName = $"{_webHostEnvironment.WebRootPath}{separator}files{separator}{file.FileName}";
+
+            _fileName = file.FileName.Split(".")[0];
+
+            await using (FileStream fileStream = System.IO.File.Create(fileName))
+            {
+                await file.FormFile[0].CopyToAsync(fileStream);
+                fileStream.Flush();
+            }
+
+            var exams = GetUserList(file.FileName);
+            
+            FileInfo fileNeedToDeleted = new FileInfo(fileName);
+            
+            if (fileNeedToDeleted.Exists)
+            {  
+                fileNeedToDeleted.Delete();
+            }  
+            
+            return Ok(_mapper.Map<List<UserDto>>(exams.Result));
+        }
+        catch (Exception exception)
+        {
+            return StatusCode(500, $"Internal server error: {exception.Message}");
+        }
+    }
+    
+    private async Task<List<ApplicationUser>> GetUserList(string fName)
+    {
+         var errorCount = 0;
+         var userCount = 0;
+         var users = new List<ApplicationUser>();
+         try
+         {
+             var separator = Path.DirectorySeparatorChar;
+             var fileName = $"{Directory.GetCurrentDirectory()}{$"{separator}wwwroot{separator}files"}{separator}" + fName;
+             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+             await using var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read);
+             using var reader = ExcelReaderFactory.CreateReader(stream);
+             reader.AsDataSet(new ExcelDataSetConfiguration
+             {
+                 ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                 {
+                     UseHeaderRow = true
+                 }
+             });
+
+             while (reader.Read())
+             {
+                 var doesUserExist = _db.Users.Where(
+                     s => s.UserName == reader.GetValue(0).ToString()
+                 );
+
+                 if (doesUserExist.Any())
+                 {
+                     errorCount++;
+                 }
+                 else
+                 {
+                     var user = new ApplicationUser
+                     {
+                         UserName = reader.GetValue(0).ToString(),
+                         Email = reader.GetValue(0).ToString(),
+                         EmailConfirmed = true,
+                         FirstName = reader.GetValue(2).ToString(),
+                         LastName = reader.GetValue(3).ToString(),
+                         PhoneNumber = reader.GetValue(4).ToString(),
+                         Position = reader.GetValue(5).ToString(),
+                         PersionalId = reader.GetValue(6).ToString()
+                     };
+                     
+                      var result = await _userManager.CreateAsync(user, reader.GetValue(1).ToString());
+                     if (result.Succeeded)
+                     {
+                         await _userManager.AddToRoleAsync(user,reader.GetValue(7).ToString());
+     
+                         await _userManager.AddClaimsAsync(user, new Claim[]
+                         {
+                             new Claim(JwtClaimTypes.Name, reader.GetValue(0).ToString()),
+                             new Claim(JwtClaimTypes.Email, reader.GetValue(0).ToString()),
+                             new Claim(JwtClaimTypes.FamilyName, reader.GetValue(3).ToString()),
+                             new Claim(JwtClaimTypes.GivenName, reader.GetValue(2).ToString()),
+                             new Claim(JwtClaimTypes.Role, reader.GetValue(7).ToString())
+                         });
+                         users.Add(user);
+                     }
+
+                     userCount++;
+                 }
+             }
+            
+         }
+         catch (Exception exception)
+         {
+             
+         }
+         
+         if (errorCount > 0)
+         {
+             
+         }
+         _db.SaveChanges();
+       
+         return users;
+    }
+    
 }
