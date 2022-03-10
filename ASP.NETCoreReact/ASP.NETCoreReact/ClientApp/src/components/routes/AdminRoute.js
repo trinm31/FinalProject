@@ -10,10 +10,8 @@ const AdminRoute = ({ children, ...rest }) => {
     useEffect(() => {
         if (user && user._id) {
             if (user.role.value === "Admin"){
-                console.log("CURRENT ADMIN RES");
                 setOk(true);
             }else {
-                console.log("ADMIN ROUTE ERR");
                 setOk(false);
             }
         }

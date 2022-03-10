@@ -3,17 +3,15 @@ import { Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LoadingToRedirect from "./LoadingToRedirect";
 
-const StaffRoute = ({ children, ...rest }) => {
+const ManagementRoute = ({ children, ...rest }) => {
     const { user } = useSelector((state) => ({ ...state }));
     const [ok, setOk] = useState(false);
 
     useEffect(() => {
         if (user && user._id) {
-            if (user.role.value === "Staff"){
-                console.log("CURRENT Staff RES");
+            if (user.role.value === "Staff" || user.role.value === "Admin"){
                 setOk(true);
             }else {
-                console.log("ADMIN Staff ERR");
                 setOk(false);
             }
         }
@@ -22,4 +20,4 @@ const StaffRoute = ({ children, ...rest }) => {
     return ok ? <Route {...rest} /> : <LoadingToRedirect />;
 };
 
-export default StaffRoute;
+export default ManagementRoute;
