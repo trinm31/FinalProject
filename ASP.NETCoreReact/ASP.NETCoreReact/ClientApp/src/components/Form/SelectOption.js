@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 
 const SelectOption = forwardRef(({ listData, defaultValue, ...rest }, ref) => {
     return (
-        <select {...rest} ref={ref} className="border-1 rounded-lg w-full h-12 px-4">
+        <select {...rest} ref={ref} className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500">
             {listData.length &&
                 listData.map((item, index) => (
                     <option value={item.name} key={index}>

@@ -45,7 +45,8 @@ const context = [
     "/api/Checkin/Excel",
     "/api/Checkin/Detail",
     "/api/Users/UsersPagination",
-    "/api/Users"
+    "/api/Users",
+    "/api/Users/CreateUser"
 ];
 
 module.exports = function(app) {

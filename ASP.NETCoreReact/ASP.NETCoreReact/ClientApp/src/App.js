@@ -39,6 +39,7 @@ import AllUser         from "./pages/Admin/Users/AllUser";
 import { UserSession } from "./components/UserSession";
 
 import "./Index.css";
+import CreateUser      from "./pages/Admin/Users/CreateUser";
 
 const App = () => {
 
@@ -90,6 +91,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/roomDetail/:id" component={Detail}/>
                 <AdminRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
                 <AdminRoute exact path="/admin/users" component={AllUser}/>
+                <AdminRoute exact path="/admin/user" component={CreateUser}/>
                 <Route exact path="/student" component={SearchInfo} />
                 <Route exact path="/student/schedule/:id" component={StudentSchedule} />
             </Switch>

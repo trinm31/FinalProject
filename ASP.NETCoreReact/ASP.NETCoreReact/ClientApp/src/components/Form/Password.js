@@ -1,7 +1,7 @@
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 import {EyeIcon, EyeOffIcon} from '@heroicons/react/solid'
 
-const Password = forwardRef(({ placeholder, ...rest }, ref) => {
+const Password = ({ ...rest }) => {
     const [show, setShow] = useState(false);
 
     const toggle = (e) => {
@@ -24,13 +24,11 @@ const Password = forwardRef(({ placeholder, ...rest }, ref) => {
       </span>
             <input
                 type={show ? "text" : "password"}
-                ref={ref}
-                placeholder={placeholder}
-                className="border-1 rounded-lg w-full h-12 px-4"
+                className="border-1 rounded-md w-full h-12 px-4"
                 {...rest}
             />
         </div>
     );
-});
+};
 
 export default Password;

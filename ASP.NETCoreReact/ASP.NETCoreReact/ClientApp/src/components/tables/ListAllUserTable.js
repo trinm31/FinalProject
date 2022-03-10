@@ -24,7 +24,7 @@ const ListAllUserTable = ( { lastUserElementRef , userLists , handleRemove , han
                 <div className="flex justify-end my-3 items-center">
                     <Link
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-2 rounded"
-                        to="/admin/course">
+                        to="/admin/user">
                         Create New User
                     </Link>
                     <Link
