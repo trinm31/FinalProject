@@ -30,6 +30,7 @@ public class ScheduleController : ControllerBase
     }
     
     [HttpGet("[action]")]
+    [Authorize(Roles = SD.Admin + "," + SD.Staff)]
     public async Task<IActionResult> GetAll()
     {
         var values = await _scheduleRepository.GetAll();
