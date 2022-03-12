@@ -49,7 +49,8 @@ const context = [
     "/api/Users/CreateUser",
     "/api/Users/UpdateUser",
     "/api/Users/GetUserById",
-    "/api/Users/Upload"
+    "/api/Users/Upload",
+    "/api/Users/GetUserPersionalId"
 ];
 
 module.exports = function(app) {

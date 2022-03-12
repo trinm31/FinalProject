@@ -26,7 +26,7 @@ const StudentSchedule = ({match}) => {
     
     return(
         <>
-            <div>
+            <div className="p-10 shadow rounded-3">
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     initialView="dayGridMonth"

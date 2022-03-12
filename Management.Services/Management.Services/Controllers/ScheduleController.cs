@@ -11,7 +11,7 @@ namespace Management.Services.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = SD.Admin + "," + SD.Staff)]
+[Authorize]
 public class ScheduleController : ControllerBase
 {
     private readonly IWebHostEnvironment _webHostEnvironment;
@@ -37,7 +37,7 @@ public class ScheduleController : ControllerBase
     }
     
     [HttpGet("[action]/{studentId}")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetByStudentId(string studentId)
     {
         var values = await _scheduleRepository.GetByStudentId(studentId);

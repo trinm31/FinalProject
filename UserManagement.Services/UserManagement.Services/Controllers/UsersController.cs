@@ -13,8 +13,7 @@ using UserManagement.Services.Dtos;
 namespace UserManagement.Services.Controllers;
 
 [Route("api/[controller]")]
-[ApiController] 
-[Authorize(Roles = "Admin")] 
+[ApiController]
 public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -32,6 +31,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("[action]")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> UsersPagination([FromQuery] PaginationDto paginationDto)
     {
         var values = _db.Users
@@ -49,6 +49,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("[action]/{studentId}")]
+    [Authorize(Roles = "Admin")] 
     public IActionResult GetUserById(string studentId)
     {
         if (studentId == null)
@@ -59,8 +60,27 @@ public class UsersController : ControllerBase
         var result = _db.Users.Find(studentId);
         return Ok(_mapper.Map<UpdateApplicationUserDto>(result));
     }
+    
+    [HttpGet("[action]/{studentId}")]
+    [Authorize] 
+    public IActionResult GetUserPersionalId(string studentId)
+    {
+        if (studentId == null)
+        {
+            return BadRequest();
+        }
+
+        var result = _db.Users.Find(studentId);
+        if (result != null)
+        {
+            return Ok(new {persionalId=result.PersionalId, position = result.Position});
+        }
+
+        return NotFound();
+    }
 
     [HttpPost("[action]")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> CreateUser([FromBody] CreateApplicationUserDto createApplicationUserDto)
     {
         var usernameCheck = _db.Users.Where(u => u.UserName == createApplicationUserDto.Username);
@@ -104,6 +124,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("[action]")]
+    [Authorize(Roles = "Admin")] 
     public IActionResult UpdateUser([FromBody] UpdateApplicationUserDto updateApplicationUserDto)
     {
         var userDb = _db.Users.FirstOrDefault(u => u.Id == updateApplicationUserDto.Id);
@@ -123,6 +144,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("[action]/{studentId}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> LockUnlock(string studentId)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -155,6 +177,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{studentId}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> Delete(string studentId)
     {
         var applicationUser = _db.Users.Find(studentId);
@@ -170,6 +193,7 @@ public class UsersController : ControllerBase
     
     [HttpPost("[action]")]
     [RequestSizeLimit(100_000_000)]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> Upload([FromForm] FileModel file)
     {
         try

@@ -10,6 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { currentUser }               from "./functions/auth";
 import AdminRoute from "./components/routes/AdminRoute"
+import ManagementRoute from "./components/routes/ManagementRoute"
+import PrivateRoute from "./components/routes/PrivateRoute"
 
 import CreateCourse    from "./pages/Admin/Courses/CreateCourse";
 import EditCourse      from "./pages/Admin/Courses/EditCourse";
@@ -73,32 +75,32 @@ const App = () => {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/user-session" component={UserSession} />
-                <AdminRoute exact path="/admin/courses" component={AllCourse}/>
-                <AdminRoute exact path="/admin/course" component={CreateCourse}/>
-                <AdminRoute exact path="/admin/course/:id" component={EditCourse}/>
-                <AdminRoute exact path="/admin/courseUpload" component={UploadFile}/>
-                <AdminRoute exact path="/admin/students" component={AllStudents}/>
-                <AdminRoute exact path="/admin/student" component={CreateStudent}/>
-                <AdminRoute exact path="/admin/student/:id" component={EditStudent}/>
-                <AdminRoute exact path="/admin/studentUpload" component={UploadStudentFile}/>
-                <AdminRoute exact path="/admin/studentExams" component={AllStudentExams}/>
-                <AdminRoute exact path="/admin/studentExam" component={CreateStudentExam}/>
-                <AdminRoute exact path="/admin/studentExam/:id" component={EditStudentExam}/>
-                <AdminRoute exact path="/admin/studentExamUpload" component={UploadStudentExamFile}/>
-                <AdminRoute exact path="/admin/settings" component={AllSetting}/>
-                <AdminRoute exact path="/admin/setting" component={EditSetting}/>
-                <AdminRoute exact path="/admin/schedules" component={SchedulePage}/>
-                <AdminRoute exact path="/admin/rooms" component={AllRooms}/>
-                <AdminRoute exact path="/admin/room" component={CreateRoom}/>
-                <AdminRoute exact path="/admin/room/:id" component={EditRoom}/>
-                <AdminRoute exact path="/admin/roomDetail/:id" component={Detail}/>
-                <AdminRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
+                <ManagementRoute exact path="/admin/courses" component={AllCourse}/>
+                <ManagementRoute exact path="/admin/course" component={CreateCourse}/>
+                <ManagementRoute exact path="/admin/course/:id" component={EditCourse}/>
+                <ManagementRoute exact path="/admin/courseUpload" component={UploadFile}/>
+                <ManagementRoute exact path="/admin/students" component={AllStudents}/>
+                <ManagementRoute exact path="/admin/student" component={CreateStudent}/>
+                <ManagementRoute exact path="/admin/student/:id" component={EditStudent}/>
+                <ManagementRoute exact path="/admin/studentUpload" component={UploadStudentFile}/>
+                <ManagementRoute exact path="/admin/studentExams" component={AllStudentExams}/>
+                <ManagementRoute exact path="/admin/studentExam" component={CreateStudentExam}/>
+                <ManagementRoute exact path="/admin/studentExam/:id" component={EditStudentExam}/>
+                <ManagementRoute exact path="/admin/studentExamUpload" component={UploadStudentExamFile}/>
+                <ManagementRoute exact path="/admin/settings" component={AllSetting}/>
+                <ManagementRoute exact path="/admin/setting" component={EditSetting}/>
+                <ManagementRoute exact path="/admin/schedules" component={SchedulePage}/>
+                <ManagementRoute exact path="/admin/rooms" component={AllRooms}/>
+                <ManagementRoute exact path="/admin/room" component={CreateRoom}/>
+                <ManagementRoute exact path="/admin/room/:id" component={EditRoom}/>
+                <ManagementRoute exact path="/admin/roomDetail/:id" component={Detail}/>
+                <ManagementRoute exact path="/admin/roomCheckin/:id" component={CheckinQr}/>
                 <AdminRoute exact path="/admin/users" component={AllUser}/>
                 <AdminRoute exact path="/admin/user" component={CreateUser}/>
                 <AdminRoute exact path="/admin/user/:id" component={UpdateUser}/>
                 <AdminRoute exact path="/admin/userUpload" component={UploadUserFile}/>
-                <Route exact path="/student" component={SearchInfo} />
-                <Route exact path="/student/schedule/:id" component={StudentSchedule} />
+                <PrivateRoute exact path="/student" component={SearchInfo} />
+                <PrivateRoute exact path="/student/schedule/:id" component={StudentSchedule} />
             </Switch>
        </>
         

@@ -29,6 +29,11 @@ public class ScheduleRepository : IScheduleRepository
         await using var _db = new ApplicationDbContext(_dbContext);
         var schedules = _db.Schedules.ToList();
         _db.RemoveRange(schedules);
+        var checkins  = _db.Checkins.ToList();
+        var rooms  = _db.Rooms.ToList();
+        _db.RemoveRange(schedules);
+        _db.RemoveRange(checkins);
+        _db.RemoveRange(rooms);
         _db.SaveChanges();
     }
 

@@ -29,6 +29,13 @@ export const getUser = async (id) =>
         }
     });
 
+export const getUserPersionalId = async (id) =>
+    await axios.get(`api/Users/GetUserPersionalId/${id}`,{
+        headers: {
+            'X-CSRF': '1'
+        }
+    });
+
 export const uploadUser = async (file) =>
     await axios.post(`api/Users/Upload`, file,{
         headers: {

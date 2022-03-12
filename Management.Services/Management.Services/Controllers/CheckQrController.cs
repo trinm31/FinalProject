@@ -1,6 +1,7 @@
 using AutoMapper;
 using Management.Services.Dtos;
 using Management.Services.Services.IRepository;
+using Management.Services.Utiliy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace Management.Services.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [AllowAnonymous]
+[Authorize]
 public class CheckQrController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
