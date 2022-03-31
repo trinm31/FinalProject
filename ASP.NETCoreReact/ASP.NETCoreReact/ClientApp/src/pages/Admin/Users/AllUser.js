@@ -3,6 +3,7 @@ import { toast }                                               from "react-toast
 import useUser                                                 from "../../../Hooks/useUser";
 import ListAllUserTable                                        from "../../../components/tables/ListAllUserTable";
 import { removeUser }                                          from "../../../functions/user";
+import Header                                                  from "../../../components/nav/Header";
 
 const AllUser = () => {
     const [page , setPage] = useState(1);
@@ -62,6 +63,7 @@ const AllUser = () => {
 
     return (
         <>
+            <Header/>
             <ListAllUserTable lastUserElementRef={lastUserElementRef} handleSearch={handleSearch} userLists={filter} handleRemove={handleRemove}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { toast }                    from "react-toastify";
-import { editSetting , getSetting } from "../../../functions/setting";
-import UpdateSettingForm            from "../../../components/Form/UpdateSettingForm";
+import { toast }                      from "react-toastify";
+import { editSetting , getSetting }   from "../../../functions/setting";
+import UpdateSettingForm              from "../../../components/Form/UpdateSettingForm";
+import Header                         from "../../../components/nav/Header";
 
 const initialState = {
     id: "",
@@ -81,7 +82,10 @@ const EditSetting = ({history, match}) => {
     };
 
     return(
-        <UpdateSettingForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpdateSettingForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

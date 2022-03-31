@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import FileUpload                   from '../../../components/Form/FileUpload';
 import { toast }                    from "react-toastify";
 import { uploadStudent }            from "../../../functions/student";
+import Header                       from "../../../components/nav/Header";
 
 const UploadStudentFile = ({history}) => {
     const [file, setFile] = useState();
@@ -36,7 +37,10 @@ const UploadStudentFile = ({history}) => {
     const downloadFileTemplate = "/Static/StudentExcelTemplate.xlsx";
 
     return (
-        <FileUpload downloadFileTemplate={downloadFileTemplate} handleSubmit={handleSubmit} saveFile={saveFile} fileName={fileName}/>
+        <>
+            <Header/>
+            <FileUpload downloadFileTemplate={downloadFileTemplate} handleSubmit={handleSubmit} saveFile={saveFile} fileName={fileName}/>
+        </>
     );
 }
 

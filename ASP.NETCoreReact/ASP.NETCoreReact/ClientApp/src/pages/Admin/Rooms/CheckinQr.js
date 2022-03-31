@@ -4,6 +4,7 @@ import { QrReader }                     from 'react-qr-reader';
 import { checkIn , checkInConfirm }     from "../../../functions/checkin";
 import avatar                           from "../../../images/images.jpeg";
 import { Link }                         from "react-router-dom";
+import Header                           from "../../../components/nav/Header";
 
 const CheckinQr = ( { match } ) => {
 
@@ -49,7 +50,8 @@ const CheckinQr = ( { match } ) => {
 
     return (
         <>
-            <div className="hidden xl:flex flex-row justify-between shadow-md border rounded-md overflow-hidden">
+            <Header/>
+            <div className="hidden xl:flex lg:flex md:flex flex-row justify-between shadow-md border rounded-md overflow-hidden">
                 <div
                     className="flex flex-col items-center justify-between w-1/4 px-4 py-2 bg-white border-r-2 border-gray-500 border-dashed rounded-l-md overflow-hidden"
                 >

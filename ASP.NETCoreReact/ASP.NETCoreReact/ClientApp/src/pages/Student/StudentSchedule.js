@@ -5,6 +5,7 @@ import dayGridPlugin                    from '@fullcalendar/daygrid';
 import timeGridPlugin                   from '@fullcalendar/timegrid';
 import interactionPlugin                from '@fullcalendar/interaction';
 import { getScheduleByStudentId }       from "../../functions/schedule";
+import Header                           from "../../components/nav/Header";
 
 const StudentSchedule = ({match}) => {
 
@@ -26,6 +27,7 @@ const StudentSchedule = ({match}) => {
     
     return(
         <>
+            <Header/>
             <div className="p-10 shadow rounded-3">
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

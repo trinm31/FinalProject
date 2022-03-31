@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast }                      from "react-toastify";
 import {editStudent, getStudent}      from "../../../functions/student";
 import UpSertStudentForm              from "../../../components/Form/UpSertStudentForm";
+import Header                         from "../../../components/nav/Header";
 
 const initialState = {
     id: "",
@@ -69,7 +70,11 @@ const EditStudent = ({history,match}) => {
     };
 
     return(
-        <UpSertStudentForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit} />
+        <>
+            <Header/>
+            <UpSertStudentForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit} />
+        </>
+        
     );
 }
 

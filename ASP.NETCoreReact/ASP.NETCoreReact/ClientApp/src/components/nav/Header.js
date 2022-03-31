@@ -107,6 +107,11 @@ const Header = () => {
                                             <div
                                                 className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
                                             >
+                                                <Link to="/admin/dashboard" className="hover:text-white">Dashboard</Link>
+                                            </div>
+                                            <div
+                                                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-grey hover:text-white"
+                                            >
                                                 <Link to="/admin/rooms" className="hover:text-white">Rooms</Link>
                                             </div>
                                             <div

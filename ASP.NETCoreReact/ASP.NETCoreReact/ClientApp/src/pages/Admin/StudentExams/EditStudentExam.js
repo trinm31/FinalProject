@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { toast }                                                from "react-toastify";
+import React, { useState, useEffect }       from "react";
+import { toast }                            from "react-toastify";
 import { editStudentExam , getStudentExam } from "../../../functions/studentExam";
-import { getAllExams }                                          from "../../../functions/exam";
-import { getAllStudents }          from "../../../functions/student";
-import UpSertStudentExamForm          from "../../../components/Form/UpsertStudentExamForm";
+import { getAllExams }                      from "../../../functions/exam";
+import { getAllStudents }                   from "../../../functions/student";
+import UpSertStudentExamForm                from "../../../components/Form/UpsertStudentExamForm";
+import Header                               from "../../../components/nav/Header";
 
 
 const initialState = {
@@ -88,7 +89,10 @@ const EditStudentExam = ({history, match}) => {
     };
 
     return(
-        <UpSertStudentExamForm setValues={setValues} errors={errors} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpSertStudentExamForm setValues={setValues} errors={errors} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

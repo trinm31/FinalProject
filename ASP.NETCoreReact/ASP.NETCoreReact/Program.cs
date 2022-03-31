@@ -154,6 +154,8 @@ app.MapRemoteBffApiEndpoint("/api/CheckQr/GetQrCode", "https://localhost:7143/ap
 
 app.MapRemoteBffApiEndpoint("/api/Schedule/GetByStudentId", "https://localhost:7143/api/Schedule/GetByStudentId", false).RequireAccessToken();
 
+app.MapRemoteBffApiEndpoint("/api/Charts/Index", "https://localhost:7143/api/Charts/Index", false).RequireAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

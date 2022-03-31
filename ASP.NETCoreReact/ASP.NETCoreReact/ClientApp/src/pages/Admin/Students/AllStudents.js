@@ -1,8 +1,9 @@
 import React , { useCallback , useEffect , useRef , useState } from "react";
 import { toast }                                               from "react-toastify";
-import { createStudentQr , removeStudent } from "../../../functions/student";
+import { createStudentQr , removeStudent }                     from "../../../functions/student";
 import ListAllStudentTable                                     from "../../../components/tables/ListAllStudentTable";
 import useStudent                                              from "../../../Hooks/useStudent";
+import Header                                                  from "../../../components/nav/Header";
 
 const AllStudents = () => {
     const [students, setStudents] = useState([]);
@@ -68,6 +69,7 @@ const AllStudents = () => {
 
     return (
         <>
+            <Header/>
             <ListAllStudentTable lastStudentElementRef={lastStudentElementRef} handleSearch={handleSearch} studentLists={filter} handleRemove={handleRemove} createQrCode={createQrCode}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast }                      from "react-toastify";
 import {createRoom}                   from "../../../functions/room";
 import UpSertRoomForm                 from "../../../components/Form/UpSertRoomForm";
+import Header                         from "../../../components/nav/Header";
 
 const initialState = {
     id: 0,
@@ -48,7 +49,10 @@ const CreateRoom = ({history}) => {
     };
 
     return(
-        <UpSertRoomForm errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpSertRoomForm errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

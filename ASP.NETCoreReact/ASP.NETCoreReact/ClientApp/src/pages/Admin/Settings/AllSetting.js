@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getSetting }                 from "../../../functions/setting";
 import ListAllSettingTable            from "../../../components/tables/ListAllSettingTable";
+import Header                         from "../../../components/nav/Header";
 
 const AllSetting = () => {
     const [setting, setSetting] = useState({});
@@ -27,7 +28,10 @@ const AllSetting = () => {
             {loading ? (
                 <h4 className="text-danger">Loading...</h4>
             ) : (
-                <ListAllSettingTable setting={setting} />
+                <>
+                    <Header/>
+                    <ListAllSettingTable setting={setting} />
+                </>
             )
             }
         </>

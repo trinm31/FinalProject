@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { toast }                               from "react-toastify";
-import { editRoom , getRoomById } from "../../../functions/room";
-import UpSertRoomForm                          from "../../../components/Form/UpSertRoomForm";
+import { toast }                      from "react-toastify";
+import { editRoom , getRoomById }     from "../../../functions/room";
+import UpSertRoomForm                 from "../../../components/Form/UpSertRoomForm";
+import Header                         from "../../../components/nav/Header";
 
 const initialState = {
     id: 0,
@@ -66,7 +67,10 @@ const EditRoom = ({history, match}) => {
     };
 
     return(
-        <UpSertRoomForm errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpSertRoomForm errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

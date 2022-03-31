@@ -50,7 +50,8 @@ const context = [
     "/api/Users/UpdateUser",
     "/api/Users/GetUserById",
     "/api/Users/Upload",
-    "/api/Users/GetUserPersionalId"
+    "/api/Users/GetUserPersionalId",
+    "/api/Charts/Index"
 ];
 
 module.exports = function(app) {

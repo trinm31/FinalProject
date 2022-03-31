@@ -1,8 +1,9 @@
 import React , { useCallback , useEffect , useRef , useState } from "react";
 import { toast }                                               from "react-toastify";
-import { removeRoom, downloadExcelReportRoom }                                          from "../../../functions/room";
-import useRoom                                               from "../../../Hooks/useRoom";
+import { removeRoom, downloadExcelReportRoom }                 from "../../../functions/room";
+import useRoom                                                 from "../../../Hooks/useRoom";
 import ListAllRoomTable                                        from "../../../components/tables/ListAllRoomTable";
+import Header                                                  from "../../../components/nav/Header";
 
 const AllRooms = () => {
     const [page , setPage] = useState(1);
@@ -57,6 +58,7 @@ const AllRooms = () => {
 
     return (
         <>
+            <Header/>
             <ListAllRoomTable download={downloadExcelReportRoom} lastRoomElementRef={lastRoomElementRef} handleSearch={handleSearch} roomLists={filter} handleRemove={handleRemove}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>

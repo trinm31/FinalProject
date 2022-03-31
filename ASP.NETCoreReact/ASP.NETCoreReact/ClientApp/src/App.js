@@ -17,7 +17,6 @@ import CreateCourse    from "./pages/Admin/Courses/CreateCourse";
 import EditCourse      from "./pages/Admin/Courses/EditCourse";
 import AllCourse  from "./pages/Admin/Courses/AllCourse";
 import UploadFile        from "./pages/Admin/Courses/UploadFile";
-import Header            from "./components/nav/Header";
 import AllStudents           from "./pages/Admin/Students/AllStudents";
 import CreateStudent         from "./pages/Admin/Students/CreateStudent";
 import EditStudent           from "./pages/Admin/Students/EditStudent";
@@ -41,6 +40,7 @@ import AllUser         from "./pages/Admin/Users/AllUser";
 import CreateUser      from "./pages/Admin/Users/CreateUser";
 import UpdateUser      from "./pages/Admin/Users/UpdateUser";
 import UploadUserFile  from "./pages/Admin/Users/UploadFile";
+import Dashboard       from "./pages/Admin/Dashboards/Dashboard";
 import { UserSession } from "./components/UserSession";
 
 import "./Index.css";
@@ -70,7 +70,7 @@ const App = () => {
     
     return (
         <>
-            <Header/>
+            {/*<Header/>*/}
             <ToastContainer />
             <Switch>
                 <Route exact path="/" component={Home} />
@@ -99,6 +99,7 @@ const App = () => {
                 <AdminRoute exact path="/admin/user" component={CreateUser}/>
                 <AdminRoute exact path="/admin/user/:id" component={UpdateUser}/>
                 <AdminRoute exact path="/admin/userUpload" component={UploadUserFile}/>
+                <AdminRoute exact path="/admin/dashboard" component={Dashboard}/>
                 <PrivateRoute exact path="/student" component={SearchInfo} />
                 <PrivateRoute exact path="/student/schedule/:id" component={StudentSchedule} />
             </Switch>

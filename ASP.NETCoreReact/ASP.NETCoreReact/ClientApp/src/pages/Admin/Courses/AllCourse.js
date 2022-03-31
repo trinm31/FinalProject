@@ -1,8 +1,9 @@
 import React , { useCallback , useEffect , useRef , useState } from "react";
 import { toast }                                               from "react-toastify";
 import { removeCourse }                                        from "../../../functions/exam";
-import ListAllCourseTable  from "../../../components/tables/ListAllCourseTable";
-import useCourse           from "../../../Hooks/useCourse.js";
+import ListAllCourseTable                                      from "../../../components/tables/ListAllCourseTable";
+import useCourse                                               from "../../../Hooks/useCourse.js";
+import Header                                                  from "../../../components/nav/Header";
 
 const AllCourse = () => {
     const [page , setPage] = useState(1);
@@ -57,6 +58,7 @@ const AllCourse = () => {
 
     return (
         <>
+            <Header/>
             <ListAllCourseTable lastCourseElementRef={lastCourseElementRef} handleSearch={handleSearch} courseLists={filter} handleRemove={handleRemove}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>

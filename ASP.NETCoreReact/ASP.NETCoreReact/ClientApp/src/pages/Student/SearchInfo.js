@@ -6,6 +6,7 @@ import avatar                           from "../../images/images.jpeg";
 import { Link }                         from "react-router-dom";
 import { getUserPersionalId }           from "../../functions/user";
 import { useSelector }                  from "react-redux";
+import Header                           from "../../components/nav/Header";
 
 
 const SearchInfo = () => {
@@ -45,6 +46,7 @@ const SearchInfo = () => {
 
     return (
         <>
+            <Header/>
             <div className="flex justify-center mt-40">
                 <div
                     className="bg-grey rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">

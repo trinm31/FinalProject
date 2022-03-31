@@ -1,8 +1,9 @@
 import React , { useCallback , useEffect , useRef , useState } from "react";
 import { toast }                                               from "react-toastify";
-import { removeStudentExam } from "../../../functions/studentExam";
-import ListAllStudentExamTable                                           from "../../../components/tables/ListAllStudentExamTable";
-import UseStudentCourse                                                  from "../../../Hooks/useStudentCourse";
+import { removeStudentExam }                                   from "../../../functions/studentExam";
+import ListAllStudentExamTable                                 from "../../../components/tables/ListAllStudentExamTable";
+import UseStudentCourse                                        from "../../../Hooks/useStudentCourse";
+import Header                                                  from "../../../components/nav/Header";
 
 const AllStudentExam = () => {
     const [studentExams, setStudentExams] = useState([]);
@@ -56,6 +57,7 @@ const AllStudentExam = () => {
 
     return (
         <>
+            <Header/>
             <ListAllStudentExamTable lastCourseElementRef={lastCourseElementRef} handleSearch={handleSearch} studentExamLists={filter} handleRemove={handleRemove}/>
             <div>{isLoading && "Loading..."}</div>
             <div>{error && "Error..."}</div>

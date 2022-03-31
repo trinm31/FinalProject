@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast }                      from "react-toastify";
 import UpSertCourseForm               from "../../../components/Form/UpSertCourseForm";
 import {editCourse, getCourse}        from "../../../functions/exam";
+import Header                         from "../../../components/nav/Header";
 
 const initialState = {
     id: "",
@@ -67,7 +68,10 @@ const EditCourse = ({history, match}) => {
     };
 
     return(
-        <UpSertCourseForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpSertCourseForm setValues={setValues} errors={errors} values={values} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

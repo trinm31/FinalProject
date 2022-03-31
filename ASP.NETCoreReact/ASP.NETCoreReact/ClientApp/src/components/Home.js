@@ -1,9 +1,11 @@
-import React  from "react";
+import React    from "react";
 import { Link } from "react-router-dom";
+import Header   from "./nav/Header";
 
 const Home = () =>{
         return (
             <>
+                <Header/>
                 <div className="landing-page">
                     <div className="container">
                         <div className="info">

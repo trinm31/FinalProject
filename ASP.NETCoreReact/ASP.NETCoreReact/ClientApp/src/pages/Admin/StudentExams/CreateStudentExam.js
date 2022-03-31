@@ -4,6 +4,7 @@ import { createStudentExam }          from "../../../functions/studentExam";
 import { getAllExams }                from "../../../functions/exam";
 import { getAllStudents }             from "../../../functions/student";
 import UpSertStudentExamForm          from "../../../components/Form/UpsertStudentExamForm";
+import Header                         from "../../../components/nav/Header";
 
 
 const initialState = {
@@ -72,7 +73,10 @@ const CreateStudentExam = ({history}) => {
     };
     
     return(
-        <UpSertStudentExamForm setValues={setValues} errors={errors} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
+        <>
+            <Header/>
+            <UpSertStudentExamForm setValues={setValues} errors={errors} exams={exams} students={students} values={values} handleSubmit={handleSubmit}/>
+        </>
     );
 }
 

@@ -51,7 +51,7 @@ public static partial class ServiceExtension
                 return new DefaultCorsPolicyService(logger)
                 {
                     AllowedOrigins = allowed_origins,
-                    AllowAll = false
+                    //AllowAll = false
                 };
             });
 
