@@ -417,7 +417,7 @@ namespace SchedulingGenerate.Services.Controllers
                             if (a != j || b != k)
                             {
                                 // external distance between 2 color
-                                if (Math.Abs(j-a) < D2)
+                                if (Math.Abs(j-a) <= D2)
                                 {
                                     // Internal distance between 2 color
                                     if (Math.Abs(k-b) <= D1)
@@ -467,13 +467,8 @@ namespace SchedulingGenerate.Services.Controllers
                     var crs = AllNodesHashSet.Where(n => n.Color == colors[j,q]);
                     foreach (var node in crs)
                     {
-                        var scTmp = new StudentCourse()
-                        {
-                            CourseId = node.Id,
-                            StudentId = studentRegis.StudentId
-                        };
-                        //var exist = StudentCourses.OrderBy(c=>c.Id).Any(s => s.CourseId == node.Id && s.StudentId == studentRegis.StudentId);
-                        var exist = StudentCourses.Contains(scTmp);
+                        var exist = StudentCourses.Any(s =>
+                            s.CourseId == node.Id && s.StudentId == studentRegis.StudentId);
                         if (exist)
                         {
                             counter++;
