@@ -6,34 +6,50 @@ const ListAllCourseTable = ( { lastCourseElementRef , courseLists , handleRemove
 
     return (
         <div className="p-5 bg-gray-100">
-            <div className="grid grid-cols-3">
-                <div className="flex justify-start my-3 items-center">
-                    <h1 className="text-xl mb-2">All Courses</h1>
+            
+                <div className="flex flex-wrap justify-between">
+                    <div className="flex justify-start my-3 items-center">
+                        <h1 className="text-xl mb-2">All Courses</h1>
+                    </div>
+                    <div className="pb-10">
+                        <div className="w-full mb-2 justify-center">
+                            <div className="flex items-center">
+                                <label className="relative block flex-1">
+                                    <span className="sr-only">Search</span>
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+                                   <AiOutlineSearch/>
+                                 </span>
+                                    <input type="text" name="search" onChange={handleSearch}  placeholder="Search for anything..."
+                                           className="px-8 w-full border rounded py-2 text-gray-700 focus:outline-none"/>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {/*<div className="flex items-center ">*/}
+                    {/*    <label className="relative block flex-1">*/}
+                    {/*        <span className="sr-only">Search</span>*/}
+                    {/*        <span className="absolute inset-y-0 left-0 flex items-center pl-2">*/}
+                    {/*       <AiOutlineSearch/>*/}
+                    {/*     </span>*/}
+                    {/*        <input*/}
+                    {/*            className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"*/}
+                    {/*            placeholder="Search for anything..." type="text" name="search" onChange={handleSearch}/>*/}
+                    {/*    </label>*/}
+                    {/*</div>*/}
+                    <div className="flex justify-end my-3 items-center">
+                        <Link
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-2 rounded"
+                            to="/admin/course">
+                            Create New Course
+                        </Link>
+                        <Link
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            to="/admin/courseUpload">
+                            Upload Courses
+                        </Link>
+                    </div>
                 </div>
-                <div className="flex items-center">
-                    <label className="relative block flex-1">
-                        <span className="sr-only">Search</span>
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                           <AiOutlineSearch/>
-                         </span>
-                        <input
-                            className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                            placeholder="Search for anything..." type="text" name="search" onChange={handleSearch}/>
-                    </label>
-                </div>
-                <div className="flex justify-end my-3 items-center">
-                    <Link
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-2 rounded"
-                        to="/admin/course">
-                        Create New Course
-                    </Link>
-                    <Link
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        to="/admin/courseUpload">
-                        Upload Courses
-                    </Link>
-                </div>
-            </div>
+           
 
             <div className="overflow-auto rounded-lg shadow hidden md:block" >
                 <table className="w-full">

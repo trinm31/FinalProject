@@ -106,7 +106,7 @@ namespace SchedulingGenerate.Services.Controllers
                 var result = db.Results.ToList();
                 db.RemoveRange(result);
                 db.SaveChanges();
-                
+                 
                 SchedulingResultMessage schedulingResultMessage = new SchedulingResultMessage()
                 {
                     MethodType = "delete"
@@ -433,11 +433,11 @@ namespace SchedulingGenerate.Services.Controllers
                                     break;
                                 }
 
-                                if (CheckExamsConstraint(c,j,colors) == false)
-                                {
-                                    valid = false;
-                                    break;
-                                }
+                                // if (CheckExamsConstraint(c,j,colors) == false)
+                                // {
+                                //     valid = false;
+                                //     break;
+                                // }
                             }
                             else
                             {

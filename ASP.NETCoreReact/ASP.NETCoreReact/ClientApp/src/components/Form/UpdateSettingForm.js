@@ -44,7 +44,7 @@ const UpdateSettingForm = ( {handleSubmit, handleChange, values, setValues, erro
                     
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">Concurrency Level</label>
-                        <input type="text" onChange={handleChange} name="concurrencyLevelDefault" value={concurrencyLevelDefault}
+                        <input type="number" onChange={handleChange} name="concurrencyLevelDefault" value={concurrencyLevelDefault}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
                         {
                             errors.concurrencyLevelDefault.length > 0 && <span className="text-red-500">{errors.concurrencyLevelDefault}</span>
@@ -53,7 +53,7 @@ const UpdateSettingForm = ( {handleSubmit, handleChange, values, setValues, erro
 
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">External Distance</label>
-                        <input type="text" onChange={handleChange} name="externalDistance" value={externalDistance}
+                        <input type="number" onChange={handleChange} name="externalDistance" value={externalDistance}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
                         {
                             errors.externalDistance.length > 0 && <span className="text-red-500">{errors.externalDistance}</span>
@@ -62,7 +62,7 @@ const UpdateSettingForm = ( {handleSubmit, handleChange, values, setValues, erro
 
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">Internal Distance</label>
-                        <input type="text" onChange={handleChange} name="internalDistance" value={internalDistance}
+                        <input type="number" onChange={handleChange} name="internalDistance" value={internalDistance}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
                         {
                             errors.internalDistance.length > 0 && <span className="text-red-500">{errors.internalDistance}</span>
@@ -71,7 +71,7 @@ const UpdateSettingForm = ( {handleSubmit, handleChange, values, setValues, erro
 
                     <div>
                         <label className="block mb-1 font-bold text-gray-500">Number Slot In A Day</label>
-                        <input type="text" onChange={handleChange} name="noOfTimeSlot" value={noOfTimeSlot}
+                        <input type="number" onChange={handleChange} name="noOfTimeSlot" value={noOfTimeSlot}
                                className="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-purple-500"/>
                         {
                             errors.noOfTimeSlot.length > 0 && <span className="text-red-500">{errors.noOfTimeSlot}</span>

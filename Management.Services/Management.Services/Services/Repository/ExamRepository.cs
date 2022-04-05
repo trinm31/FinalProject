@@ -19,7 +19,7 @@ public class ExamRepository: RepositoryAsync<Exam>,IExamRepository
         var objInDb = await _db.Exams.FirstOrDefaultAsync(e => e.Id == exam.Id);
         if (objInDb != null)
         {
-            if (await CheckExistExam(exam))
+            if (!await CheckExistExam(exam))
             {
                 objInDb.ExamId = exam.ExamId;
                 objInDb.Name = exam.Name;
@@ -44,6 +44,6 @@ public class ExamRepository: RepositoryAsync<Exam>,IExamRepository
 
     public async Task<bool> CheckExistExam(Exam exam)
     {
-        return await _db.Exams.AnyAsync(e => e.Name.Contains(exam.Name) && e.Id != exam.Id);
+        return await _db.Exams.AnyAsync(e => e.Name == exam.Name && e.Id != exam.Id);
     }
 }

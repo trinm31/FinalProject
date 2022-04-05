@@ -36,10 +36,10 @@ const UpSertCourseForm = ( {handleSubmit, handleChange, values, setValues, error
                     </div>
 
                     <div className="flex items-center">
-                        <input type="checkbox" id="agree" onChange={(e) => setValues({ ...values, status: e.target.checked })} name="status" value={status}/>
-                            <label htmlFor="agree" className="ml-2 text-gray-700 text-sm">Status</label>
+                        <input type="checkbox" onChange={(e) => setValues({ ...values, status: e.target.checked })} checked={status} name="status" />
+                            <label className="ml-2 text-gray-700 text-sm">Status</label>
                     </div>
-
+                    
                     <button
                         className="block w-full bg-yellow-400 hover:bg-yellow-300 p-4 rounded text-yellow-900 hover:text-yellow-800 transition duration-300">Submit
                     </button>

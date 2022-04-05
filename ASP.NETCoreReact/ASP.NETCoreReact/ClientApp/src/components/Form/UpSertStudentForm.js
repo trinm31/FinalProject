@@ -18,7 +18,9 @@ const UpSertStudentForm = ( {handleSubmit, handleChange, values, setValues, erro
                     80,
                     0,
                     (uri) => {
-                        setValues({ ...values, avatar: uri })
+                        const img = uri === null ? "": uri;
+                        console.log(img);
+                        setValues({ ...values, avatar: img })
                     },
                     "base64"
                 );
