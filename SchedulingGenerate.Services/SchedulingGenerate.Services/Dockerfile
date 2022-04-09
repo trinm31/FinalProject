@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SchedulingGenerate.Services/SchedulingGenerate.Services.csproj", "SchedulingGenerate.Services/"]
-RUN dotnet restore "SchedulingGenerate.Services/SchedulingGenerate.Services.csproj"
+COPY ["SchedulingGenerate.Services.csproj", "./"]
+RUN dotnet restore "SchedulingGenerate.Services.csproj"
 COPY . .
-WORKDIR "/src/SchedulingGenerate.Services"
+WORKDIR "/src/"
 RUN dotnet build "SchedulingGenerate.Services.csproj" -c Release -o /app/build
 
 FROM build AS publish

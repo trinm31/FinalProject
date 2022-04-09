@@ -2,6 +2,7 @@ using AutoMapper;
 using Management.Services;
 using Management.Services.BackgroudService;
 using Management.Services.DbContext;
+using Management.Services.DbInitialize;
 using Management.Services.Messaging;
 using Management.Services.RabbitMQSender;
 using Management.Services.Services.IRepository;
@@ -29,8 +30,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthentication("token")
     .AddJwtBearer("token", options =>
     {
-        options.Authority = "https://localhost:7153";
+        options.Authority = builder.Configuration["IdentityServices"];
         options.MapInboundClaims = false;
+        options.RequireHttpsMetadata = false;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -119,7 +121,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
 });
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 
@@ -128,5 +133,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/testmanagement", () => "Hello management services");
+
+DbInitialize.Initialize(app);
 
 app.Run();

@@ -7,8 +7,71 @@ namespace Identity.Services.Initializer;
 
 public class Clients
     {
-        public static IEnumerable<Client> Get()
+        public static IEnumerable<Client> Get(bool isProd)
         {
+            if (isProd)
+            {
+                string baseUrl = "http://trinm.com:80";
+                return new List<Client>
+                {
+                    new Client
+                    {
+                        ClientId = "spa",
+
+                        ClientSecrets = { new Secret("secret".Sha256()) },
+
+                        AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+
+                        RedirectUris = { $"{baseUrl}/signin-oidc" },
+
+                        BackChannelLogoutUri = $"{baseUrl}/bff/backchannel",
+
+                        PostLogoutRedirectUris = { $"{baseUrl}/signout-callback-oidc" },
+
+                        AllowedCorsOrigins = new List<string>
+                        {
+                            baseUrl,
+                        },
+
+                        AllowOfflineAccess = true,
+
+                        AllowedScopes = { "openid", "profile", "api" }
+                    },
+                    new Client
+                    {
+                        ClientId = "device",
+
+                        ClientSecrets = { new Secret("secret".Sha256())},
+
+                        ClientName = "Some machine or server using clinet credentials",
+
+                        AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                        AllowedScopes = { "api" },
+                    },
+                    new Client
+                    {
+                        ClientId = "postman",
+
+                        ClientSecrets = { new Secret("postman_secret".Sha256())},
+
+                        ClientName = "Postman password credential flow",
+
+                        RedirectUris = { $"{baseUrl}/signin-oidc" },
+
+                        BackChannelLogoutUri = $"{baseUrl}/bff/backchannel",
+
+                        PostLogoutRedirectUris = { $"{baseUrl}/signout-callback-oidc" },
+
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+
+                        AllowOfflineAccess = true,
+
+                        AllowedScopes = { "openid", "profile", "api" }
+                    }
+                };
+            }
+            
             return new List<Client>
             {
                 new Client
@@ -27,7 +90,7 @@ public class Clients
 
                     AllowedCorsOrigins = new List<string>
                     {
-                        "http://localhost:3000", "https://localhost:5001",
+                        "https://localhost:5001",
                     },
 
                     AllowOfflineAccess = true,

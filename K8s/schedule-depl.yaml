@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedule-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scheduleservice
+  template:
+    metadata:
+      labels:
+        app: scheduleservice
+    spec:
+      containers:
+        - name: scheduleservice
+          image: tridocker3108/schedulinggenerateservices:latest
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: schedule-services-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: scheduleservice
+  ports:
+  - name: scheduleservice
+    protocol: TCP
+    port: 80
+    targetPort: 80  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: schedule-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: scheduleservice
+  ports:
+  - protocol: TCP
+    port: 8082
+    targetPort: 80

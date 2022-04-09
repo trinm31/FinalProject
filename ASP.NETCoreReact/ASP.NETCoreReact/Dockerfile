@@ -6,16 +6,16 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 # Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y \
         nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-COPY ["ASP.NETCoreReact/ASP.NETCoreReact.csproj", "ASP.NETCoreReact/"]
-RUN dotnet restore "ASP.NETCoreReact/ASP.NETCoreReact.csproj"
+COPY ["ASP.NETCoreReact.csproj", "./"]
+RUN dotnet restore "ASP.NETCoreReact.csproj"
 COPY . .
-WORKDIR "/src/ASP.NETCoreReact"
+WORKDIR "/src/"
 RUN dotnet build "ASP.NETCoreReact.csproj" -c Release -o /app/build
 
 FROM build AS publish

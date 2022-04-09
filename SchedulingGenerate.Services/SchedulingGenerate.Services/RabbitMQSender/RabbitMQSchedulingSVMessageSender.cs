@@ -11,11 +11,14 @@ public class RabbitMQSchedulingSVMessageSender : IRabbitMQSchedulingSVMessageSen
     private readonly string _password;
     private readonly string _username;
     private IConnection _connection;
+    private readonly IConfiguration _configuration;
+    private readonly int _port;
 
-    public RabbitMQSchedulingSVMessageSender()
+    public RabbitMQSchedulingSVMessageSender(IConfiguration configuration)
     {
-        //Todo: clean here
-        _hostname = "localhost";
+        _configuration = configuration;
+        _hostname = _configuration["RabbitMQHost"];
+        _port = int.Parse(_configuration["RabbitMQPort"]);
         _password = "guest";
         _username = "guest";
     }
@@ -40,7 +43,8 @@ public class RabbitMQSchedulingSVMessageSender : IRabbitMQSchedulingSVMessageSen
             {
                 HostName = _hostname,
                 UserName = _username,
-                Password = _password
+                Password = _password,
+                Port = _port
             };
             _connection = factory.CreateConnection();
         }

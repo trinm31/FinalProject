@@ -29,6 +29,7 @@ builder.Services.AddHostedService<LongRunningService>();
 builder.Services.AddSingleton<BackgroundWorkerQueue>();
 builder.Services.AddSingleton<IRabbitMQSchedulingSVMessageSender, RabbitMQSchedulingSVMessageSender>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudCourseConsumer>();
+builder.Services.AddHostedService<RabbitMQSchedulingCreateStudentCourseConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingCrudStudentCourseConsumer>();
 builder.Services.AddHostedService<RabbitMQSchedulingUpdateSettingConsumer>();
@@ -36,12 +37,12 @@ builder.Services.AddSingleton(new ExamRepository(optionBuilder.Options));
 builder.Services.AddSingleton(new StudentRepository(optionBuilder.Options));
 builder.Services.AddSingleton(new StudentExamRepository(optionBuilder.Options));
 builder.Services.AddSingleton(new SettingRepository(optionBuilder.Options));
-
 builder.Services.AddAuthentication("token")
     .AddJwtBearer("token", options =>
     {
-        options.Authority = "https://localhost:7153";
+        options.Authority = builder.Configuration["IdentityServices"];
         options.MapInboundClaims = false;
+        options.RequireHttpsMetadata = false;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -71,13 +72,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/testscheduling", () => "Hello frontend services");
 
 DbInitialize.Initialize(app);
 

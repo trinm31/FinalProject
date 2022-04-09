@@ -10,7 +10,7 @@ namespace Identity.Services.Initializer;
 
     public static class DbInitializer
     {
-        public static void Initialize(IApplicationBuilder app)
+        public static void Initialize(IApplicationBuilder app, bool isProd)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -49,7 +49,7 @@ namespace Identity.Services.Initializer;
 
                 if (!DB_ConfigurationDbContext.Clients.Any())
                 {
-                    foreach (var client in Clients.Get())
+                    foreach (var client in Clients.Get(isProd))
                     {
                         DB_ConfigurationDbContext.Clients.Add(client.ToEntity());
                     }

@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["UserManagement.Services/UserManagement.Services.csproj", "UserManagement.Services/"]
-RUN dotnet restore "UserManagement.Services/UserManagement.Services.csproj"
+COPY ["UserManagement.Services.csproj", "./"]
+RUN dotnet restore "UserManagement.Services.csproj"
 COPY . .
-WORKDIR "/src/UserManagement.Services"
+WORKDIR "/src/"
 RUN dotnet build "UserManagement.Services.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -42,9 +42,10 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer("token", options =>
     {
-        options.Authority = "https://localhost:7153";
+        options.Authority = builder.Configuration["IdentityServices"];
         options.MapInboundClaims = false;
         options.IncludeErrorDetails = true;
+        options.RequireHttpsMetadata = false;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -117,5 +118,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/testuser", () => "Hello user services");
 
 app.Run();

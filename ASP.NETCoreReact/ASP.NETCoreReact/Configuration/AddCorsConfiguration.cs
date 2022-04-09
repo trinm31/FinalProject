@@ -35,10 +35,10 @@ public static partial class ServiceExtension
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                     //------------------------------------
-                    policy.WithOrigins(allowed_origins.ToArray());
-                    //policy.AllowAnyOrigin()
+                    //policy.WithOrigins(allowed_origins.ToArray());
+                    policy.AllowAnyOrigin();
                     //------------------------------------
-                    policy.AllowCredentials();
+                    //policy.AllowCredentials();
                     policy.SetPreflightMaxAge(TimeSpan.FromSeconds(10000));
                 });
             });
@@ -50,8 +50,8 @@ public static partial class ServiceExtension
 
                 return new DefaultCorsPolicyService(logger)
                 {
-                    AllowedOrigins = allowed_origins,
-                    //AllowAll = false
+                    //AllowedOrigins = allowed_origins,
+                    AllowAll = true
                 };
             });
 

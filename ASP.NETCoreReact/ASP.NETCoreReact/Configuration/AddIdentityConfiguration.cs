@@ -6,7 +6,7 @@ namespace ASP.NETCoreReact.Configuration;
 
 public static partial class ServiceExtension {
     public static IServiceCollection AddIdentityConfiguration(
-        this IServiceCollection serviceCollection) {
+        this IServiceCollection serviceCollection , IConfiguration configuration) {
 
         // cookie options
         serviceCollection.AddAuthentication(options =>
@@ -31,7 +31,7 @@ public static partial class ServiceExtension {
             })
             .AddOpenIdConnect("oidc", options =>
             {
-                options.Authority = "https://localhost:7153";
+                options.Authority = configuration["IdentityServices"];
             
                 // confidential client using code flow + PKCE
                 options.ClientId = "spa";
@@ -42,6 +42,7 @@ public static partial class ServiceExtension {
                 options.MapInboundClaims = false;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.SaveTokens = true;
+                options.RequireHttpsMetadata = false;
 
                 // request scopes + refresh tokens
                 options.Scope.Clear();

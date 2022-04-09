@@ -14,15 +14,19 @@ public class RabbitMQSchedulingCrudStudentCourseConsumer: Microsoft.Extensions.H
     private IConnection _connection;
     private IModel _channel;
     private readonly StudentExamRepository _studentExamRepository;
+    private readonly IConfiguration _configuration;
+    private readonly int _port;
 
-    public RabbitMQSchedulingCrudStudentCourseConsumer(StudentExamRepository studentExamRepository)
+    public RabbitMQSchedulingCrudStudentCourseConsumer(StudentExamRepository studentExamRepository, IConfiguration configuration)
     {
-        //Todo: clean here
+        _configuration = configuration;
+        
         var factory = new ConnectionFactory
         {
-            HostName = "localhost",
+            HostName = _configuration["RabbitMQHost"],
             UserName = "guest",
-            Password = "guest"
+            Password = "guest",
+            Port = int.Parse(_configuration["RabbitMQPort"])
         };
 
         _studentExamRepository = studentExamRepository;

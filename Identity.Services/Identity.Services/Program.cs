@@ -93,12 +93,14 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapGet("/testidentity", () => "Hello identity services");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
-DbInitializer.Initialize(app);
+DbInitializer.Initialize(app, app.Environment.IsProduction());
 
 app.Run();

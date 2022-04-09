@@ -14,15 +14,19 @@ public class RabbitMQSchedulingUpdateSettingConsumer: Microsoft.Extensions.Hosti
     private IConnection _connection;
     private IModel _channel;
     private readonly SettingRepository _settingRepository;
+    private readonly IConfiguration _configuration;
+    private readonly int _port;
 
-    public RabbitMQSchedulingUpdateSettingConsumer(SettingRepository settingRepository)
+    public RabbitMQSchedulingUpdateSettingConsumer(SettingRepository settingRepository, IConfiguration configuration)
     {
-        //Todo: clean here
+        _configuration = configuration;
+        
         var factory = new ConnectionFactory
         {
-            HostName = "localhost",
+            HostName = _configuration["RabbitMQHost"],
             UserName = "guest",
-            Password = "guest"
+            Password = "guest",
+            Port = int.Parse(_configuration["RabbitMQPort"])
         };
 
         _settingRepository = settingRepository;

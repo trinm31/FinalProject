@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userservice
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+        - name: userservice
+          image: tridocker3108/usermanagementservices:latest
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-services-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: userservice
+  ports:
+  - name: userservice
+    protocol: TCP
+    port: 80
+    targetPort: 80  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: userservice
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 80

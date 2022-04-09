@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: management-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: managementservice
+  template:
+    metadata:
+      labels:
+        app: managementservice
+    spec:
+      containers:
+        - name: managementservice
+          image: tridocker3108/managementservices:latest
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: management-services-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: managementservice
+  ports:
+  - name: managementservice
+    protocol: TCP
+    port: 80
+    targetPort: 80  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: management-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: managementservice
+  ports:
+  - protocol: TCP
+    port: 8084
+    targetPort: 80
