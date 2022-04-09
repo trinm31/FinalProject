@@ -32,6 +32,11 @@ public static partial class ServiceExtension {
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = configuration["IdentityServices"];
+                
+                options.BackchannelHttpHandler = new HttpClientHandler { 
+                    UseProxy = false, 
+                    UseDefaultCredentials = true 
+                }; 
             
                 // confidential client using code flow + PKCE
                 options.ClientId = "spa";

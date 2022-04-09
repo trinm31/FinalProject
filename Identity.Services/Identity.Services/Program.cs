@@ -22,8 +22,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 var identityServerBuilder = builder.Services.AddIdentityServer(options =>
     {
+        options.IssuerUri = "http://Trinm.com:80";
         // set path where to store keys
-        options.KeyManagement.KeyPath = "/Users/Shared/Key";
+        options.KeyManagement.KeyPath = "/app/key";
     
         // new key every 30 days
         options.KeyManagement.RotationInterval = TimeSpan.FromDays(30);
@@ -84,6 +85,12 @@ app.UseCors("cors_policy");
 app.UseHealthChecks("/health");
 
 app.UseStaticFiles();
+
+app.Use((context, next) =>
+{
+    context.Request.Scheme = "https";
+    return next();
+});
 
 app.UseRouting(); 
         

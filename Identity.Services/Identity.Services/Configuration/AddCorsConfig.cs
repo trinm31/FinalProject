@@ -26,7 +26,7 @@ public static partial class ServiceExtension {
             allowed_origins = new string[]{ 
                 // "https://localhost:7153",
                 // "http://localhost:5114",
-                "http://frontend:5001"
+                "http://Trinm.com:80"
             };
         }
         
@@ -38,7 +38,7 @@ public static partial class ServiceExtension {
                 policy.AllowAnyMethod();
                 //------------------------------------
                 policy.WithOrigins(allowed_origins);
-                //policy.AllowAnyOrigin()
+                //policy.AllowAnyOrigin();
                 //------------------------------------
                 policy.AllowCredentials();
                 policy.SetPreflightMaxAge(TimeSpan.FromSeconds(10000));

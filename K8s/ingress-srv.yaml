@@ -18,11 +18,18 @@ spec:
                 name: frontend-services-clusterip
                 port:
                   number: 80
-          - path: /bff/login
+          - path: /api
             pathType: Prefix
             backend:
               service:
-                name: identity-services-clusterip
+                name: frontend-services-clusterip
+                port:
+                  number: 80
+          - path: /bff
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-services-clusterip
                 port:
                   number: 80
           - path: /connect
@@ -32,4 +39,17 @@ spec:
                 name: identity-services-clusterip
                 port:
                   number: 80
-                  
+          - path: /account
+            pathType: Prefix
+            backend:
+              service:
+                name: identity-services-clusterip
+                port:
+                  number: 80
+          - path: /testidentity
+            pathType: Prefix
+            backend:
+              service:
+                name: identity-services-clusterip
+                port:
+                  number: 80         

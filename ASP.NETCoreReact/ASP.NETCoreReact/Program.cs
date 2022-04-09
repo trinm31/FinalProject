@@ -54,6 +54,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
+app.UseCookiePolicy(new CookiePolicyOptions()
+{
+    MinimumSameSitePolicy = SameSiteMode.Lax
+});
+
 app.UseRouting();
 
 app.UseAuthentication();
