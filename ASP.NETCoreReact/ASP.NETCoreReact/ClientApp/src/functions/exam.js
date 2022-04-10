@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllExams = async () => {
-    return await axios.get("http://Trinm.com:80/api/Exams/GetAllExam",
+    return await axios.get("https://Trinm.com:80/api/Exams/GetAllExam",
         {
             headers: {
                 'X-CSRF': '1'
@@ -10,35 +10,35 @@ export const getAllExams = async () => {
 };
 
 export const removeCourse = async (id) =>
-    await axios.delete(`http://Trinm.com:80/api/Exams/${id}`, {
+    await axios.delete(`https://Trinm.com:80/api/Exams/${id}`, {
         headers: {
             'X-CSRF': '1'
         }
     });
 
 export const createCourse = async (values) =>
-    await axios.post(`http://Trinm.com:80/api/Exams/Create`, values,{
+    await axios.post(`https://Trinm.com:80/api/Exams/Create`, values,{
         headers: {
             'X-CSRF': '1'
         }
     });
 
 export const editCourse = async (values) =>
-    await axios.post(`http://Trinm.com:80/api/Exams/Edit`, values,{
+    await axios.post(`https://Trinm.com:80/api/Exams/Edit`, values,{
         headers: {
             'X-CSRF': '1'
         }
     });
 
 export const getCourse = async (id) =>
-    await axios.get(`http://Trinm.com:80/api/Exams/GetExamById/${id}`,{
+    await axios.get(`https://Trinm.com:80/api/Exams/GetExamById/${id}`,{
         headers: {
             'X-CSRF': '1'
         }
     });
 
 export const uploadCourse = async (file) =>
-    await axios.post(`http://Trinm.com:80/api/Exams/Upload`, file,{
+    await axios.post(`https://Trinm.com:80/api/Exams/Upload`, file,{
         headers: {
             'content-type': 'multipart/form-data',
             'X-CSRF': '1'
@@ -46,7 +46,7 @@ export const uploadCourse = async (file) =>
     });
 
 export const paginationCourse = async (page) =>
-    await axios.get(`http://Trinm.com:80/api/Exams/StudentsPagination?PageNumber=${page}&PageSize=50`,{
+    await axios.get(`https://Trinm.com:80/api/Exams/StudentsPagination?PageNumber=${page}&PageSize=50`,{
         headers: {
             'X-CSRF': '1'
         }

@@ -22,7 +22,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 var identityServerBuilder = builder.Services.AddIdentityServer(options =>
     {
-        options.IssuerUri = "http://Trinm.com:80";
         // set path where to store keys
         options.KeyManagement.KeyPath = "/app/key";
     

@@ -11,7 +11,7 @@ public class Clients
         {
             if (isProd)
             {
-                string baseUrl = "http://trinm.com:80";
+                string baseUrl = "https://trinm.com:80";
                 return new List<Client>
                 {
                     new Client

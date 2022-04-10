@@ -1,55 +1,77 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ingress-srv
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     nginx.ingress.kubernetes.io/use-regex: 'true'
+#     nginx.ingress.kubernetes.io/use-proxy-protocol: 'true'
+# spec:
+#   rules:
+#     - host: trinm.com
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: frontend-services-clusterip
+#                 port:
+#                   number: 80
+#           - path: /api
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: frontend-services-clusterip
+#                 port:
+#                   number: 80
+#           - path: /bff
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: frontend-services-clusterip
+#                 port:
+#                   number: 80
+#           - path: /connect
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: identity-services-clusterip
+#                 port:
+#                   number: 80
+#           - path: /account
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: identity-services-clusterip
+#                 port:
+#                   number: 80
+#           - path: /testidentity
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: identity-services-clusterip
+#                 port:
+#                   number: 80         
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-srv
   annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/use-regex: 'true'
-    nginx.ingress.kubernetes.io/use-proxy-protocol: 'true'
+    kubernetes.io/ingress.class: "nginx"
+  name: example-app
 spec:
+  tls:
+  - hosts:
+    - trinm31.com
+    secretName: example-app-tls
   rules:
-    - host: trinm.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-services-clusterip
-                port:
-                  number: 80
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-services-clusterip
-                port:
-                  number: 80
-          - path: /bff
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-services-clusterip
-                port:
-                  number: 80
-          - path: /connect
-            pathType: Prefix
-            backend:
-              service:
-                name: identity-services-clusterip
-                port:
-                  number: 80
-          - path: /account
-            pathType: Prefix
-            backend:
-              service:
-                name: identity-services-clusterip
-                port:
-                  number: 80
-          - path: /testidentity
-            pathType: Prefix
-            backend:
-              service:
-                name: identity-services-clusterip
-                port:
-                  number: 80         
+  - host: trinm31.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: example-service
+            port: 
+              number: 80
