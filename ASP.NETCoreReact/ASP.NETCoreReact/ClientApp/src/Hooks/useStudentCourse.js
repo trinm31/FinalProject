@@ -15,7 +15,7 @@ function useStudentCourse( pageNum, setFilter, setStudentCourses) {
         setError(false);
 
         axios
-            .get(`api/StudentExams/StudentExamPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`${process.env.REACT_APP_BASE_API}/api/StudentExams/StudentExamPagination?PageNumber=${pageNum}&PageSize=50`, {
                 headers: {
                     'X-CSRF': '1'
                 },

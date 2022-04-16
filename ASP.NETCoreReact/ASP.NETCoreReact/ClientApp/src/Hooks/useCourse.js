@@ -15,7 +15,7 @@ function useCourse( pageNum, setFilter, setCourses) {
         setError(false);
 
         axios
-            .get(`api/Exams/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`${process.env.REACT_APP_BASE_API}/api/Exams/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
                 cancelToken: new CancelToken((c) => (cancel = c))
             })
             .then((res) => {

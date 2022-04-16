@@ -85,11 +85,11 @@ app.UseHealthChecks("/health");
 
 app.UseStaticFiles();
 
-app.Use((context, next) =>
-{
-    context.Request.Scheme = "https";
-    return next();
-});
+// app.Use((context, next) =>
+// {
+//     context.Request.Scheme = "https";
+//     return next();
+// });
 
 app.UseRouting(); 
         

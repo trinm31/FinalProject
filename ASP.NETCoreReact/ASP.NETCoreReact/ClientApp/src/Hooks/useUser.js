@@ -15,7 +15,7 @@ function useUser( pageNum, setFilter, setUsers) {
         setError(false);
 
         axios
-            .get(`api/Users/UsersPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`${process.env.REACT_APP_BASE_API}/api/Users/UsersPagination?PageNumber=${pageNum}&PageSize=50`, {
                 cancelToken: new CancelToken((c) => (cancel = c))
             })
             .then((res) => {

@@ -42,7 +42,7 @@ builder.Services.AddAuthentication("token")
     {
         options.Authority = builder.Configuration["IdentityServices"];
         options.MapInboundClaims = false;
-        options.RequireHttpsMetadata = false;
+        //options.RequireHttpsMetadata = false;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {

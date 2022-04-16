@@ -15,7 +15,7 @@ function useRoom( pageNum, setFilter, setRooms) {
         setError(false);
  
         axios
-            .get(`api/Rooms/RoomsPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`${process.env.REACT_APP_BASE_API}/api/Rooms/RoomsPagination?PageNumber=${pageNum}&PageSize=50`, {
                 cancelToken: new CancelToken((c) => (cancel = c))
             })
             .then((res) => {

@@ -47,7 +47,7 @@ public static partial class ServiceExtension {
                 options.MapInboundClaims = false;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.SaveTokens = true;
-                options.RequireHttpsMetadata = false;
+                //options.RequireHttpsMetadata = false;
 
                 // request scopes + refresh tokens
                 options.Scope.Clear();

@@ -15,7 +15,7 @@ function useStudent( pageNum, setFilter, setStudents) {
         setError(false);
 
         axios
-            .get(`api/Students/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
+            .get(`${process.env.REACT_APP_BASE_API}/api/Students/StudentsPagination?PageNumber=${pageNum}&PageSize=50`, {
                 cancelToken: new CancelToken((c) => (cancel = c))
             })
             .then((res) => {
